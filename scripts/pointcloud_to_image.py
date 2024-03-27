@@ -160,6 +160,8 @@ def main(argv=None):
             df = df.rename(
                 {args.channel_col_name: "channel"}
             )
+            if df.schema['channel'].is_(pl.String):
+                df = df.with_columns(pl.col("channel").str.strip_chars_start().cast(pl.Int32))
             # Get list of channels - currently takes in all channels
             channel_choice = sorted(list(set(df["channel"])))
         else:
