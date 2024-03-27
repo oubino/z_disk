@@ -29,7 +29,8 @@ def main(argv=None):
         action="store",
         type=str,
         help="name of the channel column",
-        required=True,
+        default=None,
+        required=False,
     )
 
     parser.add_argument(
@@ -86,6 +87,15 @@ def main(argv=None):
         required=True,
     )
 
+    parser.add_argument(
+        "-s",
+        "--separator",
+        action="store",
+        type=str,
+        help="delimeter that separates the data items in input file",
+        required=True,
+    )
+
     args = parser.parse_args(argv)
 
     input_folder = "data"
@@ -121,7 +131,10 @@ def main(argv=None):
 
     # go through files -> convert to datastructure -> save
     for index, file in enumerate(input_files):
-        df = pl.read_csv(file)
+        if args.separator == 'comma':
+            df = pl.read_csv(file, separator=",")
+        elif args.separator == 'tab':
+            df = pl.read_csv(file, separator="\t")
 
         # Get name of file - assumes last part of input file name
         name = os.path.basename(os.path.normpath(file)).removesuffix(".txt")
@@ -130,12 +143,31 @@ def main(argv=None):
         df = df.rename(
             {args.x_col_name: "x",
              args.y_col_name: "y",
-             args.z_col_name: "z",
-             args.channel_col_name: "channel"}
+             args.z_col_name: "z"}
         )
 
-        # Get list of channels - currently takes in all channels
-        channel_choice = sorted(list(set(df["channel"])))
+        if df.schema['x'].is_(pl.String):
+            df = df.with_columns(pl.col("x").str.strip_chars_start().cast(pl.Float64))
+
+        if df.schema['y'].is_(pl.String):
+            df = df.with_columns(pl.col("y").str.strip_chars_start().cast(pl.Float64))
+
+        if df.schema['z'].is_(pl.String):
+            df = df.with_columns(pl.col("z").str.strip_chars_start().cast(pl.Float64))
+
+        # if channel column given
+        if args.channel_col_name is not None:
+            df = df.rename(
+                {args.channel_col_name: "channel"}
+            )
+            # Get list of channels - currently takes in all channels
+            channel_choice = sorted(list(set(df["channel"])))
+        else:
+            # add on fake channel column
+            df = df.with_columns(
+                pl.lit(0).alias("channel")
+            )
+            channel_choice = [0]
 
         item =  item_class(
             name,
@@ -157,8 +189,6 @@ def main(argv=None):
         #      0,1,2,3
         #   -> z,y,x,c
         #      3,2,1,0
-        print(histo)
-        print(histo.shape)
         img = np.transpose(histo, (3, 2, 1, 0))
 
         # all images are saved in yxc

@@ -303,7 +303,6 @@ class item:
             raise ValueError(
                 "Cannot overwite. If you want to overwrite please set overwrite==True"
             )
-        print(arrow_table)
         pq.write_table(arrow_table, save_loc)
 
         # To access metadata write

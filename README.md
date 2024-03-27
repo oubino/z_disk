@@ -79,13 +79,16 @@ python scripts/pointcloud_to_image.py [ARGS]
 
 The following args are required:
     -o Output folder where all analysis will take place
-    -c Name of the channel column in the data
     -x Name of the x column in the data
     -y Name of the y column in the data
     -z Name of the z column in the data
     -hx Size of histogram in x direction
     -hy Size of histogram in y direction
     -hz Size of histogram in z direction
+    -s Delimeter separating the items - currently supported either comma or tab
+
+The following args are optional
+    -c Name of the channel column in the data 
 
 INSTRUCTIONS FOR ILASTIK SEGMENTATION
 
