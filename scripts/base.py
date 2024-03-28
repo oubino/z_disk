@@ -65,6 +65,7 @@ class item:
     def coord_2_histo(
         self,
         histo_size,
+        bins_or_size,
     ):
         """Converts localisations into histogram of desired size,
         with option to plot the image (histo.T).
@@ -74,16 +75,14 @@ class item:
         Args:
             histo_size (tuple): Tuple representing number of
                 bins/pixels in x,y,z
-            cmap (list of strings) : The colourmaps used to
-                plot the histograms
-            vis_interpolation (string): How to inerpolate
-                the image for visualisation"""
+            bins_or_size (string) : Either bins to say the sizes represent
+                the number of bins OR size to represent the sizes mean size
+                of each bin"""
 
         # get max and min x/y/(z) values
         df_max = self.df.max()
         df_min = self.df.min()
 
-        x_bins, y_bins, z_bins = histo_size
         x_max = df_max["x"][0]
         y_max = df_max["y"][0]
         x_min = df_min["x"][0]
@@ -91,14 +90,20 @@ class item:
         z_max = df_max["z"][0]
         z_min = df_min["z"][0]
 
-        # if instead want desired bin size e.g. 50nm, 50nm, 50nm
-        # number of bins required for desired bin_size
-        # note need to check if do this that agrees with np.digitize
-        # and need to make sure that same issue we had before
-        # with the last localisation is dealt with
-        # x_bins = int((self.max['x'] - self.min['x']) / bin_size[0])
-        # y_bins = int((self.max['y'] - self.min['y']) / bin_size[1])
-        # z_bins = int((self.max['z'] - self.min['z']) / bin_size[2])
+        if bins_or_size == "size":
+            # if instead want desired bin size e.g. 50nm, 50nm, 50nm
+            # number of bins required for desired bin_size
+            # note need to check if do this that agrees with np.digitize
+            # and need to make sure that same issue we had before
+            # with the last localisation is dealt with
+            bin_size = histo_size
+            x_bins = int((x_max - x_min) / bin_size[0])
+            y_bins = int((y_max - y_min) / bin_size[1])
+            z_bins = int((z_max - z_min) / bin_size[2])
+        elif bins_or_size == "bins":
+            x_bins, y_bins, z_bins = histo_size
+        else:
+            raise ValueError("bins_or_size should be size or bins")
 
         # size of actual bins, given the number of bins (should be
         # very close to desired tests size)
@@ -375,3 +380,4 @@ class item:
         histo = np.stack(histos)
 
         return histo
+

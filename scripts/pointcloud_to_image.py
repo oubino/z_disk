@@ -96,6 +96,16 @@ def main(argv=None):
         required=True,
     )
 
+    parser.add_argument(
+        "-bs",
+        "--bins_or_size",
+        action="store",
+        type=str,
+        help="how to interpret the histo size given as size of bins or number of bins",
+        required=True,
+        choices=["bins","size"]
+    )
+
     args = parser.parse_args(argv)
 
     input_folder = "data"
@@ -180,6 +190,7 @@ def main(argv=None):
 
         item.coord_2_histo(
             histo_size,
+            args.bins_or_size,
         )
 
         # render and save histo
