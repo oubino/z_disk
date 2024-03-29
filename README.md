@@ -122,6 +122,16 @@ python scripts/separate_and_align.py
 The following args are optional:
     -a If specified then aligns each z-disk with x axis
 
+5. (Optional) visualise
+    - Visualiase the .csv pointcloud data
+
+```shell
+python scripts/visualise.py [ARGS]
+```
+
+The following arg is required:
+    -i Path to the input csv to be visualised
+
 ## Example on Janelia data
 
 The following details the commands run, assuming all .txt files in folder called data
