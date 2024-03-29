@@ -12,10 +12,10 @@ def load_file(file, x_name, y_name, z_name, channel_name):
 
     Args:
         file (string): Name of the file to read in
-        x_name (string): Name of the x column in the parquet file
-        y_name (string): Name of the y column in the parquet file
-        z_name (string): Name of the z column in the parquet file
-        channel_name (string): Name of the channel column in the parquet file
+        x_name (string): Name of the x column
+        y_name (string): Name of the y column
+        z_name (string): Name of the z column
+        channel_name (string): Name of the channel column
 
     Returns:
         df (pl.DataFrame): DataFrame that has been loaded in
@@ -23,15 +23,20 @@ def load_file(file, x_name, y_name, z_name, channel_name):
             dataframe
     """
 
-    df = pl.read_parquet(file, columns=[x_name, y_name, z_name, channel_name])
+    if file.endswith('.parquet'):
+        df = pl.read_parquet(file, columns=[x_name, y_name, z_name, channel_name])
+    elif file.endswith('.csv'):
+        df = pl.read_csv(file, columns=[x_name, y_name, z_name, channel_name])
+    else:
+        raise ValueError("File must be parquet or csv file")
 
     return df, df[channel_name].unique()
 
 
-def add_pcd_parquet(
+def add_pcd(
     df, chan, x_name, y_name, z_name, chan_name, unique_chans, cmap, pcds
 ):
-    """Add a parquet file as a PCD for visualisation
+    """Add file as a PCD for visualisation
 
     Args:
         df (pl.DataFrame): DataFrame containing data to visualise
@@ -61,13 +66,13 @@ def add_pcd_parquet(
 
 
 class Present:
-    """Required for visualising the parquet file"""
+    """Required for visualising the file"""
 
     def __init__(self):
         self.chan_present = [True, True, True, True]
 
 
-def visualise_parquet(
+def visualise_file(
     file_loc,
     x_name,
     y_name,
@@ -76,10 +81,10 @@ def visualise_parquet(
     channel_labels,
     cmap=["r", "darkorange", "b", "y"],
 ):
-    """Visualise parquet file
+    """Visualise file
 
     Args:
-        file_loc (str) : Location of the parquet file to visualise
+        file_loc (str) : Location of the file to visualise
         x_name (str) : Name of the x column in the data
         y_name (str) : Name of the y column in the data
         z_name (str) : Name of the z column in the data, if is None, then
@@ -95,7 +100,7 @@ def visualise_parquet(
     cmap = ["r", "darkorange", "b", "y"]
 
     for key in channel_labels.keys():
-        pcds = add_pcd_parquet(
+        pcds = add_pcd(
             df, key, x_name, y_name, z_name, channel_name, unique_chans, cmap, pcds
         )
 
@@ -214,7 +219,7 @@ def main(argv=None):
 
     # parse arugments
     parser = argparse.ArgumentParser(
-        description="Visualise the data from parquet"
+        description="Visualise the data from a .csv or .parquet file"
     )
 
     parser.add_argument(
@@ -222,13 +227,13 @@ def main(argv=None):
         "--input_file",
         action="store",
         type=str,
-        help="location of the input file (either .parquet or .pt)",
+        help="location of the input file (either .parquet or .csv)",
         required=True,
     )
 
     args = parser.parse_args(argv)
 
-    visualise_parquet(
+    visualise_file(
         args.input_file,
         "x",
         "y",
