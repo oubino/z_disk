@@ -50,6 +50,8 @@ def main(argv=None):
 
         for index, z_disk in enumerate(z_disks):
 
+            aligned = False
+
             if args.align:
 
                 # D x N shape i.e. 3 x Number of points
@@ -57,18 +59,27 @@ def main(argv=None):
                 # N x D
                 array = np.swapaxes(array, 0, 1)
 
-                pca = PCA(n_components=3)
-                # N x D
-                array = pca.fit_transform(array)
-                # D x N
-                array = np.swapaxes(array, 0, 1)
+                # if less than 3 samples
+                if len(array) < 3:
+                    print('Not enough samples therefore skipping this z disk')
+                
+                else:
+                    pca = PCA(n_components=3)
+                    # N x D
+                    array = pca.fit_transform(array)
+                    # D x N
+                    array = np.swapaxes(array, 0, 1)
 
-                z_disk["x"] = array[0,:]
-                z_disk["y"] = array[1,:]
-                z_disk["z"] = array[2,:]
+                    z_disk = z_disk.with_columns(pl.Series(name='x', values=array[0,:]))
+                    z_disk = z_disk.with_columns(pl.Series(name='y', values=array[1,:]))
+                    z_disk = z_disk.with_columns(pl.Series(name='z', values=array[2,:]))
+                    aligned = True
 
             # save 
-            save_path = os.path.join(output_folder, f"{file.rstrip('.csv')}_zdisk_{index}")
+            if not aligned:
+                save_path = os.path.join(output_folder, f"{file.rstrip('.csv')}_zdisk_{index}.csv")
+            else:
+                save_path = os.path.join(output_folder, f"{file.rstrip('.csv')}_zdisk_{index}_aligned.csv")
             z_disk.write_csv(save_path)
 
 if __name__ == "__main__":
