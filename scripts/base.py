@@ -198,15 +198,17 @@ class item:
         # list of mask dataframes, each mask dataframe contains
         # (x,y,label) columns
         # transpose the image mask to histogram space
+        # histo mask now has shape x,y,z
         histo_mask = np.transpose(img_mask, (2, 1, 0))
 
         # create dataframe
         flatten_mask = np.ravel(histo_mask)
         mesh_grid = np.meshgrid(
-            range(histo_mask.shape[0]), range(histo_mask.shape[1]), range(histo_mask.shape[2])
+            range(histo_mask.shape[0]), range(histo_mask.shape[1]), range(histo_mask.shape[2]),
+            indexing='ij',
         )
-        x_pixel = np.ravel(mesh_grid[1])
-        y_pixel = np.ravel(mesh_grid[0])
+        x_pixel = np.ravel(mesh_grid[0])
+        y_pixel = np.ravel(mesh_grid[1])
         z_pixel = np.ravel(mesh_grid[2])
         label = flatten_mask
         data = {"x_pixel": x_pixel, "y_pixel": y_pixel, "z_pixel":z_pixel, "gt_label": label}
