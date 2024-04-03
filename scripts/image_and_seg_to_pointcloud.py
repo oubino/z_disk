@@ -37,7 +37,7 @@ def main(argv=None):
             seg_loc = os.path.join(input_segmentation_folder, item.name + ".npy")
             seg = np.load(seg_loc)
 
-            # ilastik_seg is [y,x,c] where channel 0 is segmentation
+            # ilastik_seg is [z,y,x,c] where channel 0 is segmentation
             # where each integer represents different instance of a cell
             # i.e. 1 = one cell; 2 = different cell; etc.
             seg = seg[:, :, :, 0]
@@ -48,7 +48,8 @@ def main(argv=None):
             df = item.mask_pixel_2_coord(seg)
             item.df = df
             item.save_df_to_csv(
-                output_loc
+                output_loc,
+                drop_zero_label=True,
             )
           
 if __name__ == "__main__":
