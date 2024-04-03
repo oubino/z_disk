@@ -77,9 +77,9 @@ def main(argv=None):
 
             # save 
             if not aligned:
-                save_path = os.path.join(output_folder, f"{file.rstrip('.csv')}_zdisk_{index}.csv")
+                save_path = os.path.join(output_folder, f"{file.rstrip('.csv')}_zdisk_{index+1}.csv")
             else:
-                save_path = os.path.join(output_folder, f"{file.rstrip('.csv')}_zdisk_{index}_aligned.csv")
+                save_path = os.path.join(output_folder, f"{file.rstrip('.csv')}_zdisk_{index+1}_aligned.csv")
             z_disk.write_csv(save_path)
 
 if __name__ == "__main__":
