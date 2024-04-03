@@ -251,10 +251,7 @@ class item:
 
         # drop rows with zero label
         if drop_zero_label:
-            if self.gt_label_scope == "loc":
-                save_df = save_df.filter(pl.col("gt_label") != 0)
-            else:
-                raise ValueError("Can't drop zero label as no gt label column")
+            save_df = save_df.filter(pl.col("gt_label") != 0)
 
         # save to location
         save_df.write_csv(csv_loc)
