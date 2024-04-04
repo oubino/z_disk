@@ -88,7 +88,7 @@ The following args are required:
     -hy Size of histogram in y direction
     -hz Size of histogram in z direction
     -s Delimeter separating the items - currently supported either comma or tab
-    -bs Bins or size, should be either bins or size, to specify whether sizes above should be interpreted as the number of bins or the size of each bin
+    -bs Specify whether sizes above should be interpreted as the number of bins or the size of each bin, should be either bins or size
 
 The following args are optional
     -c Name of the channel column in the data 
@@ -105,19 +105,20 @@ The following arg is required:
 
 3. Ilastik segmentation
 
-Create a new project Other workflows > Pixel classification & Object classification
-
-Load in the images, if necessary right click the image and click edit properties 
-
-Change normalize display to True 
-
-Keep range 0 to 1 and click ok
-
-Follow through the workflow
-
-Once have labelled the points in object classification then can export the labels 
-
-By right clicking and click export labels and change the name to have the same name as the input file
+    1. Create an empty folder called segmentations in output folder (this is where we will save the output from Ilastik)
+    2. Open Ilastik and create a new project Other workflows > Pixel classification & Object classification
+    3. Load in the images from Output > Images
+    4. If necessary to better visualise the images
+        1. Right click the image and click edit properties
+        2. Change normalize display to True 
+        3. Keep range 0 to 1 and click ok
+    5. Follow through the rest of the workflow
+    6. Once have labelled the points in Object Classification then can export the labels 
+        a. Right click on labels and click export labels
+        b. Change the name to match the name of the file 
+        c. Choose file type numpy
+        d. Save in segmentations folder
+        e. Repeat for each image
 
 4. image_and_seg_to_pointcloud 
     - Combine each segmentation with the original .txt file to extract the localisations and return data in desired output format
@@ -134,7 +135,7 @@ python scripts/separate_and_align.py
 ```
 
 The following args are optional:
-    -a If specified then aligns each z-disk with x axis
+    -a If specified then aligns each z-disk with x axis - NOTE THAT DISTANCES BETWEEN POINTS ARE NOT PERFECTLY PRESERVED
 
 6. (Optional) visualise
     - Visualiase the .csv pointcloud data
@@ -161,17 +162,5 @@ The segmented numpy files are placed in a output/segmentations, then the followi
 
 ```shell
 python scripts/image_and_seg_to_pointcloud.py
-python scripts/separate_and_align.py
+python scripts/separate_and_align.py -a
 ```
-
-## Add in 
-
-Note in pointcloud to image script that channel flag is optional
-
-Change arguments order so bins or size first
-
-Separator need to specify can only use tab or comma 
-
-Note file format required for ilastik output
-
-Drop channel column

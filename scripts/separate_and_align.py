@@ -8,6 +8,8 @@ import os
 import polars as pl
 import numpy as np
 from sklearn.decomposition import PCA
+from scipy.spatial.transform import Rotation as Rot
+import warnings
 
 def main(argv=None):
     """Main script for the module with variable arguments
@@ -48,6 +50,9 @@ def main(argv=None):
 
         z_disks = df.partition_by("gt_label")
 
+        if args.align:
+            warnings.warn("Note that distances between localisations are not perfectly preserved when using the align flag")
+
         for index, z_disk in enumerate(z_disks):
 
             aligned = False
@@ -66,7 +71,11 @@ def main(argv=None):
                 else:
                     pca = PCA(n_components=3)
                     # N x D
-                    array = pca.fit_transform(array)
+                    pca = pca.fit(array)
+                    # calculate rotation matrix between maximal PCA compoment and x axis
+                    rot, _ = Rot.align_vectors(np.array([1,0,0]), pca.components_[0])
+                    # rotate points
+                    array = rot.apply(array)
                     # D x N
                     array = np.swapaxes(array, 0, 1)
 
@@ -79,7 +88,7 @@ def main(argv=None):
             if not aligned:
                 save_path = os.path.join(output_folder, f"{file.rstrip('.csv')}_zdisk_{index+1}.csv")
             else:
-                save_path = os.path.join(output_folder, f"{file.rstrip('.csv')}_zdisk_{index+1}_aligned.csv")
+                save_path = os.path.join(output_folder, f"{file.rstrip('.csv')}_zdisk_{index+1}_aligned.csv")   
             z_disk.write_csv(save_path)
 
 if __name__ == "__main__":

@@ -24,16 +24,6 @@ def main(argv=None):
     )
 
     parser.add_argument(
-        "-c",
-        "--channel_col_name",
-        action="store",
-        type=str,
-        help="name of the channel column",
-        default=None,
-        required=False,
-    )
-
-    parser.add_argument(
         "-x",
         "--x_col_name",
         action="store",
@@ -58,6 +48,26 @@ def main(argv=None):
         type=str,
         help="name of the z column",
         required=True,
+    )
+
+    parser.add_argument(
+        "-c",
+        "--channel_col_name",
+        action="store",
+        type=str,
+        help="name of the channel column (Optional)",
+        default=None,
+        required=False,
+    )
+
+    parser.add_argument(
+        "-bs",
+        "--bins_or_size",
+        action="store",
+        type=str,
+        help="how to interpret the histo size given as size of bins or number of bins (bins or size)",
+        required=True,
+        choices=["bins","size"]
     )
 
     parser.add_argument(
@@ -92,19 +102,11 @@ def main(argv=None):
         "--separator",
         action="store",
         type=str,
-        help="delimeter that separates the data items in input file",
+        help="delimeter that separates the data items in input file (tab or comma)",
+        choices = ["tab", "comma"]
         required=True,
     )
-
-    parser.add_argument(
-        "-bs",
-        "--bins_or_size",
-        action="store",
-        type=str,
-        help="how to interpret the histo size given as size of bins or number of bins",
-        required=True,
-        choices=["bins","size"]
-    )
+    
 
     args = parser.parse_args(argv)
 
