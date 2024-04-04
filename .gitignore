@@ -67,3 +67,6 @@ data/
 
 # Ilastik 
 *.ilp
+
+# Apple
+.DS_Store
