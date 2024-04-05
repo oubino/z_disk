@@ -103,7 +103,7 @@ def main(argv=None):
         action="store",
         type=str,
         help="delimeter that separates the data items in input file (tab or comma)",
-        choices = ["tab", "comma"]
+        choices = ["tab", "comma"],
         required=True,
     )
     
