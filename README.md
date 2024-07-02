@@ -78,9 +78,8 @@ Make sure you have activated the correct environment before running scripts
 ```shell
 python scripts/pointcloud_to_image.py [ARGS]
 ```
-
+```shell
 The following args are required:
-    -o Output folder where all analysis will take place
     -x Name of the x column in the data
     -y Name of the y column in the data
     -z Name of the z column in the data
@@ -89,12 +88,13 @@ The following args are required:
     -hz Size of histogram in z direction
     -s Delimeter separating the items - currently supported either comma or tab
     -bs Specify whether sizes above should be interpreted as the number of bins or the size of each bin, should be either bins or size
+```
 
 The following args are optional
     -c Name of the channel column in the data 
 
 2. (Optional) visualise
-    - Visualiase the .parquet pointcloud data
+    - Visualise the .parquet pointcloud data
 
 ```shell
 python scripts/visualise.py [ARGS]

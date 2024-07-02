@@ -4,6 +4,7 @@
 import argparse
 
 import matplotlib.colors as cl
+import numpy as np
 import open3d as o3d
 import polars as pl
 
@@ -59,8 +60,10 @@ def add_pcd(
             .select([x_name, y_name, z_name])
             .to_numpy()
         )
-        pcd.points = o3d.utility.Vector3dVector(coords)
-        pcd.paint_uniform_color(cl.to_rgb(cmap[chan]))
+        pcd.points = o3d.utility.Vector3dVector(coords.copy())
+        colour = cl.to_rgb(cmap[chan])
+        colour = np.tile(colour, (len(coords),1))
+        pcd.colors = o3d.utility.Vector3dVector(colour)
         pcds.append(pcd)
     return pcds
 
@@ -98,12 +101,10 @@ def visualise_file(
     pcds = []
 
     cmap = ["r", "darkorange", "b", "y"]
-
     for key in channel_labels.keys():
         pcds = add_pcd(
             df, key, x_name, y_name, z_name, channel_name, unique_chans, cmap, pcds
         )
-
     visualise(pcds, None, None, None, unique_chans, channel_labels, cmap)
 
 def visualise(

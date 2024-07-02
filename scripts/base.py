@@ -164,9 +164,9 @@ class item:
         self.df = self.df.select(
             [
                 pl.all(),
-                pl.col("x").map(lambda q: (q - x_min) / x_pixel_width).alias("x_pixel"),
-                pl.col("y").map(lambda q: (q - y_min) / y_pixel_width).alias("y_pixel"),
-                pl.col("z").map(lambda q: (q - z_min) / z_pixel_width).alias("z_pixel"),
+                pl.col("x").map_batches(lambda q: (q - x_min) / x_pixel_width).alias("x_pixel"),
+                pl.col("y").map_batches(lambda q: (q - y_min) / y_pixel_width).alias("y_pixel"),
+                pl.col("z").map_batches(lambda q: (q - z_min) / z_pixel_width).alias("z_pixel"),
             ]
         )
         # floor the pixel locations
@@ -216,8 +216,14 @@ class item:
             data,
         ).sort(["x_pixel", "y_pixel", "z_pixel"])
 
+
         # join mask dataframe
-        df = self.df.join(mask_df, how="inner", on=["x_pixel", "y_pixel", "z_pixel"])
+        # if just try and join, crashes as mask_df is too big 
+        # mask_df is mostly zeros therefore only join non zeros
+        # then in joined df fill in all non joined with 0
+        mask_df_non_zero = mask_df.filter(pl.col("gt_label") != 0)
+        df = self.df.join(mask_df_non_zero, how="left", on=["x_pixel", "y_pixel", "z_pixel"])
+        df = df.with_columns(pl.col("gt_label").fill_null(strategy="zero"))
 
         return df
 
@@ -367,11 +373,11 @@ class item:
             df = self.df.filter(pl.col("channel") == chan)
 
             histo = np.zeros((x_bins, y_bins, z_bins))
-            df = df.group_by(by=["x_pixel", "y_pixel", "z_pixel"]).count()
+            df = df.group_by(["x_pixel", "y_pixel", "z_pixel"]).len()
             x_pixels = df["x_pixel"].to_numpy()
             y_pixels = df["y_pixel"].to_numpy()
             z_pixels = df["z_pixel"].to_numpy()
-            counts = df["count"].to_numpy()
+            counts = df["len"].to_numpy()
             histo[x_pixels, y_pixels, z_pixels] = counts
 
             histos.append(histo)

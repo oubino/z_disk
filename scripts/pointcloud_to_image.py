@@ -1,6 +1,6 @@
 """Pointcloud to image module
 
-Module takes in the .txt files and saves as images with associated datastructure
+Module takes in the .txt or .csv files and saves as images with associated datastructure
 """
 
 import argparse
@@ -133,9 +133,10 @@ def main(argv=None):
     # check file not already present
     for file in input_files:
         file_name = os.path.basename(file)
-        if not file_name.endswith(".txt"):
+        file_extension = os.path.splitext(file_name)[1]
+        if not (file_extension == '.csv' or file_extension == '.txt'):
             raise ValueError("Wrong input file name")
-        file_name = file_name.rstrip('.txt')
+        file_name = file_name.rstrip(file_extension)
         output_path = os.path.join(output_datastructure_folder, f"{file_name}.parquet")
         if os.path.exists(output_path):
             raise ValueError("Can't preprocess as output file already exists")
@@ -149,7 +150,9 @@ def main(argv=None):
             df = pl.read_csv(file, separator="\t")
 
         # Get name of file - assumes last part of input file name
-        name = os.path.basename(os.path.normpath(file)).removesuffix(".txt")
+        file_extension = os.path.splitext(os.path.basename(file))[1]
+        name = os.path.basename(os.path.normpath(file)).removesuffix(file_extension)
+        print('name', name)
 
         # rename x,y,z,channel columns
         df = df.rename(
