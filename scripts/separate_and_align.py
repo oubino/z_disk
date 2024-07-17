@@ -51,7 +51,7 @@ def main(argv=None):
         z_disks = df.partition_by("gt_label")
 
         if args.align:
-            warnings.warn("Note that distances between localisations are not perfectly preserved when using the align flag")
+            warnings.warn("Note that distances between localisations will be changed on order of 10^-11 units i.e. very small error")
 
         for index, z_disk in enumerate(z_disks):
 

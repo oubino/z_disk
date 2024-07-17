@@ -135,7 +135,7 @@ python scripts/separate_and_align.py
 ```
 
 The following args are optional:
-    -a If specified then aligns each z-disk with x axis - NOTE THAT DISTANCES BETWEEN POINTS ARE NOT PERFECTLY PRESERVED
+    -a If specified then aligns each z-disk with x axis - note that distances between points are not PERFECTLY preserved but errors are very small (errors in distances ~10^-11)
 
 6. (Optional) visualise
     - Visualiase the .csv pointcloud data
