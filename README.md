@@ -3,7 +3,7 @@
 ## IO
 
 Input:
-    - Folder of xyz data for each FOV as a .txt file with also additional features for each localisation
+    - Folder of xyz data for each FOV as a .txt or .csv file with also additional features for each localisation
                
 Output:
     - Folder of xyz data for each z-disk as a .csv file optionally aligned along the x axis
@@ -47,7 +47,7 @@ git clone git@github.com/oubino/z_disk.git
 cd z_disks
 ```
 
-In z_disks folder place all .txt data in a folder called data/
+In z_disks folder place all .txt or .csv data in a folder called data/
 
 ```bash
 z_disks
@@ -73,7 +73,7 @@ conda activate z_disk
 Make sure you have activated the correct environment before running scripts
 
 1. pointcloud_to_image
-    - Convert each .txt file to an image
+    - Convert each .txt/.csv file to an image
 
 ```shell
 python scripts/pointcloud_to_image.py [ARGS]
@@ -86,7 +86,7 @@ The following args are required:
     -hx Size of histogram in x direction
     -hy Size of histogram in y direction
     -hz Size of histogram in z direction
-    -s Delimeter separating the items - currently supported either comma or tab
+    -s Delimeter separating the items - currently supported either comma (.csv) or tab (.txt)
     -bs Specify whether sizes above should be interpreted as the number of bins or the size of each bin, should be either bins or size
 ```
 
@@ -121,7 +121,7 @@ The following arg is required:
         e. Repeat for each image
 
 4. image_and_seg_to_pointcloud 
-    - Combine each segmentation with the original .txt file to extract the localisations and return data in desired output format
+    - Combine each segmentation with the original .txt/.csv file to extract the localisations and return data in desired output format
 
 ```shell
 python scripts/image_and_seg_to_pointcloud.py
@@ -149,7 +149,7 @@ The following arg is required:
 
 ## Example on Janelia data
 
-The following details the commands run, assuming all .txt files in folder called data
+The following details the commands run, assuming all .txt/.csv files in folder called data
 
 ```shell
 python scripts/pointcloud_to_image.py -x "X Position" -y "Y Position" -z "Z Position" -hx 50 -hy 50 -hz 50 -s tab -bs size
