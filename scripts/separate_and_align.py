@@ -41,6 +41,7 @@ def main(argv=None):
         os.makedirs(output_folder)
 
     files = os.listdir(input_folder)
+    files = [f for f in files if f.endswith('.csv')]
 
     for file in files:
         

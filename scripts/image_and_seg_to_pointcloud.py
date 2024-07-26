@@ -28,6 +28,7 @@ def main(argv=None):
           os.makedirs(output_folder)
 
     files = os.listdir(input_datastructure_folder)
+    files = [f for f in files if f.endswith('.parquet')]
 
     for file in files:
             

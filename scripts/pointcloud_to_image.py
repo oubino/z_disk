@@ -130,12 +130,14 @@ def main(argv=None):
     print("List of files which will be converted")
     input_files = os.listdir(input_folder)
     input_files = [os.path.join(input_folder, file) for file in input_files]
+    while ('.DS_Store' in input_files):
+        input_files.remove('.DS_Store')
     # check file not already present
     for file in input_files:
         file_name = os.path.basename(file)
         file_extension = os.path.splitext(file_name)[1]
         if not (file_extension == '.csv' or file_extension == '.txt'):
-            raise ValueError("Wrong input file name")
+            raise ValueError(f"{file_extension} is not a valid file extension")
         file_name = file_name.rstrip(file_extension)
         output_path = os.path.join(output_datastructure_folder, f"{file_name}.parquet")
         if os.path.exists(output_path):
