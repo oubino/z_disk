@@ -6,6 +6,7 @@ Module takes in the .npy segmentation and returns datastructure with segmentatio
 import os
 from base import item as item_class
 import numpy as np
+import warnings
 #import time
 
 
@@ -36,6 +37,9 @@ def main(argv=None):
             item.load_from_parquet(os.path.join(input_datastructure_folder, file))
 
             seg_loc = os.path.join(input_segmentation_folder, item.name + ".npy")
+            if not os.path.exists:
+                  warnings.warn(f"No segmentation for {file}")
+                  continue
             seg = np.load(seg_loc)
 
             # ilastik_seg is [z,y,x,c] where channel 0 is segmentation
