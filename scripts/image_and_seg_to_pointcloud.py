@@ -37,7 +37,7 @@ def main(argv=None):
             item.load_from_parquet(os.path.join(input_datastructure_folder, file))
 
             seg_loc = os.path.join(input_segmentation_folder, item.name + ".npy")
-            if not os.path.exists:
+            if not os.path.exists(seg_loc):
                   warnings.warn(f"No segmentation for {file}")
                   continue
             seg = np.load(seg_loc)
