@@ -43,7 +43,7 @@ pip install open3d polars
 Clone this directory to your files and move into the directory
 
 ```shell
-git clone git@github.com/oubino/z_disk.git
+git clone https://github.com/oubino/z_disk.git
 cd z_disks
 ```
 
