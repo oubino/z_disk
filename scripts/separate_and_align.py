@@ -60,30 +60,43 @@ def main(argv=None):
 
             if args.align:
 
-                # D x N shape i.e. 3 x Number of points
-                array = np.array((z_disk["x"], z_disk["y"], z_disk["z"]))
+                # D x N shape i.e. 2 x Number of points
+                array_full = np.array((z_disk["x"], z_disk["y"], z_disk["z"]))
+                array = np.array((z_disk["x"], z_disk["y"]))
                 # N x D
                 array = np.swapaxes(array, 0, 1)
+                array_full = np.swapaxes(array_full, 0, 1)
 
-                # if less than 3 samples
-                if len(array) < 3:
+                # check
+                a = array_full[:,2]
+
+                # if less than 2 samples
+                if len(array) < 2:
                     print('Not enough samples therefore skipping this z disk')
                 
                 else:
-                    pca = PCA(n_components=3)
+                    pca = PCA(n_components=2)
                     # N x D
                     pca = pca.fit(array)
                     # calculate rotation matrix between maximal PCA compoment and x axis
-                    rot, _ = Rot.align_vectors(np.array([1,0,0]), pca.components_[0])
+                    pca_vector = np.append(pca.components_[0], 0.0)
+                    rot, _ = Rot.align_vectors(np.array([1,0,0]), pca_vector)
                     # rotate points
-                    array = rot.apply(array)
+                    array_full = rot.apply(array_full)
                     # D x N
-                    array = np.swapaxes(array, 0, 1)
+                    array_full = np.swapaxes(array_full, 0, 1)
 
-                    z_disk = z_disk.with_columns(pl.Series(name='x', values=array[0,:]))
-                    z_disk = z_disk.with_columns(pl.Series(name='y', values=array[1,:]))
-                    z_disk = z_disk.with_columns(pl.Series(name='z', values=array[2,:]))
+                    z_disk = z_disk.with_columns(pl.Series(name='x', values=array_full[0,:]))
+                    z_disk = z_disk.with_columns(pl.Series(name='y', values=array_full[1,:]))
+                    z_disk = z_disk.with_columns(pl.Series(name='z', values=array_full[2,:]))
+
                     aligned = True
+
+                    # check
+                    b = array_full[2,:]
+                    a = np.round(a, 6)
+                    b = np.round(b, 6)
+                    assert np.array_equal(a,b)
 
             # save 
             if not aligned:
