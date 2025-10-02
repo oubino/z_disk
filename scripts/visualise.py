@@ -35,9 +35,19 @@ def load_file(file, x_name, y_name, z_name, channel_name):
 
 
 def add_pcd(
-    df, chan, x_name, y_name, z_name, chan_name, unique_chans, cmap, pcds
+    df,
+    chan,
+    x_name,
+    y_name,
+    z_name,
+    chan_name,
+    unique_chans,
+    cmap,
+    pcds,
+    spheres,
+    sphere_size,
 ):
-    """Add file as a PCD for visualisation
+    """Add a parquet file as a PCD for visualisation
 
     Args:
         df (pl.DataFrame): DataFrame containing data to visualise
@@ -49,6 +59,8 @@ def add_pcd(
         unique_chans (list): Unique channels in the dataframe
         cmap (string): Colour to visualise the channel in
         pcds (list): List of pcds that will be visualised
+        spheres (bool) : Whether to plot points as spheres
+        sphere_size (float) : Size of spheres to plot
 
     Returns:
         pcds (list): List of pcds that has been updated and will be visualised
@@ -60,16 +72,28 @@ def add_pcd(
             .select([x_name, y_name, z_name])
             .to_numpy()
         )
-        pcd.points = o3d.utility.Vector3dVector(coords.copy())
-        colour = cl.to_rgb(cmap[chan])
-        colour = np.tile(colour, (len(coords),1))
-        pcd.colors = o3d.utility.Vector3dVector(colour)
+
+        if not spheres:
+            pcd.points = o3d.utility.Vector3dVector(coords)
+            pcd.paint_uniform_color(cl.to_rgb(cmap[chan]))
+        else:
+            spheres = []
+            for point in np.asarray(coords):
+                sphere = o3d.geometry.TriangleMesh.create_sphere(radius=sphere_size)
+                sphere.translate(point)
+                sphere.paint_uniform_color(cl.to_rgb(cmap[chan]))
+                spheres.append(sphere)
+
+            # Combine all spheres into one mesh
+            pcd = spheres[0]
+            for sphere in spheres[1:]:
+                pcd += sphere
         pcds.append(pcd)
     return pcds
 
 
 class Present:
-    """Required for visualising the file"""
+    """Required for visualising the parquet file"""
 
     def __init__(self):
         self.chan_present = [True, True, True, True]
@@ -83,6 +107,8 @@ def visualise_file(
     channel_name,
     channel_labels,
     cmap=["r", "darkorange", "b", "y"],
+    spheres=False,
+    sphere_size=0.001,
 ):
     """Visualise file
 
@@ -94,7 +120,9 @@ def visualise_file(
             assumes data is 2D
         channel_name (str) : Name of the channel column in the data
         channel_labels (dict) : Dictionary mapping channel label to name
-        cmap (list) : CMAP to visualise the data"""
+        cmap (list) : CMAP to visualise the data
+        spheres (bool) : Whether to visualise as spheres
+        sphere_size (float) : Size of the spheres"""
 
     df, unique_chans = load_file(file_loc, x_name, y_name, z_name, channel_name)
 
@@ -103,8 +131,19 @@ def visualise_file(
     cmap = ["r", "darkorange", "b", "y"]
     for key in channel_labels.keys():
         pcds = add_pcd(
-            df, key, x_name, y_name, z_name, channel_name, unique_chans, cmap, pcds
+            df,
+            key,
+            x_name,
+            y_name,
+            z_name,
+            channel_name,
+            unique_chans,
+            cmap,
+            pcds,
+            spheres,
+            sphere_size,
         )
+
     visualise(pcds, None, None, None, unique_chans, channel_labels, cmap)
 
 def visualise(
@@ -184,7 +223,7 @@ def visualise(
             present.chan_present[3] = True
 
     # reverse pcds for visualisation
-    pcds.reverse()
+    # pcds.reverse()
 
     key_to_callback = {}
     key_to_callback[ord("K")] = visualise_chan_0
@@ -207,6 +246,22 @@ def visualise(
         pcds.append(clusters_to_clusters)
     if locs_to_locs is not None:
         pcds.append(locs_to_locs)
+        
+    # dbscan
+    if 0:
+        with o3d.utility.VerbosityContextManager(
+                o3d.utility.VerbosityLevel.Debug) as cm:
+            labels = np.array(
+                pcds[0].cluster_dbscan(eps=100, min_points=3, print_progress=True))
+
+        max_label = labels.max()
+        print(f"point cloud has {max_label + 1} clusters")
+        import matplotlib.pyplot as plt
+        colors = plt.get_cmap("tab20")(labels / (max_label if max_label > 0 else 1))
+        colors[labels < 0] = 0
+        pcds[0].colors = o3d.utility.Vector3dVector(colors[:, :3].copy())
+
+
     o3d.visualization.draw_geometries_with_key_callbacks(pcds, key_to_callback)
 
 def main(argv=None):

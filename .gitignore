@@ -71,3 +71,6 @@ data/
 
 # Apple
 .DS_Store
+
+# archive
+/archive
