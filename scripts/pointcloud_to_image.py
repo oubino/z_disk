@@ -24,6 +24,15 @@ def main(argv=None):
     )
 
     parser.add_argument(
+        "-e",
+        "--experiment",
+        action="store",
+        type=str,
+        help="name of the experiment",
+        required=True,
+    )
+
+    parser.add_argument(
         "-x",
         "--x_col_name",
         action="store",
@@ -110,8 +119,8 @@ def main(argv=None):
 
     args = parser.parse_args(argv)
 
-    input_folder = "data"
-    output_folder = "output"
+    input_folder = os.path.join("experiments", args.experiment, "data")
+    output_folder = os.path.join("experiments", args.experiment, "output")
 
     output_image_folder = os.path.join(output_folder, "images")
     output_datastructure_folder = os.path.join(output_folder, "datastructures")

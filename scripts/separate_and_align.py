@@ -26,6 +26,15 @@ def main(argv=None):
     )
 
     parser.add_argument(
+        "-e",
+        "--experiment",
+        action="store",
+        type=str,
+        help="name of the experiment",
+        required=True,
+    )
+
+    parser.add_argument(
         "-a",
         "--align",
         action="store_true",
@@ -34,8 +43,8 @@ def main(argv=None):
 
     args = parser.parse_args(argv)
 
-    input_folder = "output/segmented_pointclouds"
-    output_folder = "output/segmented_z_disks"
+    input_folder = os.path.join("experiments", args.experiment, "output/segmented_pointclouds")
+    output_folder = os.path.join("experiments", args.experiment, "output/segmented_z_disks")
 
     if not os.path.exists(output_folder):
         os.makedirs(output_folder)

@@ -25,14 +25,20 @@ git clone https://github.com/oubino/z_disk.git
 cd z_disks
 ```
 
-In z_disks folder place all .txt or .csv data in a folder called data/
+In experiments/ create a new folder for your experiment e.g. run_1/ 
+
+Inside this folder, place all .txt or .csv data in a folder called data/
 
 ```bash
 z_disks
 ├── README.md
-├── data
-|   ├── File_1.txt
-│   └── File_2.txt
+├── experiments
+|   ├── dummy
+│       └── test.txt
+│   └── run_1
+│       └── data
+│           ├── File_1.txt
+│           └── File_2.txt
 └── scripts
     ├── base.py
     ├── image_and_seg_to_pointcloud.py
@@ -54,6 +60,7 @@ Make sure you have activated the correct environment before running scripts
     ```
     ```shell
     The following args are required:
+        -e Name of the experiment folder (e.g. dummy)
         -x Name of the x column in the data
         -y Name of the y column in the data
         -z Name of the z column in the data
@@ -76,7 +83,7 @@ Make sure you have activated the correct environment before running scripts
     ```
 
     The following arg is required:
-        -i Path to the input parquet datastructure in the output/datastructures folder
+        -i Path to the input parquet datastructure
 
     Note on wsl2 for windows, had to use the following workaround
 
@@ -109,6 +116,11 @@ Make sure you have activated the correct environment before running scripts
     python scripts/image_and_seg_to_pointcloud.py
     ```
 
+    ```shell
+    The following args are required:
+        -e Name of the experiment folder (e.g. dummy)
+    ```
+
 5. Separate into each object
 
     - Separate the point-cloud into each object
@@ -116,6 +128,11 @@ Make sure you have activated the correct environment before running scripts
 
     ```shell
     python scripts/separate_and_align.py
+    ```
+
+    ```shell
+    The following args are required:
+        -e Name of the experiment folder (e.g. dummy)
     ```
 
     The following args are optional:

@@ -2,7 +2,7 @@
 
 Module takes in the .npy segmentation and returns datastructure with segmentation
 """
-
+import argparse
 import os
 from base import item as item_class
 import numpy as np
@@ -18,8 +18,24 @@ def main(argv=None):
 
     Raises:
         ValueError: If try to convert but already files there"""
+    
+    # parse arugments
+    parser = argparse.ArgumentParser(
+        description="Apply segmentations back to pointclouds"
+    )
 
-    folder = "output"
+    parser.add_argument(
+        "-e",
+        "--experiment",
+        action="store",
+        type=str,
+        help="name of the experiment",
+        required=True,
+    )
+
+    args = parser.parse_args(argv)
+
+    folder = os.path.join("experiments", args.experiment, "output")
     
     input_datastructure_folder = os.path.join(folder, "datastructures")
     input_segmentation_folder = os.path.join(folder, "segmentations")
