@@ -76,4 +76,6 @@ data/
 /archive
 
 # experiments
-experiments/
+experiments/*
+!experiments/dummy/
+!experiments/dummy/**
