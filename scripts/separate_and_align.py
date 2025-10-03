@@ -98,6 +98,10 @@ def main(argv=None):
                     b = np.round(b, 6)
                     assert np.array_equal(a,b)
 
+            # rearrange columns to be compatbile with PERPL
+            cols = ["x", "y", "z"] + [col for col in z_disk.columns if col not in ["x", "y", "z"]]
+            z_disk = z_disk.select(cols)          
+
             # save 
             if not aligned:
                 save_path = os.path.join(output_folder, f"{file.rstrip('.csv')}_zdisk_{index+1}.csv")

@@ -108,7 +108,9 @@ def visualise_file(
     channel_labels,
     cmap=["r", "darkorange", "b", "y"],
     spheres=False,
-    sphere_size=0.001,
+    sphere_size=0.1,
+    dbscan=False,
+    dbscan_params={},
 ):
     """Visualise file
 
@@ -144,7 +146,7 @@ def visualise_file(
             sphere_size,
         )
 
-    visualise(pcds, None, None, None, unique_chans, channel_labels, cmap)
+    visualise(pcds, None, None, None, unique_chans, channel_labels, cmap, dbscan, dbscan_params)
 
 def visualise(
     pcds,
@@ -154,6 +156,8 @@ def visualise(
     unique_chans,
     channel_labels,
     cmap,
+    dbscan,
+    dbscan_params={},
 ):
     """Visualise point cloud data
 
@@ -248,11 +252,11 @@ def visualise(
         pcds.append(locs_to_locs)
         
     # dbscan
-    if 0:
+    if dbscan:
         with o3d.utility.VerbosityContextManager(
                 o3d.utility.VerbosityLevel.Debug) as cm:
             labels = np.array(
-                pcds[0].cluster_dbscan(eps=100, min_points=3, print_progress=True))
+                pcds[0].cluster_dbscan(eps=dbscan_params["eps"], min_points=dbscan_params["min_pts"], print_progress=True))
 
         max_label = labels.max()
         print(f"point cloud has {max_label + 1} clusters")
@@ -287,16 +291,39 @@ def main(argv=None):
         required=True,
     )
 
+    parser.add_argument(
+        "-d",
+        "--dbscan",
+        nargs=2,
+        type=float,
+        help="if specified, takes two numbers: eps and min_samples",
+        default=None,
+    )
+
     args = parser.parse_args(argv)
 
-    visualise_file(
-        args.input_file,
-        "x",
-        "y",
-        "z",
-        "channel",
-        {0: "channel_0", 1: "channel_1", 2: "channel_2", 3: "channel_3"},
-    )
+    if args.dbscan is None:
+        visualise_file(
+            args.input_file,
+            "x",
+            "y",
+            "z",
+            "channel",
+            {0: "channel_0", 1: "channel_1", 2: "channel_2", 3: "channel_3"},
+            dbscan=False,
+        )
+    else:
+        dbscan_params = {"eps": args.dbscan[0], "min_pts": int(args.dbscan[1])}
+        visualise_file(
+            args.input_file,
+            "x",
+            "y",
+            "z",
+            "channel",
+            {0: "channel_0", 1: "channel_1", 2: "channel_2", 3: "channel_3"},
+            dbscan=True,
+            dbscan_params=dbscan_params,
+        )
 
 if __name__ == "__main__":
     main()

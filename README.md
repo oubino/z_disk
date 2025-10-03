@@ -45,41 +45,49 @@ z_disks
 
 Make sure you have activated the correct environment before running scripts
 
-1. pointcloud_to_image
-    - Convert each .txt/.csv file to an image
+1. Pointcloud to image 
 
-```shell
-python scripts/pointcloud_to_image.py [ARGS]
-```
-```shell
-The following args are required:
-    -x Name of the x column in the data
-    -y Name of the y column in the data
-    -z Name of the z column in the data
-    -hx Size of histogram in x direction
-    -hy Size of histogram in y direction
-    -hz Size of histogram in z direction
-    -s Delimeter separating the items - currently supported either comma (.csv) or tab (.txt)
-    -bs Specify whether sizes above should be interpreted as the number of bins or the size of each bin, should be either bins or size
-```
+    Convert each .txt/.csv file to an image
 
-The following args are optional
-    -c Name of the channel column in the data 
+    ```shell
+    python scripts/pointcloud_to_image.py [ARGS]
+    ```
+    ```shell
+    The following args are required:
+        -x Name of the x column in the data
+        -y Name of the y column in the data
+        -z Name of the z column in the data
+        -hx Size of histogram in x direction
+        -hy Size of histogram in y direction
+        -hz Size of histogram in z direction
+        -s Delimeter separating the items - currently supported either comma (.csv) or tab (.txt)
+        -bs Specify whether sizes above should be interpreted as the number of bins or the size of each bin, should be either bins or size
+    ```
 
-2. (Optional) visualise
-    - Visualise the .parquet pointcloud data
+    The following args are optional
+        -c Name of the channel column in the data 
 
-```shell
-python scripts/visualise.py [ARGS]
-```
+2. Visualise [Optional]
+    
+    Visualise the pointcloud data
 
-The following arg is required:
-    -i Path to the input parquet datastructure to be visualised
+    ```shell
+    python scripts/visualise.py [ARGS]
+    ```
+
+    The following arg is required:
+        -i Path to the input parquet datastructure in the output/datastructures folder
+
+    Note on wsl2 for windows, had to use the following workaround
+
+    ```shell
+    export XDG_SESSION_TYPE=x11
+    ```
 
 3. Ilastik segmentation
 
     1. Create an empty folder called segmentations in output folder (this is where we will save the output from Ilastik)
-    2. Open Ilastik and create a new project Other workflows > Pixel classification & Object classification
+    2. Open Ilastik and create a new project Other workflows > Pixel classification & Object classification (https://www.ilastik.org/documentation/pixelclassification/pixelclassification & https://www.ilastik.org/documentation/objects/objects)
     3. Load in the images from Output > Images
     4. If necessary to better visualise the images
         1. Right click the image and click edit properties
@@ -93,25 +101,28 @@ The following arg is required:
         d. Save in segmentations folder
         e. Repeat for each image
 
-4. image_and_seg_to_pointcloud 
+4. Generate segmented point-cloud
+
     - Combine each segmentation with the original .txt/.csv file to extract the localisations and return data in desired output format
 
-```shell
-python scripts/image_and_seg_to_pointcloud.py
-```
+    ```shell
+    python scripts/image_and_seg_to_pointcloud.py
+    ```
 
-5. separate_and_align
-    - Separate the FOV into each z-disk and optionally align using PCA
+5. Separate into each object
 
-```shell
-python scripts/separate_and_align.py
-```
+    - Separate the point-cloud into each object
+    - In our case we have an optional alignment step as well using PCA
 
-The following args are optional:
-    -a If specified then aligns each z-disk with x axis - note that distances between points are not PERFECTLY preserved but errors are very small (errors in distances ~10^-11)
+    ```shell
+    python scripts/separate_and_align.py
+    ```
+
+    The following args are optional:
+        -a If specified then aligns each z-disk with x axis - note that distances between points are not PERFECTLY preserved but errors are very small (errors in distances ~10^-11)
 
 6. (Optional) visualise
-    - Visualiase the .csv pointcloud data
+    - Visualise the .csv pointcloud data
 
 ```shell
 python scripts/visualise.py [ARGS]
@@ -120,28 +131,10 @@ python scripts/visualise.py [ARGS]
 The following arg is required:
     -i Path to the input csv to be visualised
 
-## Example on Janelia data
-
-The following details the commands run, assuming all .txt/.csv files in folder called data
-
-```shell
-python scripts/pointcloud_to_image.py -x "X Position" -y "Y Position" -z "Z Position" -hx 50 -hy 50 -hz 50 -s tab -bs size
-python scripts/visualise.py -i output/datastructures/INSERT_FILE_NAME.parquet
-```
-
-Then followed Ilastik pixel classification + object detection workflow https://www.ilastik.org/documentation/pixelclassification/pixelclassification & https://www.ilastik.org/documentation/objects/objects
-
-The segmented numpy files are placed in a output/segmentations, then the following commands are run
-
-```shell
-python scripts/image_and_seg_to_pointcloud.py
-python scripts/separate_and_align.py -a
-```
-
 ## Output
 
 Output:
-    - Folder of xyz data for each z-disk as a .csv file optionally aligned along the x axis
+    - Folder of xyz data for each object as a .csv file optionally aligned along the x axis
 
 The output directory will look as follows
 
@@ -164,3 +157,15 @@ The output directory will look as follows
 
 Each of the directories will be automatically generated apart from segmentations
 This should be generated by Ilastik or another segmentation software and the files should have the same name as the original files containing a segmentation for the image i.e. a pixel level label
+
+## Combine with PERPL
+
+For PERPL respository see: https://github.com/AlistairCurd/PERPL-Python3/tree/master
+
+1. Install perpl into z_disk environment
+
+    ```shell
+    pip install perpl
+    ```
+
+2. ...
