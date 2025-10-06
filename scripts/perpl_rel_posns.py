@@ -118,6 +118,8 @@ def main(argv=None):
         plt.legend()
         plt.show()
 
+    mean_precision_list = []
+
     for file in files:
 
         file_path = os.path.join(input_folder, file)
@@ -133,6 +135,11 @@ def main(argv=None):
         df = df.filter(
             pl.col("Group Sigma Z").str.strip_chars_start(" ").cast(pl.Float64) < args.localisation_precision_filter
         )
+
+        mean_x_precision = df.select(pl.col("Group Sigma X Pos").str.strip_chars_start(" ").cast(pl.Float64)).mean().item()
+        mean_y_precision = df.select(pl.col("Group Sigma Y Pos").str.strip_chars_start(" ").cast(pl.Float64)).mean().item()
+        mean_z_precision = df.select(pl.col("Group Sigma Z").str.strip_chars_start(" ").cast(pl.Float64)).mean().item()
+        mean_precision_list.append((mean_x_precision + mean_y_precision + mean_z_precision)/3)
 
         # Based on lines 845-910 in perpl.relative_positions
 
@@ -174,7 +181,7 @@ def main(argv=None):
     info = {
         "results_dir": os.path.join(folder, "perpl_relative_posns"),
         "short_names": False,
-        "in_file_no_extension": "all_z_disks",
+        "in_file_no_extension": f"all_z_disks_{args.localisation_precision_filter}precisionfilter",
     } 
 
     ## Plot vector component results
@@ -185,7 +192,12 @@ def main(argv=None):
     ## Save relative positions and vector components.
     xyz_filename = save_relative_positions(
         d_values, args.filter_distance, dims=3, info=info, nns = args.nearest_neighbours)
-
+    
+    file_name = xyz_filename.replace("relpos", "locprec").rstrip(".csv") + ".txt"
+    
+    np.savetxt(
+        file_name, np.atleast_1d(np.mean(mean_precision_list))
+    )
 
 if __name__ == "__main__":
     main()
