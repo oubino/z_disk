@@ -135,8 +135,10 @@ Make sure you have activated the correct environment before running scripts
         -e Name of the experiment folder (e.g. dummy)
     ```
 
+    ```shell
     The following args are optional:
         -a If specified then aligns each z-disk with x axis - note that distances between points are not PERFECTLY preserved but errors are very small (errors in distances ~10^-11)
+    ```
 
 6. (Optional) visualise
     - Visualise the .csv pointcloud data
@@ -185,4 +187,23 @@ For PERPL respository see: https://github.com/AlistairCurd/PERPL-Python3/tree/ma
     pip install perpl
     ```
 
-2. ...
+2. Extract relative positions
+
+    ```shell
+    python scripts/perpl_rel_posns.py
+    ```
+
+    ```shell
+    The following args are required:
+        -e Name of the experiment folder (e.g. dummy)
+    ```
+
+    ```shell
+    The following args are optional:
+        -f Filter distance
+        -n Number of nearest neighbours
+        -b Bin size for histogram plots
+        -p Filter out localisations with worse precision than this
+        -v Visualise the raw data AND the localisation precision
+    ```
+    
