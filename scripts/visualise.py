@@ -162,7 +162,8 @@ def visualise_file(
     )
 
     # check each point in dataframe is labelled
-    assert len(df) == len(labels)
+    if labels is not None:
+        assert len(df) == len(labels)
 
     return df, labels
 
@@ -290,11 +291,12 @@ def visualise(
         remove_outliers = input("Use DBSCAN to remove outliers? (Y) ")
         if remove_outliers == "Y":
             counter = Counter(labels)
-            assert set(counter.keys()) == {0, -1}  # check only 1 cluster
+            #assert set(counter.keys()) == {0, -1}  # check only 1 cluster
             assert (
-                counter[0] / (counter[0] + counter[-1]) > 0.95
+                counter[0] / sum(counter.values()) > 0.95
             )  # check >95% points in cluster
-            print(f"Visualising with {counter[-1]} outlier point(s) in RED")
+            labels[labels != 0] = -1
+            print(f"Visualising with {sum(counter.values()) - counter[0]} outlier point(s) in RED")
             colors = np.array([[0, 0, 0, 1] for _ in labels])
             colors[labels < 0] = [1, 0, 0, 1]
         else:
