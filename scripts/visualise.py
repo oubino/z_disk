@@ -305,6 +305,8 @@ def visualise(
             colors = plt.get_cmap("tab20")(labels / (max_label if max_label > 0 else 1))
             colors[labels < 0] = 0
         pcds[0].colors = o3d.utility.Vector3dVector(colors[:, :3].copy())
+    else:
+        remove_outliers = False
 
     o3d.visualization.draw_geometries_with_key_callbacks(pcds, key_to_callback)
 
