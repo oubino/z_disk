@@ -7,6 +7,7 @@ import argparse
 import os
 import shutil
 
+
 def main(argv=None):
     """Main script for the module with variable arguments
 
@@ -17,9 +18,7 @@ def main(argv=None):
         ValueError: If try to convert but already files there"""
 
     # parse arugments
-    parser = argparse.ArgumentParser(
-        description="Clean up after denoising"
-    )
+    parser = argparse.ArgumentParser(description="Clean up after denoising")
 
     parser.add_argument(
         "-e",
@@ -32,8 +31,12 @@ def main(argv=None):
 
     args = parser.parse_args(argv)
 
-    input_folder = os.path.join("experiments", args.experiment, "output/segmented_z_disks")
-    output_folder = os.path.join("experiments", args.experiment, "output/segmented_z_disks_denoised")
+    input_folder = os.path.join(
+        "experiments", args.experiment, "output/segmented_z_disks"
+    )
+    output_folder = os.path.join(
+        "experiments", args.experiment, "output/segmented_z_disks_denoised"
+    )
 
     if not os.path.exists(output_folder):
         raise ValueError("No denoising data")
@@ -43,7 +46,7 @@ def main(argv=None):
     denoised_files_compare = [f.replace("_denoised", "") for f in denoised_files]
 
     # Check that all files in denoising folder also in input folder
-    assert(len([f for f in denoised_files_compare if f not in files]) == 0)
+    assert len([f for f in denoised_files_compare if f not in files]) == 0
 
     # Print out files in denoising folder and in input folder
     print("Files that have been denoised: ", denoised_files)
@@ -60,6 +63,7 @@ def main(argv=None):
             output_file = os.path.join(output_folder, file)
 
             shutil.copyfile(input_file, output_file)
+
 
 if __name__ == "__main__":
     main()
