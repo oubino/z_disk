@@ -2,6 +2,8 @@
 
 # Take in datastructure and visualise as points or as images
 import argparse
+from collections import Counter
+import os
 
 import matplotlib.colors as cl
 import numpy as np
@@ -146,7 +148,12 @@ def visualise_file(
             sphere_size,
         )
 
-    visualise(pcds, None, None, None, unique_chans, channel_labels, cmap, dbscan, dbscan_params)
+    labels = visualise(pcds, None, None, None, unique_chans, channel_labels, cmap, dbscan, dbscan_params)
+
+    # check each point in dataframe is labelled
+    assert len(df) == len(labels)
+    
+    return df, labels
 
 def visualise(
     pcds,
@@ -260,13 +267,32 @@ def visualise(
 
         max_label = labels.max()
         print(f"point cloud has {max_label + 1} clusters")
-        import matplotlib.pyplot as plt
-        colors = plt.get_cmap("tab20")(labels / (max_label if max_label > 0 else 1))
-        colors[labels < 0] = 0
+        assert len(pcds) == 1 # only works for one channel
+
+        remove_outliers = input("Use DBSCAN to remove outliers? (Y) ")
+        if remove_outliers == "Y":
+            counter = Counter(labels)
+            assert set(counter.keys()) == {0,-1} # check only 1 cluster
+            assert counter[0]/(counter[0] + counter[-1]) > 0.95 # check >95% points in cluster
+            print(f"Visualising with {counter[-1]} outlier point(s) in RED")
+            colors = np.array([[0,0,0,1] for _ in labels])
+            colors[labels < 0] = [1,0,0,1]
+        else:
+            import matplotlib.pyplot as plt
+            colors = plt.get_cmap("tab20")(labels / (max_label if max_label > 0 else 1))
+            colors[labels < 0] = 0
         pcds[0].colors = o3d.utility.Vector3dVector(colors[:, :3].copy())
 
-
     o3d.visualization.draw_geometries_with_key_callbacks(pcds, key_to_callback)
+
+    if remove_outliers == "Y":
+        remove_outliers = input("Are you happy with the points in red (outliers) being removed? (Y) ")
+        if remove_outliers == "Y":
+            return labels
+        else:
+            return None
+    else:
+        return None
 
 def main(argv=None):
     """Main script for the module with variable arguments
@@ -314,7 +340,7 @@ def main(argv=None):
         )
     else:
         dbscan_params = {"eps": args.dbscan[0], "min_pts": int(args.dbscan[1])}
-        visualise_file(
+        df, labels = visualise_file(
             args.input_file,
             "x",
             "y",
@@ -324,6 +350,30 @@ def main(argv=None):
             dbscan=True,
             dbscan_params=dbscan_params,
         )
+        if labels is not None: # then we are going to remove the noise points...
+            df = df.with_columns(pl.Series(name="noise", values=labels))
+            df_without_noise = df.filter(pl.col("noise") != -1).drop("noise")
+            if args.input_file.endswith('.parquet'):
+                og_df = pl.read_parquet(args.input_file)
+            elif args.input_file.endswith('.csv'):
+                og_df = pl.read_csv(args.input_file)
+
+            output_df = og_df.join(df_without_noise, how="semi", on=["x", "y", "z", "channel"])
+
+            # check output df
+            assert len(output_df) == len(df_without_noise)
+            assert output_df.columns == og_df.columns
+
+            # export cleaned df
+            filename, file_extension = os.path.splitext(args.input_file)
+            output_folder = os.path.join("/".join(filename.split("/")[:-2]), "segmented_z_disks_denoised")
+            if not os.path.exists(output_folder):
+                os.makedirs(output_folder)
+            output_file = filename.replace("/segmented_z_disks/", "/segmented_z_disks_denoised/") + "_denoised" + file_extension
+            if file_extension == ".csv":
+                output_df.write_csv(output_file)
+            elif file_extension == ".parquet":
+                output_df.write_parquet(output_file)
 
 if __name__ == "__main__":
     main()

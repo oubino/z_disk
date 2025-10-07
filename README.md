@@ -84,6 +84,7 @@ Make sure you have activated the correct environment before running scripts
 
     The following arg is required:
         -i Path to the input parquet datastructure
+        -d run DBSCAN with epsilon and min_samples, specificed in that order, separated by a space  
 
     Note on wsl2 for windows, had to use the following workaround
 
@@ -140,15 +141,32 @@ Make sure you have activated the correct environment before running scripts
         -a If specified then aligns each z-disk with x axis - note that distances between points are not PERFECTLY preserved but errors are very small (errors in distances ~10^-11)
     ```
 
-6. (Optional) visualise
-    - Visualise the .csv pointcloud data
+6. Visualise
 
-```shell
-python scripts/visualise.py [ARGS]
-```
+    - Visualise the .csv pointcloud data and optionally denoise (remove outliers) using DBSCAN
+    - Note limitation of this is that have to manually go through the list of input files visualise each and decide [could instead script this]
 
-The following arg is required:
-    -i Path to the input csv to be visualised
+    ```shell
+    python scripts/visualise.py [ARGS]
+    ```
+
+    The following arg is required:
+        -i Path to the input csv to be visualised
+        -d run DBSCAN with epsilon and min_samples, specificed in that order, separated by a space 
+
+7. Clean up denoising
+
+    - Clean up after the visualising and denoising stage
+    - Identifies files in segmented_z_disks/ but not in segmented_z_disks_denoised/ and copies across
+
+    ```shell
+    python scripts/clean_up_denoising.py
+    ```
+
+    ```shell
+    The following args are required:
+        -e Name of the experiment folder (e.g. dummy)
+    ```
 
 ## Output
 

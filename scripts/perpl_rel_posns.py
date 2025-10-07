@@ -78,7 +78,7 @@ def main(argv=None):
 
     folder = os.path.join("experiments", args.experiment, "output")
     
-    input_folder = os.path.join(folder, "segmented_z_disks")
+    input_folder = os.path.join(folder, "segmented_z_disks_denoised")
     output_folder = os.path.join(folder, "perpl_relative_posns")
 
     if not os.path.exists(output_folder):
