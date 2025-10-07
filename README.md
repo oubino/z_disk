@@ -206,4 +206,8 @@ For PERPL respository see: https://github.com/AlistairCurd/PERPL-Python3/tree/ma
         -p Filter out localisations with worse precision than this
         -v Visualise the raw data AND the localisation precision
     ```
-    
+
+3. Modelling
+
+
+    NOTE X and Y are flipped compared to work by A.C.
