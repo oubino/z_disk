@@ -292,11 +292,16 @@ def visualise(
         if remove_outliers == "Y":
             counter = Counter(labels)
             #assert set(counter.keys()) == {0, -1}  # check only 1 cluster
-            assert (
-                counter[0] / sum(counter.values()) > 0.95
-            )  # check >95% points in cluster
-            labels[labels != 0] = -1
-            print(f"Visualising with {sum(counter.values()) - counter[0]} outlier point(s) in RED")
+            max_value = max(counter, key=counter.get)
+            if counter[max_value] / sum(counter.values()) > 0.95:  # check >95% points in cluster
+                labels[labels != max_value] = -1
+                num_outliers = sum(counter.values()) - counter[max_value]
+            else:
+                # ... multiple clusters, so try just removing the smallest one
+                outlier_value = min(counter, key=counter.get)
+                labels[labels == outlier_value] = -1
+                num_outliers = counter[outlier_value]
+            print(f"Visualising with {num_outliers} outlier point(s) in RED")
             colors = np.array([[0, 0, 0, 1] for _ in labels])
             colors[labels < 0] = [1, 0, 0, 1]
         else:
