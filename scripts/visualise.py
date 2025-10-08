@@ -300,7 +300,7 @@ def visualise(
                 # ... multiple clusters, so try just removing the smallest one
                 outlier_value = min(counter, key=counter.get)
                 labels[labels == outlier_value] = -1
-                num_outliers = counter[outlier_value]
+                num_outliers = sum(labels == -1)
             print(f"Visualising with {num_outliers} outlier point(s) in RED")
             colors = np.array([[0, 0, 0, 1] for _ in labels])
             colors[labels < 0] = [1, 0, 0, 1]
