@@ -31,9 +31,9 @@ from perpl.io import plotting
 
 # ## Variables which we will read in using argparse
 
-actn_affimer_relpos_path = r"/home/oliver/smlm_cloud/janelia_analysis/experiments/02_10_25_test/output/perpl_relative_posns/all_z_disks_PERPL-relpos_100.0filter.csv" # path to relative posn data
+actn_affimer_relpos_path = r"/home/oliver/smlm_cloud/janelia_analysis/experiments/ACTN2/output/perpl_relative_posns/all_z_disks_15.0precisionfilter_PERPL-relpos_150.0filter.csv" # path to relative posn data
 fitlength = 100. # standard max distance over which to plot distances and fit models
-loc_prec_path = r"/home/oliver/smlm_cloud/janelia_analysis/experiments/02_10_25_test/output/perpl_relative_posns/all_z_disks_10.0precisionfilter_PERPL-locprec_100.0filter.txt"
+loc_prec_path = r"/home/oliver/smlm_cloud/janelia_analysis/experiments/ACTN2/output/perpl_relative_posns/all_z_disks_15.0precisionfilter_PERPL-locprec_150.0filter.txt"
 transverse_limit = 10. # This is the YZ-distance limit for X-distances to include
 
 # ## Load in average estimated localisation precision
