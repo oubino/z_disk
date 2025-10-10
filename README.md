@@ -182,6 +182,31 @@ Make sure you have activated the correct environment before running scripts
         -p Filter out localisations with precision larger (i.e. worse) than this value
     ```
 
+9. Visualise files to check
+
+    - Note limitation of this is that have to manually go through the list of input files visualise each and decide [could instead script this]
+
+    ```shell
+    python scripts/visualise.py [ARGS]
+    ```
+
+    The following arg is required:
+        -i Path to the input file to be visualised
+
+10. Copy across checked files
+
+    - Copy across files that have been chekced
+
+    ```shell
+    python scripts/remove_files_after_visualisation.py [ARGS]
+    ```
+
+    ```shell
+    The following args are required:
+        -e Name of the experiment folder (e.g. dummy)
+        -i Input files to copy across
+    ```
+
 ## Output
 
 Output:
