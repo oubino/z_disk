@@ -79,3 +79,6 @@ data/
 experiments/*
 !experiments/dummy/
 !experiments/dummy/**
+
+# notebooks
+*.ipynb

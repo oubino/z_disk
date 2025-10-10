@@ -28,13 +28,18 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from perpl.modelling import modelling_general, zdisk_modelling, zdisk_plots
 from perpl.io import plotting
+from scipy.signal import find_peaks
 
 # ## Variables which we will read in using argparse
 
-actn_affimer_relpos_path = r"/home/oliver/smlm_cloud/janelia_analysis/experiments/ACTN2/output/perpl_relative_posns/all_z_disks_15.0precisionfilter_PERPL-relpos_150.0filter.csv" # path to relative posn data
 fitlength = 100. # standard max distance over which to plot distances and fit models
-loc_prec_path = r"/home/oliver/smlm_cloud/janelia_analysis/experiments/ACTN2/output/perpl_relative_posns/all_z_disks_15.0precisionfilter_PERPL-locprec_150.0filter.txt"
-transverse_limit = 10. # This is the YZ-distance limit for X-distances to include
+transverse_limit = 20. # This is the YZ-distance limit for X-distances to include
+precision = 5.0
+numberoflocalisations = 10
+
+loc_prec_path = rf"/home/oliver/smlm_cloud/janelia_analysis/experiments/ACTN2/output/perpl_relative_posns/all_z_disks_{precision}precisionfilter_{numberoflocalisations}numberoflocalisations_PERPL-locprec_150.0filter.txt"
+actn_affimer_relpos_path = rf"/home/oliver/smlm_cloud/janelia_analysis/experiments/ACTN2/output/perpl_relative_posns/all_z_disks_{precision}precisionfilter_{numberoflocalisations}numberoflocalisations_PERPL-relpos_150.0filter.csv" # path to relative posn data
+
 
 # ## Load in average estimated localisation precision
 # This is the mean after filtering for localisation precision
@@ -70,6 +75,8 @@ axial_distances = zdisk_modelling.getaxialseparations_no_smoothing(
     )
 axial_distances = zdisk_modelling.remove_duplicates(axial_distances)
 
+print("Number of axial distances: ", len(axial_distances))
+
 # ## Get the 1-nm bin histogram data
 # Up to distance = fitlength
 
@@ -99,6 +106,9 @@ axial_rpd = plotting.estimate_rpd_churchman_1d(
     combined_precision=(np.sqrt(2) * loc_precision)
 )
 plt.plot(calculation_points, axial_rpd)
+
+peaks, _ = find_peaks(axial_rpd, height=0)
+print(peaks)
 
 # ## Choose axial model:
 
