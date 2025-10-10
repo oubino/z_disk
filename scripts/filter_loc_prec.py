@@ -6,6 +6,7 @@ import pandas as pd
 import polars as pl
 import seaborn as sns
 
+
 def main(argv=None):
     """Main script for the module with variable arguments
 
@@ -72,36 +73,40 @@ def main(argv=None):
     y_prec = [float(y.lstrip(" ")) for y in y_prec]
     z_prec = [float(z.lstrip(" ")) for z in z_prec]
 
-    pd_df = pd.DataFrame({
-        "X (nm)": x_prec,
-        "Y (nm)": y_prec,
-        "Z (nm)": z_prec,
-    })
+    pd_df = pd.DataFrame(
+        {
+            "X (nm)": x_prec,
+            "Y (nm)": y_prec,
+            "Z (nm)": z_prec,
+        }
+    )
 
     # Use Arial font and set global font sizes
-    plt.rcParams.update({
-        "axes.titlesize": 16,      # title size
-        "axes.labelsize": 14,      # x/y label size
-        "xtick.labelsize": 12,     # x tick label size
-        "ytick.labelsize": 12,     # y tick label size
-        "legend.fontsize": 12,     # legend label size
-    })
+    plt.rcParams.update(
+        {
+            "axes.titlesize": 16,  # title size
+            "axes.labelsize": 14,  # x/y label size
+            "xtick.labelsize": 12,  # x tick label size
+            "ytick.labelsize": 12,  # y tick label size
+            "legend.fontsize": 12,  # legend label size
+        }
+    )
 
-    plt.figure(figsize=(10,6))
+    plt.figure(figsize=(10, 6))
     plot = sns.histplot(
-            data=pd_df, 
-            element="step", 
-            stat="count", 
-            )
+        data=pd_df,
+        element="step",
+        stat="count",
+    )
 
     legend = plot.get_legend()
     legend.set_title(None)
-    plt.xlim(0,50)
-    plt.xticks([0,5,10,15,20,25,30,35,40,45,50])
+    plt.xlim(0, 50)
+    plt.xticks([0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50])
     plt.xlabel("Localisation precision")
     plt.ylabel("Localisation count")
     hist_loc = os.path.join(output_folder, "loc_prec_histogram.svg")
-    plt.savefig(hist_loc, bbox_inches='tight', transparent=True)
+    plt.savefig(hist_loc, bbox_inches="tight", transparent=True)
 
     print("Mean precision (pre-filtering)")
     print(pd_df.mean())
@@ -115,7 +120,9 @@ def main(argv=None):
     output_locs = 0
 
     # change output folder so can save files
-    output_folder = os.path.join(output_folder, f"{args.localisation_precision_filter}nm_filter")
+    output_folder = os.path.join(
+        output_folder, f"{args.localisation_precision_filter}nm_filter"
+    )
     if not os.path.exists(output_folder):
         os.makedirs(output_folder)
 
@@ -163,7 +170,9 @@ def main(argv=None):
         )
 
         if len(df) > 0:
-            mean_precision_list.append((mean_x_precision + mean_y_precision + mean_z_precision) / 3)
+            mean_precision_list.append(
+                (mean_x_precision + mean_y_precision + mean_z_precision) / 3
+            )
             output_locs += len(df)
             df.write_csv(os.path.join(output_folder, file))
         else:
@@ -174,7 +183,8 @@ def main(argv=None):
     print("Dropped files: ", dropped_files)
     print("Number of dropped files: ", len(dropped_files))
     print("Number of retained files: ", len(files) - len(dropped_files))
-    print("% of localisations kept: ", 100*output_locs/input_locs)
+    print("% of localisations kept: ", 100 * output_locs / input_locs)
+
 
 if __name__ == "__main__":
     main()

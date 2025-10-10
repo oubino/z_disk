@@ -72,20 +72,28 @@ def main(argv=None):
 
     folder = os.path.join("experiments", args.experiment, "output")
 
-    input_folder = os.path.join(folder, "segmented_z_disks_denoised_filtered_vischecked")
+    input_folder = os.path.join(
+        folder, "segmented_z_disks_denoised_filtered_vischecked"
+    )
     output_folder = os.path.join(folder, "perpl_relative_posns")
 
     if not os.path.exists(output_folder):
         os.makedirs(output_folder)
 
     # input folder
-    loc_prec_folders = [os.path.join(input_folder, x) for x in os.listdir(input_folder) if os.path.isdir(os.path.join(input_folder, x))]
+    loc_prec_folders = [
+        os.path.join(input_folder, x)
+        for x in os.listdir(input_folder)
+        if os.path.isdir(os.path.join(input_folder, x))
+    ]
     if len(loc_prec_folders) == 0:
         raise ValueError("No input folders")
 
     for input_folder in loc_prec_folders:
 
-        localisation_precision_filter = input_folder.split("/")[-1].replace("nm_filter", "")
+        localisation_precision_filter = input_folder.split("/")[-1].replace(
+            "nm_filter", ""
+        )
 
         print("Input folder: ", input_folder)
         print("Localisation precision filter: ", localisation_precision_filter, "nm")
@@ -109,14 +117,18 @@ def main(argv=None):
 
             mean_x_precision = (
                 df.select(
-                    pl.col("Group Sigma X Pos").str.strip_chars_start(" ").cast(pl.Float64)
+                    pl.col("Group Sigma X Pos")
+                    .str.strip_chars_start(" ")
+                    .cast(pl.Float64)
                 )
                 .mean()
                 .item()
             )
             mean_y_precision = (
                 df.select(
-                    pl.col("Group Sigma Y Pos").str.strip_chars_start(" ").cast(pl.Float64)
+                    pl.col("Group Sigma Y Pos")
+                    .str.strip_chars_start(" ")
+                    .cast(pl.Float64)
                 )
                 .mean()
                 .item()
@@ -128,7 +140,7 @@ def main(argv=None):
                 .mean()
                 .item()
             )
-        
+
             # Based on lines 845-910 in perpl.relative_positions
 
             xyz_values = df[["x", "y", "z"]].to_numpy()
@@ -138,7 +150,11 @@ def main(argv=None):
                 fig = plt.figure()
                 ax = fig.add_subplot(projection="3d")
                 ax.scatter(
-                    xyz_values[:, 0], xyz_values[:, 1], xyz_values[:, 2], s=1, marker="x"
+                    xyz_values[:, 0],
+                    xyz_values[:, 1],
+                    xyz_values[:, 2],
+                    s=1,
+                    marker="x",
                 )
                 ax.set_xlabel("X [nm]")
                 ax.set_ylabel("Y [nm]")
@@ -156,7 +172,9 @@ def main(argv=None):
             if len(d_values) > 0:
                 d_values = get_vectors(d_values, dims=3)
                 d_values_list.append(d_values)
-                mean_precision_list.append((mean_x_precision + mean_y_precision + mean_z_precision) / 3)
+                mean_precision_list.append(
+                    (mean_x_precision + mean_y_precision + mean_z_precision) / 3
+                )
                 output_locs += len(df)
             else:
                 print(f"No distances within filter for {file}")
@@ -164,7 +182,11 @@ def main(argv=None):
 
         d_values = np.concatenate(d_values_list, axis=0)
 
-        results_dir = os.path.join(folder, "perpl_relative_posns", f"{args.filter_distance}filterdistance_{localisation_precision_filter}precisionfilter")
+        results_dir = os.path.join(
+            folder,
+            "perpl_relative_posns",
+            f"{args.filter_distance}filterdistance_{localisation_precision_filter}precisionfilter",
+        )
 
         if not os.path.exists(results_dir):
             os.makedirs(results_dir)
@@ -189,7 +211,11 @@ def main(argv=None):
 
         ## Save relative positions and vector components.
         xyz_filename = save_relative_positions(
-            d_values, args.filter_distance, dims=3, info=info, nns=args.nearest_neighbours
+            d_values,
+            args.filter_distance,
+            dims=3,
+            info=info,
+            nns=args.nearest_neighbours,
         )
 
         file_name = xyz_filename.replace("relpos", "locprec").rstrip(".csv") + ".txt"
@@ -201,7 +227,8 @@ def main(argv=None):
         print("Dropped files: ", dropped_files)
         print("Number of dropped files: ", len(dropped_files))
         print("Number of retained files: ", len(files) - len(dropped_files))
-        print("% of localisations kept: ", 100*output_locs/input_locs)
+        print("% of localisations kept: ", 100 * output_locs / input_locs)
+
 
 if __name__ == "__main__":
     main()

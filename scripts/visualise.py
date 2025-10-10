@@ -291,9 +291,11 @@ def visualise(
         remove_outliers = input("Use DBSCAN to remove outliers? (Y) ")
         if remove_outliers == "Y":
             counter = Counter(labels)
-            #assert set(counter.keys()) == {0, -1}  # check only 1 cluster
+            # assert set(counter.keys()) == {0, -1}  # check only 1 cluster
             max_value = max(counter, key=counter.get)
-            if counter[max_value] / sum(counter.values()) > 0.95:  # check >95% points in cluster
+            if (
+                counter[max_value] / sum(counter.values()) > 0.95
+            ):  # check >95% points in cluster
                 labels[labels != max_value] = -1
                 num_outliers = sum(counter.values()) - counter[max_value]
             else:
