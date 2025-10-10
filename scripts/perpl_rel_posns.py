@@ -32,6 +32,15 @@ def main(argv=None):
     )
 
     parser.add_argument(
+        "-lf",
+        "--localisation_filter",
+        action="store",
+        type=int,
+        help="ensure each point cloud has over this number of localisations",
+        default=100,
+    )
+
+    parser.add_argument(
         "-f",
         "--filter_distance",
         action="store",
@@ -113,6 +122,11 @@ def main(argv=None):
 
             df = pl.read_csv(file_path)
 
+            if len(df) < args.localisation_filter:
+                print(f"Insufficient localisations for file {file}")
+                dropped_files.append(file)
+                continue
+
             input_locs += len(df)
 
             mean_x_precision = (
@@ -180,54 +194,60 @@ def main(argv=None):
                 print(f"No distances within filter for {file}")
                 dropped_files.append(file)
 
-        d_values = np.concatenate(d_values_list, axis=0)
+        if not len(d_values_list) == 0:
 
-        results_dir = os.path.join(
-            folder,
-            "perpl_relative_posns",
-            f"{args.filter_distance}filterdistance_{localisation_precision_filter}precisionfilter",
-        )
+            d_values = np.concatenate(d_values_list, axis=0)
 
-        if not os.path.exists(results_dir):
-            os.makedirs(results_dir)
+            results_dir = os.path.join(
+                folder,
+                "perpl_relative_posns",
+                f"{args.filter_distance}filterdistance_{localisation_precision_filter}precisionfilter_{args.localisation_filter}numberoflocalisations",
+            )
 
-        info = {
-            "results_dir": results_dir,
-            "short_names": False,
-            "in_file_no_extension": f"all_z_disks_{localisation_precision_filter}precisionfilter",
-        }
+            if not os.path.exists(results_dir):
+                os.makedirs(results_dir)
 
-        ## Plot vector component results
-        plotting.plot_histograms(
-            d_values,
-            dims=3,
-            filter_distance=args.filter_distance,
-            info=info,
-            binsize=args.bin_size,
-        )
+            info = {
+                "results_dir": results_dir,
+                "short_names": False,
+                "in_file_no_extension": f"all_z_disks_{localisation_precision_filter}precisionfilter_{args.localisation_filter}numberoflocalisations",
+            }
 
-        # change so relative positions files saved dir higher than hists
-        info["results_dir"] = results_dir = os.path.join(folder, "perpl_relative_posns")
+            ## Plot vector component results
+            plotting.plot_histograms(
+                d_values,
+                dims=3,
+                filter_distance=args.filter_distance,
+                info=info,
+                binsize=args.bin_size,
+            )
 
-        ## Save relative positions and vector components.
-        xyz_filename = save_relative_positions(
-            d_values,
-            args.filter_distance,
-            dims=3,
-            info=info,
-            nns=args.nearest_neighbours,
-        )
+            # change so relative positions files saved dir higher than hists
+            info["results_dir"] = results_dir = os.path.join(folder, "perpl_relative_posns")
 
-        file_name = xyz_filename.replace("relpos", "locprec").rstrip(".csv") + ".txt"
+            ## Save relative positions and vector components.
+            xyz_filename = save_relative_positions(
+                d_values,
+                args.filter_distance,
+                dims=3,
+                info=info,
+                nns=args.nearest_neighbours,
+            )
 
-        print("Mean precision (after filtering): ", np.mean(mean_precision_list))
+            file_name = xyz_filename.replace("relpos", "locprec").rstrip(".csv") + ".txt"
 
-        np.savetxt(file_name, np.atleast_1d(np.mean(mean_precision_list)))
+            print("Mean precision (after filtering): ", np.mean(mean_precision_list))
 
-        print("Dropped files: ", dropped_files)
-        print("Number of dropped files: ", len(dropped_files))
-        print("Number of retained files: ", len(files) - len(dropped_files))
-        print("% of localisations kept: ", 100 * output_locs / input_locs)
+            np.savetxt(file_name, np.atleast_1d(np.mean(mean_precision_list)))
+
+            print("Dropped files: ", dropped_files)
+            print("Number of dropped files: ", len(dropped_files))
+            print("Number of retained files: ", len(files) - len(dropped_files))
+            print("% of localisations kept: ", 100 * output_locs / input_locs)
+
+        else:
+
+            print("No output files")
 
 
 if __name__ == "__main__":

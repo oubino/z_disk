@@ -258,6 +258,7 @@ For PERPL respository see: https://github.com/AlistairCurd/PERPL-Python3/tree/ma
     ```shell
     The following args are optional:
         -f Filter distance
+        -lf Filter by number of localisations
         -n Number of nearest neighbours
         -b Bin size for histogram plots
         -v Visualise the raw data AND the localisation precision
