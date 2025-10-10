@@ -168,6 +168,20 @@ Make sure you have activated the correct environment before running scripts
         -e Name of the experiment folder (e.g. dummy)
     ```
 
+8. Filter by localisation precision
+
+    - Filter out localisations with poor localisation precision
+
+    ```shell
+    python scripts/filter_loc_prec.py
+    ```
+
+    ```shell
+    The following args are required:
+        -e Name of the experiment folder (e.g. dummy)
+        -p Filter out localisations with precision larger (i.e. worse) than this value
+    ```
+
 ## Output
 
 Output:
@@ -221,7 +235,6 @@ For PERPL respository see: https://github.com/AlistairCurd/PERPL-Python3/tree/ma
         -f Filter distance
         -n Number of nearest neighbours
         -b Bin size for histogram plots
-        -p Filter out localisations with worse precision than this
         -v Visualise the raw data AND the localisation precision
     ```
 
