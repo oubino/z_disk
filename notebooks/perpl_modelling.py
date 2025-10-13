@@ -32,10 +32,11 @@ from scipy.signal import find_peaks
 
 # ## Variables which we will read in using argparse
 
-fitlength = 100. # standard max distance over which to plot distances and fit models
-transverse_limit = 20. # This is the YZ-distance limit for X-distances to include
+fitlength = 120. # standard max distance over which to plot distances and fit models
+transverse_limit = 200. # This is the YZ-distance limit for X-distances to include
 precision = 5.0
 numberoflocalisations = 10
+bin_size = 4
 
 loc_prec_path = rf"/home/oliver/smlm_cloud/janelia_analysis/experiments/ACTN2/output/perpl_relative_posns/all_z_disks_{precision}precisionfilter_{numberoflocalisations}numberoflocalisations_PERPL-locprec_150.0filter.txt"
 actn_affimer_relpos_path = rf"/home/oliver/smlm_cloud/janelia_analysis/experiments/ACTN2/output/perpl_relative_posns/all_z_disks_{precision}precisionfilter_{numberoflocalisations}numberoflocalisations_PERPL-relpos_150.0filter.csv" # path to relative posn data
@@ -82,7 +83,9 @@ print("Number of axial distances: ", len(axial_distances))
 
 hist_values, bin_edges = zdisk_plots.plot_distance_hist(
     axial_distances,
-    fitlength
+    fitlength,
+    bin_size,
+    transverse_limit,
     )
 bin_centres = (bin_edges[0:(len(bin_edges) - 1)]
             + bin_edges[1:]
@@ -94,7 +97,8 @@ bin_centres = (bin_edges[0:(len(bin_edges) - 1)]
 kde_x_values, kde = zdisk_plots.plot_distance_kde(
     axial_distances,
     loc_precision,
-    100.
+    fitlength,
+    transverse_limit,
     )
 
 # ## Calculate the axial RPD with smoothing for Churchman 1D function
@@ -138,6 +142,7 @@ print(axial_model_with_info.param_bounds)
 fig, axes = zdisk_plots.plot_distance_hist_and_fit(
     axial_distances,
     fitlength,
+    bin_size,
     params_optimised,
     params_covar,
     axial_model_with_info
@@ -150,6 +155,7 @@ fig, axes = zdisk_plots.plot_distance_hist_and_fit(
 zdisk_plots.plot_distance_hist_and_fit(
     axial_distances,
     fitlength,
+    bin_size,
     params_optimised,
     params_covar,
     axial_model_with_info,
@@ -182,7 +188,7 @@ zdisk_plots.plot_model_components_4peaks_fixed_peak_ratio(
 
 # +
 # This is the YZ-distance limit for X-distances to include:
-axial_limit = 10.
+axial_limit = 200.
 print(relpos.shape)
 
 trans_distances = zdisk_modelling.get_transverse_separations(
@@ -195,13 +201,13 @@ trans_distances = zdisk_modelling.remove_duplicates(trans_distances)
 
 # ## Choose analysis lengthscale for transverse distance
 
-fitlength = 50.
+fitlength = 150.
 
-hist_1nm_bins = plt.hist(trans_distances, bins=np.arange(fitlength + 1.))
+hist_1nm_bins = plt.hist(trans_distances, bins=np.arange(0, fitlength + 1., bin_size))
 
 # ## Estimate RPD using Churchman's function
 
-fitlength = 50.
+fitlength = 150.
 calculation_points = np.arange(fitlength + 1.)
 combined_precision= np.sqrt(2) * loc_precision
 transverse_rpd = plotting.estimate_rpd_churchman_2d(
@@ -211,6 +217,9 @@ transverse_rpd = plotting.estimate_rpd_churchman_2d(
 )
 plt.plot(calculation_points, transverse_rpd)
 
+peaks, _ = find_peaks(transverse_rpd, height=0)
+print(peaks)
+
 # ## Normalise for increasing search circle with increasing distance
 
 normalised_transverse_rpd = transverse_rpd[calculation_points > 0.] / calculation_points[calculation_points > 0.]
@@ -219,7 +228,12 @@ plt.plot(norm_rpd_calculation_points, normalised_transverse_rpd)
 
 # ### 1 nm-bin  histogram result for comparison
 
-plt.plot(hist_1nm_bins[1][0:-1] + 0.5, hist_1nm_bins[0]/(hist_1nm_bins[1][0:-1] + 0.5))
+bin_values, bin_edges, _ = hist_1nm_bins #=hist_1nm_bins[0]/(hist_1nm_bins[1][0:-1] + 0.5)
+bin_centres = (bin_edges[0:(len(bin_edges) - 1)]
+            + bin_edges[1:]
+            ) / 2
+
+plt.plot(bin_centres, bin_values/bin_centres)
 
 # ### Optional save/load to save time
 
