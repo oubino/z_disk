@@ -82,6 +82,9 @@ Make sure you have activated the correct environment before running scripts
     The following arg is required:
 
         -i Path to the input parquet datastructure
+    
+    The following args is optional:
+
         -d run DBSCAN with epsilon and min_samples, specificed in that order, separated by a space  
 
     Note on wsl2 for windows, had to use the following workaround
