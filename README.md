@@ -135,8 +135,11 @@ Make sure you have activated the correct environment before running scripts
 
     The following args are optional:
 
-        -a If specified then aligns each z-disk with x axis - note that distances between points are not PERFECTLY preserved but errors are very small (errors in distances ~10^-11)
-
+        -a If specified then aligns each z-disk with x axis
+        
+    Alignment is via PCA. 
+    Also note that distances between points are not PERFECTLY preserved during alignment.
+    However, errors are very small (errors in distances ~10^-11)
 
 6. Visualise the .csv pointcloud data and optionally denoise (remove outliers) using DBSCAN
 
