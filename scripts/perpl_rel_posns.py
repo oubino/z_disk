@@ -223,7 +223,9 @@ def main(argv=None):
             )
 
             # change so relative positions files saved dir higher than hists
-            info["results_dir"] = results_dir = os.path.join(folder, "perpl_relative_posns")
+            info["results_dir"] = results_dir = os.path.join(
+                folder, "perpl_relative_posns"
+            )
 
             ## Save relative positions and vector components.
             xyz_filename = save_relative_positions(
@@ -234,7 +236,9 @@ def main(argv=None):
                 nns=args.nearest_neighbours,
             )
 
-            file_name = xyz_filename.replace("relpos", "locprec").rstrip(".csv") + ".txt"
+            file_name = (
+                xyz_filename.replace("relpos", "locprec").rstrip(".csv") + ".txt"
+            )
 
             print("Mean precision (after filtering): ", np.mean(mean_precision_list))
 

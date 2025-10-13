@@ -2,6 +2,7 @@ import argparse
 import os
 import shutil
 
+
 def main(argv=None):
     """Main script for the module with variable arguments
 
@@ -37,7 +38,9 @@ def main(argv=None):
     folder = os.path.join("experiments", args.experiment, "output")
 
     input_folder = os.path.join(folder, "segmented_z_disks_denoised_filtered")
-    output_folder = os.path.join(folder, "segmented_z_disks_denoised_filtered_vischecked")
+    output_folder = os.path.join(
+        folder, "segmented_z_disks_denoised_filtered_vischecked"
+    )
 
     # input folder
     loc_prec_folders = [
@@ -47,7 +50,7 @@ def main(argv=None):
     ]
     if len(loc_prec_folders) == 0:
         raise ValueError("No input folders")
-    
+
     # output folder
     if not os.path.exists(output_folder):
         os.makedirs(output_folder)
@@ -60,7 +63,9 @@ def main(argv=None):
             "nm_filter", ""
         )
 
-        output_sub_folder = os.path.join(output_folder, f"{localisation_precision_filter}nm_filter")
+        output_sub_folder = os.path.join(
+            output_folder, f"{localisation_precision_filter}nm_filter"
+        )
 
         if not os.path.exists(output_sub_folder):
             os.makedirs(output_sub_folder)
@@ -73,6 +78,7 @@ def main(argv=None):
             src = os.path.join(input_folder, file)
             dest = os.path.join(output_sub_folder, file)
             shutil.copyfile(src, dest)
+
 
 if __name__ == "__main__":
     main()
