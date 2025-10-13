@@ -56,8 +56,9 @@ Make sure you have activated the correct environment before running scripts
     ```shell
     python scripts/pointcloud_to_image.py [ARGS]
     ```
-    ```shell
+
     The following args are required:
+    
         -e Name of the experiment folder (e.g. dummy)
         -x Name of the x column in the data
         -y Name of the y column in the data
@@ -67,7 +68,6 @@ Make sure you have activated the correct environment before running scripts
         -hz Size of histogram in z direction
         -s Delimeter separating the items - currently supported either comma (.csv) or tab (.txt)
         -bs Specify whether sizes above should be interpreted as the number of bins or the size of each bin, should be either bins or size
-    ```
 
     The following args are optional:
 
@@ -80,6 +80,7 @@ Make sure you have activated the correct environment before running scripts
     ```
 
     The following arg is required:
+
         -i Path to the input parquet datastructure
         -d run DBSCAN with epsilon and min_samples, specificed in that order, separated by a space  
 
@@ -112,10 +113,10 @@ Make sure you have activated the correct environment before running scripts
     python scripts/image_and_seg_to_pointcloud.py
     ```
 
-    ```shell
     The following args are required:
+
         -e Name of the experiment folder (e.g. dummy)
-    ```
+
 
 5. Separate the point-cloud into each object
 
@@ -125,15 +126,14 @@ Make sure you have activated the correct environment before running scripts
     python scripts/separate_and_align.py
     ```
 
-    ```shell
     The following args are required:
-        -e Name of the experiment folder (e.g. dummy)
-    ```
 
-    ```shell
+        -e Name of the experiment folder (e.g. dummy)
+
     The following args are optional:
+
         -a If specified then aligns each z-disk with x axis - note that distances between points are not PERFECTLY preserved but errors are very small (errors in distances ~10^-11)
-    ```
+
 
 6. Visualise the .csv pointcloud data and optionally denoise (remove outliers) using DBSCAN
 
@@ -144,6 +144,7 @@ Make sure you have activated the correct environment before running scripts
     ```
 
     The following arg is required:
+
         -i Path to the input csv to be visualised
         -d run DBSCAN with epsilon and min_samples, specificed in that order, separated by a space 
 
@@ -155,10 +156,10 @@ Make sure you have activated the correct environment before running scripts
     python scripts/clean_up_denoising.py
     ```
 
-    ```shell
     The following args are required:
+
         -e Name of the experiment folder (e.g. dummy)
-    ```
+
 
 8. Filter out localisations with poor localisation precision
 
@@ -166,11 +167,11 @@ Make sure you have activated the correct environment before running scripts
     python scripts/filter_loc_prec.py
     ```
 
-    ```shell
     The following args are required:
+
         -e Name of the experiment folder (e.g. dummy)
         -p Filter out localisations with precision larger (i.e. worse) than this value
-    ```
+
 
 9. Visualise files to check
 
@@ -181,6 +182,7 @@ Make sure you have activated the correct environment before running scripts
     ```
 
     The following arg is required:
+
         -i Path to the input file to be visualised
 
 10. Copy across checked files
@@ -189,11 +191,11 @@ Make sure you have activated the correct environment before running scripts
     python scripts/remove_files_after_visualisation.py [ARGS]
     ```
 
-    ```shell
     The following args are required:
+
         -e Name of the experiment folder (e.g. dummy)
         -i Input files to copy across
-    ```
+
 
 ## Output
 
@@ -238,19 +240,18 @@ For PERPL respository see: https://github.com/AlistairCurd/PERPL-Python3/tree/ma
     python scripts/perpl_rel_posns.py
     ```
 
-    ```shell
     The following args are required:
-        -e Name of the experiment folder (e.g. dummy)
-    ```
 
-    ```shell
+        -e Name of the experiment folder (e.g. dummy)
+
     The following args are optional:
+    
         -f Filter distance
         -lf Filter by number of localisations
         -n Number of nearest neighbours
         -b Bin size for histogram plots
         -v Visualise the raw data AND the localisation precision
-    ```
+
 
 3. Modelling
 
