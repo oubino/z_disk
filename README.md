@@ -123,8 +123,6 @@ Make sure you have activated the correct environment before running scripts
 
 5. Separate the point-cloud into each object
 
-    In our case we have an optional alignment step as well using PCA
-
     ```shell
     python scripts/separate_and_align.py
     ```
@@ -143,7 +141,7 @@ Make sure you have activated the correct environment before running scripts
 
 6. Visualise the .csv pointcloud data and optionally denoise (remove outliers) using DBSCAN
 
-    - Note limitation of this is that have to manually go through the list of input files visualise each and decide [could instead script this]
+    Note limitation of this is that have to manually go through the list of input files visualise each and decide [could instead script this]
 
     ```shell
     python scripts/visualise.py [ARGS]
@@ -156,7 +154,7 @@ Make sure you have activated the correct environment before running scripts
 
 7. Clean up after the visualising and denoising stage
 
-    - Identifies files in segmented_z_disks/ but not in segmented_z_disks_denoised/ and copies across
+    Identifies files in segmented_z_disks/ but not in segmented_z_disks_denoised/ and copies across
 
     ```shell
     python scripts/clean_up_denoising.py
@@ -181,7 +179,7 @@ Make sure you have activated the correct environment before running scripts
 
 9. Visualise files to check
 
-    - Note limitation of this is that have to manually go through the list of input files visualise each and decide [could instead script this]
+    Note limitation of this is that have to manually go through the list of input files visualise each and decide [could instead script this]
 
     ```shell
     python scripts/visualise.py [ARGS]
