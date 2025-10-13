@@ -150,6 +150,9 @@ Make sure you have activated the correct environment before running scripts
     The following arg is required:
 
         -i Path to the input csv to be visualised
+
+    The following args are optional:
+
         -d run DBSCAN with epsilon and min_samples, specificed in that order, separated by a space 
 
 7. Clean up after the visualising and denoising stage
