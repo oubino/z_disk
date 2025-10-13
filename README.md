@@ -33,7 +33,7 @@ Inside this folder, place all .txt or .csv data in a folder called data/
 z_disks
 ├── README.md
 ├── experiments
-|   ├── dummy
+│   ├── dummy
 │       └── test.txt
 │   └── run_1
 │       └── data
