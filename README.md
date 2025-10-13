@@ -123,7 +123,7 @@ Make sure you have activated the correct environment before running scripts
 
 5. Separate the point-cloud into each object
 
-    - In our case we have an optional alignment step as well using PCA
+    In our case we have an optional alignment step as well using PCA
 
     ```shell
     python scripts/separate_and_align.py
