@@ -51,9 +51,7 @@ z_disks
 
 Make sure you have activated the correct environment before running scripts
 
-1. Pointcloud to image 
-
-    Convert each .txt/.csv file to an image
+1.  Convert each .txt/.csv file to an image
 
     ```shell
     python scripts/pointcloud_to_image.py [ARGS]
@@ -74,9 +72,7 @@ Make sure you have activated the correct environment before running scripts
     The following args are optional
         -c Name of the channel column in the data 
 
-2. Visualise [Optional]
-    
-    Visualise the pointcloud data
+2. Visualise the pointcloud data [Optional]
 
     ```shell
     python scripts/visualise.py [ARGS]
@@ -109,9 +105,7 @@ Make sure you have activated the correct environment before running scripts
         d. Save in segmentations folder
         e. Repeat for each image
 
-4. Generate segmented point-cloud
-
-    - Combine each segmentation with the original .txt/.csv file to extract the localisations and return data in desired output format
+4. Combine each segmentation with the original .txt/.csv file to extract the localisations and return data in desired output format
 
     ```shell
     python scripts/image_and_seg_to_pointcloud.py
@@ -122,9 +116,8 @@ Make sure you have activated the correct environment before running scripts
         -e Name of the experiment folder (e.g. dummy)
     ```
 
-5. Separate into each object
+5. Separate the point-cloud into each object
 
-    - Separate the point-cloud into each object
     - In our case we have an optional alignment step as well using PCA
 
     ```shell
@@ -141,9 +134,8 @@ Make sure you have activated the correct environment before running scripts
         -a If specified then aligns each z-disk with x axis - note that distances between points are not PERFECTLY preserved but errors are very small (errors in distances ~10^-11)
     ```
 
-6. Visualise
+6. Visualise the .csv pointcloud data and optionally denoise (remove outliers) using DBSCAN
 
-    - Visualise the .csv pointcloud data and optionally denoise (remove outliers) using DBSCAN
     - Note limitation of this is that have to manually go through the list of input files visualise each and decide [could instead script this]
 
     ```shell
@@ -154,9 +146,8 @@ Make sure you have activated the correct environment before running scripts
         -i Path to the input csv to be visualised
         -d run DBSCAN with epsilon and min_samples, specificed in that order, separated by a space 
 
-7. Clean up denoising
+7. Clean up after the visualising and denoising stage
 
-    - Clean up after the visualising and denoising stage
     - Identifies files in segmented_z_disks/ but not in segmented_z_disks_denoised/ and copies across
 
     ```shell
@@ -168,9 +159,7 @@ Make sure you have activated the correct environment before running scripts
         -e Name of the experiment folder (e.g. dummy)
     ```
 
-8. Filter by localisation precision
-
-    - Filter out localisations with poor localisation precision
+8. Filter out localisations with poor localisation precision
 
     ```shell
     python scripts/filter_loc_prec.py
@@ -194,8 +183,6 @@ Make sure you have activated the correct environment before running scripts
         -i Path to the input file to be visualised
 
 10. Copy across checked files
-
-    - Copy across files that have been chekced
 
     ```shell
     python scripts/remove_files_after_visualisation.py [ARGS]
