@@ -69,7 +69,8 @@ Make sure you have activated the correct environment before running scripts
         -bs Specify whether sizes above should be interpreted as the number of bins or the size of each bin, should be either bins or size
     ```
 
-    The following args are optional
+    The following args are optional:
+
         -c Name of the channel column in the data 
 
 2. Visualise the pointcloud data [Optional]
