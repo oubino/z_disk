@@ -36,7 +36,7 @@ fitlength = 120. # standard max distance over which to plot distances and fit mo
 transverse_limit = 200. # This is the YZ-distance limit for X-distances to include
 precision = 5.0
 numberoflocalisations = 10
-bin_size = 4
+bin_size = 5
 
 loc_prec_path = rf"/home/oliver/smlm_cloud/janelia_analysis/experiments/ACTN2/output/perpl_relative_posns/all_z_disks_{precision}precisionfilter_{numberoflocalisations}numberoflocalisations_PERPL-locprec_150.0filter.txt"
 actn_affimer_relpos_path = rf"/home/oliver/smlm_cloud/janelia_analysis/experiments/ACTN2/output/perpl_relative_posns/all_z_disks_{precision}precisionfilter_{numberoflocalisations}numberoflocalisations_PERPL-relpos_150.0filter.csv" # path to relative posn data
@@ -78,7 +78,7 @@ axial_distances = zdisk_modelling.remove_duplicates(axial_distances)
 
 print("Number of axial distances: ", len(axial_distances))
 
-# ## Get the 1-nm bin histogram data
+# ## Get the histogram data
 # Up to distance = fitlength
 
 hist_values, bin_edges = zdisk_plots.plot_distance_hist(
@@ -116,14 +116,16 @@ print(peaks)
 
 # ## Choose axial model:
 
-axial_model_with_info = zdisk_modelling.set_up_model_4_peaks_fixed_ratio_with_fit_settings()
+axial_model_with_info = zdisk_modelling.set_up_model_onepeak_with_fit_settings()
 
 
 # ## Fit model to histogram bin values, at bin centres
 
 (params_optimised,
 params_covar,
-params_1sd_error) = zdisk_modelling.fitmodel_to_hist(
+params_1sd_error,
+ssr,
+aic) = zdisk_modelling.fitmodel_to_hist(
     bin_centres,
     hist_values,
     axial_model_with_info.model_rpd,
@@ -237,8 +239,10 @@ plt.plot(bin_centres, bin_values/bin_centres)
 
 # ### Optional save/load to save time
 
-np.save('..//..//perpl_test_data//normalised_transverse_rpd_smoothed_Churchman-4p4', normalised_transverse_rpd)
+# +
+#np.save('..//..//perpl_test_data//normalised_transverse_rpd_smoothed_Churchman-4p4', normalised_transverse_rpd)
 # normalised_transverse_rpd = np.load('..//..//perpl_test_data//normalised_transverse_rpd_smoothed_Churchman-4p4.npy')
+# -
 
 # ## Set up an RPD model and fit
 # I've tried a few smoothing kernel widths here.
@@ -247,7 +251,9 @@ trans_model_with_info = zdisk_modelling.set_up_model_2d_onepeak_plus_replocs_fla
 
 (params_optimised,
 params_covar,
-params_1sd_error) = zdisk_modelling.fitmodel_to_hist(
+params_1sd_error,
+ssr,
+aic) = zdisk_modelling.fitmodel_to_hist(
     norm_rpd_calculation_points[0:31],
     normalised_transverse_rpd[0:31],
     trans_model_with_info.model_rpd,
@@ -272,7 +278,7 @@ zdisk_plots.plot_fitted_model(
     plot_95ci=False
     )
 
-fitlength = 50.
+fitlength = 200.
 calculation_points = np.arange(fitlength + 1.)
 combined_precision=8.
 transverse_rpd_s8 = plotting.estimate_rpd_churchman_2d(
@@ -284,12 +290,14 @@ transverse_rpd_s8 = plotting.estimate_rpd_churchman_2d(
 normalised_transverse_rpd_s8 = transverse_rpd_s8[calculation_points > 0.] / calculation_points[calculation_points > 0.]
 norm_rpd_calculation_points = calculation_points[calculation_points > 0.]
 plt.plot(norm_rpd_calculation_points, normalised_transverse_rpd_s8)
-np.save('..//..//perpl_test_data//normalised_transverse_rpd_smoothed_Churchman-8', normalised_transverse_rpd_s8)
+#np.save('..//..//perpl_test_data//normalised_transverse_rpd_smoothed_Churchman-8', normalised_transverse_rpd_s8)
 # normalised_transverse_rpd = np.load('..//..//perpl_test_data//normalised_transverse_rpd_smoothed_Churchman-8.npy')
 
 (params_optimised,
 params_covar,
-params_1sd_error) = zdisk_modelling.fitmodel_to_hist(
+params_1sd_error,
+ssr,
+aic) = zdisk_modelling.fitmodel_to_hist(
     norm_rpd_calculation_points[0:31],
     normalised_transverse_rpd_s8[0:31],
     trans_model_with_info.model_rpd,
@@ -314,7 +322,7 @@ zdisk_plots.plot_fitted_model(
     plot_95ci=False
     )
 
-fitlength = 50.
+fitlength = 200.
 calculation_points = np.arange(fitlength + 1.)
 combined_precision=5.
 transverse_rpd_s5 = plotting.estimate_rpd_churchman_2d(
@@ -326,7 +334,7 @@ transverse_rpd_s5 = plotting.estimate_rpd_churchman_2d(
 normalised_transverse_rpd_s5 = transverse_rpd_s5[calculation_points > 0.] / calculation_points[calculation_points > 0.]
 norm_rpd_calculation_points = calculation_points[calculation_points > 0.]
 plt.plot(norm_rpd_calculation_points, normalised_transverse_rpd_s5)
-np.save('..//..//perpl_test_data//normalised_transverse_rpd_smoothed_Churchman-5', normalised_transverse_rpd_s5)
+#np.save('..//..//perpl_test_data//normalised_transverse_rpd_smoothed_Churchman-5', normalised_transverse_rpd_s5)
 
 fitlength = 50.
 calculation_points = np.arange(fitlength + 1.)
@@ -340,11 +348,13 @@ transverse_rpd_s6 = plotting.estimate_rpd_churchman_2d(
 normalised_transverse_rpd_s6 = transverse_rpd_s6[calculation_points > 0.] / calculation_points[calculation_points > 0.]
 norm_rpd_calculation_points = calculation_points[calculation_points > 0.]
 plt.plot(norm_rpd_calculation_points, normalised_transverse_rpd_s6)
-np.save('..//..//perpl_test_data//normalised_transverse_rpd_smoothed_Churchman-6', normalised_transverse_rpd_s6)
+#np.save('..//..//perpl_test_data//normalised_transverse_rpd_smoothed_Churchman-6', normalised_transverse_rpd_s6)
 
 (params_optimised,
 params_covar,
-params_1sd_error) = zdisk_modelling.fitmodel_to_hist(
+params_1sd_error,
+ssr,
+aic) = zdisk_modelling.fitmodel_to_hist(
     norm_rpd_calculation_points[0:31],
     normalised_transverse_rpd_s6[0:31],
     trans_model_with_info.model_rpd,
@@ -381,7 +391,9 @@ norm_rpd_calculation_points = calculation_points[calculation_points > 0.]
 
 (params_optimised,
 params_covar,
-params_1sd_error) = zdisk_modelling.fitmodel_to_hist(
+params_1sd_error,
+ssr,
+aic) = zdisk_modelling.fitmodel_to_hist(
     norm_rpd_calculation_points[0:31],
     normalised_transverse_rpd_s6[0:31],
     trans_model_with_info.model_rpd,
@@ -408,7 +420,9 @@ zdisk_plots.plot_fitted_model(
 
 (params_optimised,
 params_covar,
-params_1sd_error) = zdisk_modelling.fitmodel_to_hist(
+params_1sd_error,
+ssr,
+aic) = zdisk_modelling.fitmodel_to_hist(
     norm_rpd_calculation_points[0:31],
     normalised_transverse_rpd[0:31],
     trans_model_with_info.model_rpd,
@@ -439,7 +453,9 @@ norm_rpd_calculation_points = calculation_points[calculation_points > 0.]
 
 (params_optimised,
 params_covar,
-params_1sd_error) = zdisk_modelling.fitmodel_to_hist(
+params_1sd_error,
+ssr,
+aic) = zdisk_modelling.fitmodel_to_hist(
     norm_rpd_calculation_points[0:31],
     normalised_transverse_rpd_s8[0:31],
     trans_model_with_info.model_rpd,
@@ -466,7 +482,9 @@ zdisk_plots.plot_fitted_model(
 
 (params_optimised,
 params_covar,
-params_1sd_error) = zdisk_modelling.fitmodel_to_hist(
+params_1sd_error,
+ssr,
+aic) = zdisk_modelling.fitmodel_to_hist(
     norm_rpd_calculation_points[0:31],
     normalised_transverse_rpd_s5[0:31],
     trans_model_with_info.model_rpd,
