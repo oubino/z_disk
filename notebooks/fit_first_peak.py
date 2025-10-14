@@ -70,6 +70,7 @@ for param in list(product(numberoflocalisationss, bin_sizes)):
         fitlength,
         bin_size,
         transverse_limit,
+        close_plots=True,
         )
     bin_centres = (bin_edges[0:(len(bin_edges) - 1)]
                 + bin_edges[1:]
