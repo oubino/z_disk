@@ -14,7 +14,7 @@
 # ---
 
 # %% [markdown]
-# # Fit every peak
+# # Fit first one or two peaks
 
 # %%
 from itertools import product
@@ -77,7 +77,9 @@ for param in list(product(numberoflocalisationss, bin_sizes)):
                 ) / 2
     
     models = [
-        ...
+         zdisk_modelling.set_up_model_2d_onepeak_plus_replocs_flat_bg_with_fit_settings(),
+         zdisk_modelling.set_up_model_2d_twopeaks_flat_bg_with_fit_settings(),
+         zdisk_modelling.set_up_model_2d_twopeaks_no_bg_with_fit_settings(),
     ]
 
     for i, trans_model_with_info in enumerate(models):
@@ -156,12 +158,101 @@ for numberoflocalisations in [1,10,15]:
         calculation_points=calculation_points,
         combined_precision=(np.sqrt(2) * loc_precision)
     )
+
+    trans_rpd = trans_rpd[calculation_points > 0.]
+    calculation_points = calculation_points[calculation_points > 0.]
+    
     models = [
-        ...
+         zdisk_modelling.set_up_model_2d_onepeak_plus_replocs_flat_bg_with_fit_settings(),
+         zdisk_modelling.set_up_model_2d_twopeaks_flat_bg_with_fit_settings(),
+        zdisk_modelling.set_up_model_2d_twopeaks_no_bg_with_fit_settings(),
     ]
 
-    trans_rpd = trans_rpd[calculation_points > 0]
-    calculation_points = calculation_points[calculation_points > 0]
+    for i, trans_model_with_info in enumerate(models):
+
+        print("Number of localisations: ", numberoflocalisations)
+        print("Model : ", i)
+    
+        # ## Fit model to histogram bin values, at bin centres
+        (params_optimised,
+        params_covar,
+        params_1sd_error,
+        ssr,
+        aic) = zdisk_modelling.fitmodel_to_hist(
+            calculation_points,
+            trans_rpd,
+            trans_model_with_info.model_rpd,
+            trans_model_with_info.initial_params,
+            trans_model_with_info.param_bounds,
+            )
+
+        plt.plot(calculation_points,trans_rpd)
+        zdisk_plots.plot_fitted_model(
+            calculation_points,
+            fitlength,
+            params_optimised,
+            params_covar,
+            trans_model_with_info,
+            plot_95ci=False
+            )
+
+        plt.show()
+
+        ssrs.append(ssr)
+        aics.append(aic)
+        setups.append(f"model:{i}_nlocs_{numberoflocalisations}")
+        
+aics, ssrs, setups = zip(*sorted(zip(aics, ssrs, setups)))
+
+# %%
+print("AICS: ", aics)
+print("SSRS: ", ssrs)
+print("Setups: ", setups)
+
+# %% [markdown]
+# ## Fit normalised RPD
+
+# %%
+aics = []
+ssrs = []
+setups = []
+
+for numberoflocalisations in [1,10,15]:
+
+    loc_prec_path = rf"/home/oliver/smlm_cloud/janelia_analysis/experiments/ACTN2/output/perpl_relative_posns/all_z_disks_{precision}precisionfilter_{numberoflocalisations}numberoflocalisations_PERPL-locprec_150.0filter.txt"
+    actn_affimer_relpos_path = rf"/home/oliver/smlm_cloud/janelia_analysis/experiments/ACTN2/output/perpl_relative_posns/all_z_disks_{precision}precisionfilter_{numberoflocalisations}numberoflocalisations_PERPL-relpos_150.0filter.csv" # path to relative posn data
+
+    loc_precision = np.loadtxt(loc_prec_path) 
+    
+    relpos = pd.read_csv(actn_affimer_relpos_path)
+    relpos = pd.DataFrame({
+        "axial": relpos.yy_separation,
+        "transverse": relpos.xz_separation},)
+
+    trans_distances = zdisk_modelling.get_transverse_separations(
+        relpos,
+        max_distance=relpos.transverse.max(),
+        axial_limit=axial_limit
+        )
+    trans_distances = zdisk_modelling.remove_duplicates(trans_distances)
+ 
+    calculation_points = np.arange(fitlength + 1.)
+    trans_rpd = plotting.estimate_rpd_churchman_1d(
+        input_distances=trans_distances,
+        calculation_points=calculation_points,
+        combined_precision=(np.sqrt(2) * loc_precision)
+    )
+    models = [
+         zdisk_modelling.set_up_model_2d_onepeak_plus_replocs_flat_bg_with_fit_settings(),
+         zdisk_modelling.set_up_model_2d_twopeaks_flat_bg_with_fit_settings(),
+        zdisk_modelling.set_up_model_2d_twopeaks_no_bg_with_fit_settings(),
+    ]
+
+    trans_rpd = trans_rpd[calculation_points > 0.] / calculation_points[calculation_points > 0.]
+    calculation_points = calculation_points[calculation_points > 0.]
+
+    trans_rpd = trans_rpd[3:-1]
+    calculation_points = calculation_points[3:-1]
 
     for i, trans_model_with_info in enumerate(models):
 
