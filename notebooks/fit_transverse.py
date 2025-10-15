@@ -251,6 +251,7 @@ for numberoflocalisations in [1,10,15]:
     trans_rpd = trans_rpd[calculation_points > 0.] / calculation_points[calculation_points > 0.]
     calculation_points = calculation_points[calculation_points > 0.]
 
+    # NOTE HOW WE START A BIT IN TO AVOID THE RISE AT 0
     trans_rpd = trans_rpd[3:-1]
     calculation_points = calculation_points[3:-1]
 
