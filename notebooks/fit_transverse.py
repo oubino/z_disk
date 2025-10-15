@@ -80,7 +80,10 @@ for param in list(product(numberoflocalisationss, bin_sizes)):
         zdisk_modelling.set_up_model_5_peaks_fixed_ratio_with_fit_settings(),
         zdisk_modelling.set_up_model_5_peaks_fixed_ratio_no_replocs_with_fit_settings(),
         zdisk_modelling.set_up_model_5_variable_peaks_with_fit_settings(),
+        zdisk_modelling.set_up_model_5_variable_peaks_bg_flat_with_fit_settings(),
+        zdisk_modelling.set_up_model_5_variable_peaks_with_replocs_bg_flat_with_fit_settings(),
         zdisk_modelling.set_up_model_5_variable_peaks_after_offset_with_fit_settings(),
+        zdisk_modelling.set_up_model_5_variable_peaks_after_offset_flat_bg_with_fit_settings(),
         zdisk_modelling.set_up_model_4_peaks_fixed_ratio_with_fit_settings(),
         #zdisk_modelling.set_up_model_4_variable_peaks_with_fit_settings(), doesn't fit
         zdisk_modelling.set_up_model_4_variable_peaks_after_offset_with_fit_settings(),
@@ -167,12 +170,14 @@ for numberoflocalisations in [1,10,15]:
         zdisk_modelling.set_up_model_5_peaks_fixed_ratio_with_fit_settings(),
         zdisk_modelling.set_up_model_5_peaks_fixed_ratio_no_replocs_with_fit_settings(),
         zdisk_modelling.set_up_model_5_variable_peaks_with_fit_settings(),
+        zdisk_modelling.set_up_model_5_variable_peaks_bg_flat_with_fit_settings(),
+        zdisk_modelling.set_up_model_5_variable_peaks_with_replocs_bg_flat_with_fit_settings(),
         zdisk_modelling.set_up_model_5_variable_peaks_after_offset_with_fit_settings(),
+        zdisk_modelling.set_up_model_5_variable_peaks_after_offset_flat_bg_with_fit_settings(),
         zdisk_modelling.set_up_model_4_peaks_fixed_ratio_with_fit_settings(),
-        zdisk_modelling.set_up_model_4_variable_peaks_with_fit_settings(),
+        #zdisk_modelling.set_up_model_4_variable_peaks_with_fit_settings(), doesn't fit
         zdisk_modelling.set_up_model_4_variable_peaks_after_offset_with_fit_settings(),
         zdisk_modelling.set_up_model_3_peaks_fixed_ratio_with_fit_settings(),
-        
     ]
 
     trans_rpd = trans_rpd[calculation_points > 0]
