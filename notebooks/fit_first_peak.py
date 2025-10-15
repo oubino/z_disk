@@ -31,8 +31,8 @@ from perpl.io import plotting
 # ### Params
 
 # %%
-fitlength = 120. # standard max distance over which to plot distances and fit models
-transverse_limit = 200. # This is the YZ-distance limit for X-distances to include
+fitlength = 115. # standard max distance over which to plot distances and fit models
+transverse_limit = 200. # This is the XZ-distance limit for Y-distances to include
 precision = 5.0
 
 numberoflocalisationss = [1,10]

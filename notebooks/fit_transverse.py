@@ -31,8 +31,8 @@ from perpl.io import plotting
 # ### Params
 
 # %%
-fitlength = 150. # standard max distance over which to plot distances and fit models
-axial_limit = 200. # This is the YZ-distance limit for X-distances to include
+fitlength = 40. # standard max distance over which to plot distances and fit models
+axial_limit = 200. # This is the Y-distance limit for XZ-distances to include
 precision = 5.0
 
 numberoflocalisationss = [1,10]
@@ -77,17 +77,7 @@ for param in list(product(numberoflocalisationss, bin_sizes)):
                 ) / 2
     
     models = [
-        zdisk_modelling.set_up_model_5_peaks_fixed_ratio_with_fit_settings(),
-        zdisk_modelling.set_up_model_5_peaks_fixed_ratio_no_replocs_with_fit_settings(),
-        zdisk_modelling.set_up_model_5_variable_peaks_with_fit_settings(),
-        zdisk_modelling.set_up_model_5_variable_peaks_bg_flat_with_fit_settings(),
-        zdisk_modelling.set_up_model_5_variable_peaks_with_replocs_bg_flat_with_fit_settings(),
-        zdisk_modelling.set_up_model_5_variable_peaks_after_offset_with_fit_settings(),
-        zdisk_modelling.set_up_model_5_variable_peaks_after_offset_flat_bg_with_fit_settings(),
-        zdisk_modelling.set_up_model_4_peaks_fixed_ratio_with_fit_settings(),
-        #zdisk_modelling.set_up_model_4_variable_peaks_with_fit_settings(), doesn't fit
-        zdisk_modelling.set_up_model_4_variable_peaks_after_offset_with_fit_settings(),
-        zdisk_modelling.set_up_model_3_peaks_fixed_ratio_with_fit_settings(),
+        ...
     ]
 
     for i, trans_model_with_info in enumerate(models):
@@ -167,17 +157,7 @@ for numberoflocalisations in [1,10,15]:
         combined_precision=(np.sqrt(2) * loc_precision)
     )
     models = [
-        zdisk_modelling.set_up_model_5_peaks_fixed_ratio_with_fit_settings(),
-        zdisk_modelling.set_up_model_5_peaks_fixed_ratio_no_replocs_with_fit_settings(),
-        zdisk_modelling.set_up_model_5_variable_peaks_with_fit_settings(),
-        zdisk_modelling.set_up_model_5_variable_peaks_bg_flat_with_fit_settings(),
-        zdisk_modelling.set_up_model_5_variable_peaks_with_replocs_bg_flat_with_fit_settings(),
-        zdisk_modelling.set_up_model_5_variable_peaks_after_offset_with_fit_settings(),
-        zdisk_modelling.set_up_model_5_variable_peaks_after_offset_flat_bg_with_fit_settings(),
-        zdisk_modelling.set_up_model_4_peaks_fixed_ratio_with_fit_settings(),
-        #zdisk_modelling.set_up_model_4_variable_peaks_with_fit_settings(), doesn't fit
-        zdisk_modelling.set_up_model_4_variable_peaks_after_offset_with_fit_settings(),
-        zdisk_modelling.set_up_model_3_peaks_fixed_ratio_with_fit_settings(),
+        ...
     ]
 
     trans_rpd = trans_rpd[calculation_points > 0]

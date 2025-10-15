@@ -31,8 +31,8 @@ from perpl.io import plotting
 # ### Params
 
 # %%
-fitlength = 120. # standard max distance over which to plot distances and fit models
-transverse_limit = 200. # This is the YZ-distance limit for X-distances to include
+fitlength = 115. # standard max distance over which to plot distances and fit models
+transverse_limit = 200. # This is the XZ-distance limit for Y-distances to include
 precision = 5.0
 
 numberoflocalisationss = [1,10]
@@ -85,7 +85,7 @@ for param in list(product(numberoflocalisationss, bin_sizes)):
         zdisk_modelling.set_up_model_5_variable_peaks_after_offset_with_fit_settings(),
         zdisk_modelling.set_up_model_5_variable_peaks_after_offset_flat_bg_with_fit_settings(),
         zdisk_modelling.set_up_model_4_peaks_fixed_ratio_with_fit_settings(),
-        #zdisk_modelling.set_up_model_4_variable_peaks_with_fit_settings(), doesn't fit
+        zdisk_modelling.set_up_model_4_variable_peaks_with_fit_settings(),
         zdisk_modelling.set_up_model_4_variable_peaks_after_offset_with_fit_settings(),
     ]
 
@@ -173,7 +173,7 @@ for numberoflocalisations in [1,10,15]:
         zdisk_modelling.set_up_model_5_variable_peaks_after_offset_with_fit_settings(),
         zdisk_modelling.set_up_model_5_variable_peaks_after_offset_flat_bg_with_fit_settings(),
         zdisk_modelling.set_up_model_4_peaks_fixed_ratio_with_fit_settings(),
-        #zdisk_modelling.set_up_model_4_variable_peaks_with_fit_settings(), doesn't fit
+        zdisk_modelling.set_up_model_4_variable_peaks_with_fit_settings(),
         zdisk_modelling.set_up_model_4_variable_peaks_after_offset_with_fit_settings(),
     ]
 
