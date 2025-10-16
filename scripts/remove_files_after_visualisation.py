@@ -28,7 +28,7 @@ def main(argv=None):
         "--files_to_include",
         action="store",
         type=str,
-        help="files visualised and checked",
+        help="files visualised and checked. If put all then will copy across all files",
         required=True,
         nargs="+",
     )
@@ -72,7 +72,10 @@ def main(argv=None):
 
         input_files = os.listdir(input_folder)
 
-        files_to_copy = [x for x in input_files if x in args.files_to_include]
+        if args.files_to_include[0] == "all":
+            files_to_copy = input_files
+        else:
+            files_to_copy = [x for x in input_files if x in args.files_to_include]
 
         for file in files_to_copy:
             src = os.path.join(input_folder, file)

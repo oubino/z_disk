@@ -205,7 +205,7 @@ Make sure you have activated the correct environment before running scripts
     The following args are required:
 
         -e Name of the experiment folder (e.g. dummy)
-        -i Input files to copy across
+        -i Input files to copy across. If just give all as the argument, copies across all files
 
 
 ## Output
