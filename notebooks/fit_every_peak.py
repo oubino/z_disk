@@ -200,17 +200,18 @@ for numberoflocalisations in [1,10,15]:
             axial_model_with_info.param_bounds,
             )
 
-        plt.plot(calculation_points,axial_rpd)
-        zdisk_plots.plot_fitted_model(
-            calculation_points,
-            fitlength,
-            params_optimised,
-            params_covar,
-            axial_model_with_info,
-            plot_95ci=False
-            )
+        if params_optimised is not None:
+            plt.plot(calculation_points,axial_rpd)
+            zdisk_plots.plot_fitted_model(
+                calculation_points,
+                fitlength,
+                params_optimised,
+                params_covar,
+                axial_model_with_info,
+                plot_95ci=False
+                )
 
-        plt.show()
+            plt.show()
 
         ssrs.append(ssr)
         aics.append(aic)
