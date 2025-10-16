@@ -34,9 +34,10 @@ from perpl.io import plotting
 fitlength = 40. # standard max distance over which to plot distances and fit models
 axial_limit = 200. # This is the Y-distance limit for XZ-distances to include
 precision = 5.0
+experiment = "test"
 
-numberoflocalisationss = [1,10]
-bin_sizes = [5]
+numberoflocalisationss = [1, 5, 10]
+bin_sizes = [3, 4, 5]
 
 # %%
 ssrs = []
@@ -45,8 +46,8 @@ setups = []
 for param in list(product(numberoflocalisationss, bin_sizes)):
     numberoflocalisations, bin_size = param
 
-    loc_prec_path = rf"/home/oliver/smlm_cloud/janelia_analysis/experiments/ACTN2/output/perpl_relative_posns/all_z_disks_{precision}precisionfilter_{numberoflocalisations}numberoflocalisations_PERPL-locprec_150.0filter.txt"
-    actn_affimer_relpos_path = rf"/home/oliver/smlm_cloud/janelia_analysis/experiments/ACTN2/output/perpl_relative_posns/all_z_disks_{precision}precisionfilter_{numberoflocalisations}numberoflocalisations_PERPL-relpos_150.0filter.csv" # path to relative posn data
+    loc_prec_path = rf"/home/oliver/smlm_cloud/janelia_analysis/experiments/{experiment}/output/perpl_relative_posns/all_z_disks_{precision}precisionfilter_{numberoflocalisations}numberoflocalisations_PERPL-locprec_150.0filter.txt"
+    actn_affimer_relpos_path = rf"/home/oliver/smlm_cloud/janelia_analysis/experiments/{experiment}/output/perpl_relative_posns/all_z_disks_{precision}precisionfilter_{numberoflocalisations}numberoflocalisations_PERPL-relpos_150.0filter.csv" # path to relative posn data
 
     loc_precision = np.loadtxt(loc_prec_path) 
     
@@ -101,16 +102,17 @@ for param in list(product(numberoflocalisationss, bin_sizes)):
             trans_model_with_info.param_bounds,
             )
 
-        zdisk_plots.plot_distance_hist_and_fit(
-            trans_distances,
-            fitlength,
-            bin_size,
-            params_optimised,
-            params_covar,
-            trans_model_with_info,
-            plot_95ci=True,
-            n_locs=numberoflocalisations,
-        )
+        if params_optimised is not None:
+            zdisk_plots.plot_distance_hist_and_fit(
+                trans_distances,
+                fitlength,
+                bin_size,
+                params_optimised,
+                params_covar,
+                trans_model_with_info,
+                plot_95ci=True,
+                n_locs=numberoflocalisations,
+            )
 
         plt.show()
 
