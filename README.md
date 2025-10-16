@@ -274,5 +274,12 @@ For PERPL respository see: https://github.com/AlistairCurd/PERPL-Python3/tree/ma
 
 3. Modelling
 
+    Make folder called notebooks/ in experiment/output/ folder.
 
-    NOTE X and Y are flipped compared to work by A.C.
+    Copy into this folder the relevant notebooks from notebooks/ e.g. fit_first_peak.py,
+
+    Run the notebooks using jupyter-notebooks.
+
+    Note to edit the parameters (top of the notebook) and the models being run.
+
+    (NOTE X and Y are flipped compared to work by A.C.)
