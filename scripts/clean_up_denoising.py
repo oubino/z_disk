@@ -56,8 +56,8 @@ def main(argv=None):
     print("Files that have not been denoised: ", not_denoised)
 
     # Copy these files across
-    copy_ = input("Copy these not denoised files across? (Y) ")
-    if copy_ == "Y":
+    copy_ = input("Copy these not denoised files across? (y) ")
+    if copy_ == "y":
         for file in not_denoised:
             input_file = os.path.join(input_folder, file)
             output_file = os.path.join(output_folder, file)

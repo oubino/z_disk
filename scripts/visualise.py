@@ -288,8 +288,8 @@ def visualise(
         print(f"point cloud has {max_label + 1} clusters")
         assert len(pcds) == 1  # only works for one channel
 
-        remove_outliers = input("Use DBSCAN to remove outliers? (Y) ")
-        if remove_outliers == "Y":
+        remove_outliers = input("Use DBSCAN to remove outliers? (y) ")
+        if remove_outliers == "y":
             counter = Counter(labels)
             # assert set(counter.keys()) == {0, -1}  # check only 1 cluster
             max_value = max(counter, key=counter.get)
@@ -317,11 +317,11 @@ def visualise(
 
     o3d.visualization.draw_geometries_with_key_callbacks(pcds, key_to_callback)
 
-    if remove_outliers == "Y":
+    if remove_outliers == "y":
         remove_outliers = input(
-            "Are you happy with the points in red (outliers) being removed? (Y) "
+            "Are you happy with the points in red (outliers) being removed? (y) "
         )
-        if remove_outliers == "Y":
+        if remove_outliers == "y":
             return labels
         else:
             return None
