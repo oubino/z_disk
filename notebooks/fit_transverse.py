@@ -42,6 +42,7 @@ bin_sizes = [3, 4, 5]
 # %%
 ssrs = []
 aics = []
+aiccorrs = []
 setups = []
 for param in list(product(numberoflocalisationss, bin_sizes)):
     numberoflocalisations, bin_size = param
@@ -94,7 +95,8 @@ for param in list(product(numberoflocalisationss, bin_sizes)):
         params_covar,
         params_1sd_error,
         ssr,
-        aic) = zdisk_modelling.fitmodel_to_hist(
+        aic,
+        aiccorr) = zdisk_modelling.fitmodel_to_hist(
             bin_centres,
             hist_values,
             trans_model_with_info.model_rpd,
@@ -118,11 +120,13 @@ for param in list(product(numberoflocalisationss, bin_sizes)):
 
         ssrs.append(ssr)
         aics.append(aic)
+        aiccorrs.append(aiccorr)
         setups.append(f"model:{i}_nlocs_{numberoflocalisations}_binsize_{bin_size}")
         
-aics, ssrs, setups = zip(*sorted(zip(aics, ssrs, setups)))
+aiccorrs, aics, ssrs, setups = zip(*sorted(zip(aiccorrs, aics, ssrs, setups)))
 
 # %%
+print("AIC corrs: ", aiccorrs)
 print("AICS: ", aics)
 print("SSRS: ", ssrs)
 print("Setups: ", setups)
@@ -132,6 +136,7 @@ print("Setups: ", setups)
 
 # %%
 aics = []
+aiccorrs = []
 ssrs = []
 setups = []
 
@@ -180,7 +185,8 @@ for numberoflocalisations in [1,10,15]:
         params_covar,
         params_1sd_error,
         ssr,
-        aic) = zdisk_modelling.fitmodel_to_hist(
+        aic,
+        aiccorr) = zdisk_modelling.fitmodel_to_hist(
             calculation_points,
             trans_rpd,
             trans_model_with_info.model_rpd,
@@ -203,11 +209,13 @@ for numberoflocalisations in [1,10,15]:
 
         ssrs.append(ssr)
         aics.append(aic)
+        aiccorrs.append(aiccorr)
         setups.append(f"model:{i}_nlocs_{numberoflocalisations}")
         
-aics, ssrs, setups = zip(*sorted(zip(aics, ssrs, setups)))
+aiccorrs, aics, ssrs, setups = zip(*sorted(zip(aiccorrs, aics, ssrs, setups)))
 
 # %%
+print("AIC corrs: ", aiccorrs)
 print("AICS: ", aics)
 print("SSRS: ", ssrs)
 print("Setups: ", setups)
@@ -217,6 +225,7 @@ print("Setups: ", setups)
 
 # %%
 aics = []
+aiccorrs = []
 ssrs = []
 setups = []
 
@@ -269,7 +278,8 @@ for numberoflocalisations in [1,10,15]:
         params_covar,
         params_1sd_error,
         ssr,
-        aic) = zdisk_modelling.fitmodel_to_hist(
+        aic,
+        aiccorr) = zdisk_modelling.fitmodel_to_hist(
             calculation_points,
             trans_rpd,
             trans_model_with_info.model_rpd,
@@ -292,11 +302,13 @@ for numberoflocalisations in [1,10,15]:
 
         ssrs.append(ssr)
         aics.append(aic)
+        aiccorrs.append(aiccorr)
         setups.append(f"model:{i}_nlocs_{numberoflocalisations}")
         
-aics, ssrs, setups = zip(*sorted(zip(aics, ssrs, setups)))
+aiccorrs, aics, ssrs, setups = zip(*sorted(zip(aiccorrs, aics, ssrs, setups)))
 
 # %%
+print("AIC corrs: ", aiccorrs)
 print("AICS: ", aics)
 print("SSRS: ", ssrs)
 print("Setups: ", setups)
