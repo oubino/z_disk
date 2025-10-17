@@ -245,14 +245,15 @@ for numberoflocalisations in [1,10,15]:
         calculation_points=calculation_points,
         combined_precision=(np.sqrt(2) * loc_precision)
     )
-    models = [
-         zdisk_modelling.set_up_model_2d_onepeak_plus_replocs_flat_bg_with_fit_settings(),
-         zdisk_modelling.set_up_model_2d_twopeaks_flat_bg_with_fit_settings(),
-        zdisk_modelling.set_up_model_2d_twopeaks_no_bg_with_fit_settings(),
-    ]
 
     trans_rpd = trans_rpd[calculation_points > 0.] / calculation_points[calculation_points > 0.]
     calculation_points = calculation_points[calculation_points > 0.]
+
+    models = [
+         zdisk_modelling.set_up_model_2d_onepeak_plus_replocs_flat_bg_normalised_with_fit_settings(),
+         zdisk_modelling.set_up_model_2d_twopeaks_flat_bg_normalised_with_fit_settings(),
+        zdisk_modelling.set_up_model_2d_twopeaks_no_bg_normalised_with_fit_settings(),
+    ]
 
     # NOTE HOW WE START A BIT IN TO AVOID THE RISE AT 0
     trans_rpd = trans_rpd[3:-1]
