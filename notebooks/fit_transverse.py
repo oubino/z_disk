@@ -155,7 +155,7 @@ for numberoflocalisations in [1,10,15]:
     trans_distances = zdisk_modelling.remove_duplicates(trans_distances)
  
     calculation_points = np.arange(fitlength + 1.)
-    trans_rpd = plotting.estimate_rpd_churchman_1d(
+    trans_rpd = plotting.estimate_rpd_churchman_2d(
         input_distances=trans_distances,
         calculation_points=calculation_points,
         combined_precision=(np.sqrt(2) * loc_precision)
@@ -240,7 +240,7 @@ for numberoflocalisations in [1,10,15]:
     trans_distances = zdisk_modelling.remove_duplicates(trans_distances)
  
     calculation_points = np.arange(fitlength + 1.)
-    trans_rpd = plotting.estimate_rpd_churchman_1d(
+    trans_rpd = plotting.estimate_rpd_churchman_2d(
         input_distances=trans_distances,
         calculation_points=calculation_points,
         combined_precision=(np.sqrt(2) * loc_precision)
