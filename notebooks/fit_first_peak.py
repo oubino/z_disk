@@ -80,6 +80,7 @@ for param in list(product(numberoflocalisationss, bin_sizes)):
     
     models = [
         zdisk_modelling.set_up_model_onepeak_with_fit_settings(),
+        zdisk_modelling.set_up_model_onepeak_noreplocs_no_bg_with_fit_settings(),
         zdisk_modelling.set_up_model_onepeak_plus_replocs_with_fit_settings(),
         zdisk_modelling.set_up_model_onepeak_plus_replocs_flat_bg_with_fit_settings(),
         zdisk_modelling.set_up_model_onepeak_plus_replocs_no_bg_with_fit_settings(),
@@ -173,6 +174,7 @@ for numberoflocalisations in [1,10,15]:
     )
     models = [
         zdisk_modelling.set_up_model_onepeak_with_fit_settings(),
+        zdisk_modelling.set_up_model_onepeak_noreplocs_no_bg_with_fit_settings(),
         zdisk_modelling.set_up_model_onepeak_plus_replocs_with_fit_settings(),
         zdisk_modelling.set_up_model_onepeak_plus_replocs_flat_bg_with_fit_settings(),
         zdisk_modelling.set_up_model_onepeak_plus_replocs_no_bg_with_fit_settings(),

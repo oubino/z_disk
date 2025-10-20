@@ -82,6 +82,7 @@ for param in list(product(numberoflocalisationss, bin_sizes)):
          zdisk_modelling.set_up_model_2d_onepeak_plus_replocs_flat_bg_with_fit_settings(),
          zdisk_modelling.set_up_model_2d_twopeaks_flat_bg_with_fit_settings(),
          zdisk_modelling.set_up_model_2d_twopeaks_no_bg_with_fit_settings(),
+         zdisk_modelling.set_up_model_2d_threepeaks_squarelattice_noreplocs_no_bg_with_fit_settings(),
     ]
 
     for i, trans_model_with_info in enumerate(models):
@@ -179,7 +180,8 @@ for numberoflocalisations in [1,10,15]:
     models = [
          zdisk_modelling.set_up_model_2d_onepeak_plus_replocs_flat_bg_with_fit_settings(),
          zdisk_modelling.set_up_model_2d_twopeaks_flat_bg_with_fit_settings(),
-        zdisk_modelling.set_up_model_2d_twopeaks_no_bg_with_fit_settings(),
+         zdisk_modelling.set_up_model_2d_twopeaks_no_bg_with_fit_settings(),
+         zdisk_modelling.set_up_model_2d_threepeaks_squarelattice_noreplocs_no_bg_with_fit_settings(),
     ]
 
     for i, trans_model_with_info in enumerate(models):
@@ -276,7 +278,8 @@ for numberoflocalisations in [1,10,15]:
     models = [
          zdisk_modelling.set_up_model_2d_onepeak_plus_replocs_flat_bg_normalised_with_fit_settings(),
          zdisk_modelling.set_up_model_2d_twopeaks_flat_bg_normalised_with_fit_settings(),
-        zdisk_modelling.set_up_model_2d_twopeaks_no_bg_normalised_with_fit_settings(),
+         zdisk_modelling.set_up_model_2d_twopeaks_no_bg_normalised_with_fit_settings(),
+         zdisk_modelling.set_up_model_2d_threepeaks_squarelattice_noreplocs_no_bg_normalised_with_fit_settings(),
     ]
 
     # NOTE HOW WE START A BIT IN TO AVOID THE RISE AT 0
