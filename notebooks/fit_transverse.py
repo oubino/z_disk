@@ -48,11 +48,11 @@ for param in list(product(numberoflocalisationss, bin_sizes)):
     numberoflocalisations, bin_size = param
 
     loc_prec_path = rf"/home/oliver/smlm_cloud/janelia_analysis/experiments/{experiment}/output/perpl_relative_posns/all_z_disks_{precision}precisionfilter_{numberoflocalisations}numberoflocalisations_PERPL-locprec_150.0filter.txt"
-    actn_affimer_relpos_path = rf"/home/oliver/smlm_cloud/janelia_analysis/experiments/{experiment}/output/perpl_relative_posns/all_z_disks_{precision}precisionfilter_{numberoflocalisations}numberoflocalisations_PERPL-relpos_150.0filter.csv" # path to relative posn data
+    relpos_path = rf"/home/oliver/smlm_cloud/janelia_analysis/experiments/{experiment}/output/perpl_relative_posns/all_z_disks_{precision}precisionfilter_{numberoflocalisations}numberoflocalisations_PERPL-relpos_150.0filter.csv" # path to relative posn data
 
     loc_precision = np.loadtxt(loc_prec_path) 
     
-    relpos = pd.read_csv(actn_affimer_relpos_path)
+    relpos = pd.read_csv(relpos_path)
     relpos = pd.DataFrame({
         "axial": relpos.yy_separation,
         "transverse": relpos.xz_separation},)
@@ -145,14 +145,13 @@ aiccorrs = []
 ssrs = []
 setups = []
 
-for numberoflocalisations in [1,10,15]:
+for numberoflocalisations in numberoflocalisationss:
 
-    loc_prec_path = rf"/home/oliver/smlm_cloud/janelia_analysis/experiments/ACTN2/output/perpl_relative_posns/all_z_disks_{precision}precisionfilter_{numberoflocalisations}numberoflocalisations_PERPL-locprec_150.0filter.txt"
-    actn_affimer_relpos_path = rf"/home/oliver/smlm_cloud/janelia_analysis/experiments/ACTN2/output/perpl_relative_posns/all_z_disks_{precision}precisionfilter_{numberoflocalisations}numberoflocalisations_PERPL-relpos_150.0filter.csv" # path to relative posn data
-
+    loc_prec_path = rf"/home/oliver/smlm_cloud/janelia_analysis/experiments/{experiment}/output/perpl_relative_posns/all_z_disks_{precision}precisionfilter_{numberoflocalisations}numberoflocalisations_PERPL-locprec_150.0filter.txt"
+    relpos_path = rf"/home/oliver/smlm_cloud/janelia_analysis/experiments/{experiment}/output/perpl_relative_posns/all_z_disks_{precision}precisionfilter_{numberoflocalisations}numberoflocalisations_PERPL-relpos_150.0filter.csv" # path to relative posn data
     loc_precision = np.loadtxt(loc_prec_path) 
     
-    relpos = pd.read_csv(actn_affimer_relpos_path)
+    relpos = pd.read_csv(relpos_path)
     relpos = pd.DataFrame({
         "axial": relpos.yy_separation,
         "transverse": relpos.xz_separation},)
@@ -243,14 +242,14 @@ aiccorrs = []
 ssrs = []
 setups = []
 
-for numberoflocalisations in [1,10,15]:
+for numberoflocalisations in numberoflocalisationss:
 
-    loc_prec_path = rf"/home/oliver/smlm_cloud/janelia_analysis/experiments/ACTN2/output/perpl_relative_posns/all_z_disks_{precision}precisionfilter_{numberoflocalisations}numberoflocalisations_PERPL-locprec_150.0filter.txt"
-    actn_affimer_relpos_path = rf"/home/oliver/smlm_cloud/janelia_analysis/experiments/ACTN2/output/perpl_relative_posns/all_z_disks_{precision}precisionfilter_{numberoflocalisations}numberoflocalisations_PERPL-relpos_150.0filter.csv" # path to relative posn data
+    loc_prec_path = rf"/home/oliver/smlm_cloud/janelia_analysis/experiments/{experiment}/output/perpl_relative_posns/all_z_disks_{precision}precisionfilter_{numberoflocalisations}numberoflocalisations_PERPL-locprec_150.0filter.txt"
+    relpos_path = rf"/home/oliver/smlm_cloud/janelia_analysis/experiments/{experiment}/output/perpl_relative_posns/all_z_disks_{precision}precisionfilter_{numberoflocalisations}numberoflocalisations_PERPL-relpos_150.0filter.csv" # path to relative posn data
 
     loc_precision = np.loadtxt(loc_prec_path) 
     
-    relpos = pd.read_csv(actn_affimer_relpos_path)
+    relpos = pd.read_csv(relpos_path)
     relpos = pd.DataFrame({
         "axial": relpos.yy_separation,
         "transverse": relpos.xz_separation},)
