@@ -169,7 +169,10 @@ for numberoflocalisations in [1,10,15]:
         transverse_limit=transverse_limit
         )
     axial_distances = zdisk_modelling.remove_duplicates(axial_distances)
-    calculation_points = np.arange(fitlength + 1.)
+    increment = np.round(fitlength/len(axial_distances))
+    if increment == 0:
+        increment = 1
+    calculation_points = np.arange(0, fitlength + 1., increment)
     axial_rpd = plotting.estimate_rpd_churchman_1d(
         input_distances=axial_distances,
         calculation_points=calculation_points,
@@ -211,7 +214,7 @@ for numberoflocalisations in [1,10,15]:
             )
 
         if params_optimised is not None:
-            plt.plot(calculation_points,axial_rpd)
+            plt.scatter(calculation_points,axial_rpd, s=5, marker="x")
             zdisk_plots.plot_fitted_model(
                 calculation_points,
                 fitlength,
@@ -224,6 +227,7 @@ for numberoflocalisations in [1,10,15]:
             print("Number of params: ", len(params_optimised) + 1)
             # No. free parameters, including var. of residuals for least squares fit.
             print("Number of datapoints: ", len(calculation_points))
+            print("Number of distances: ", len(axial_distances))
 
             plt.show()
 
