@@ -116,7 +116,11 @@ for param in list(product(numberoflocalisationss, bin_sizes)):
                 n_locs=numberoflocalisations,
             )
 
-        plt.show()
+            print("Number of params: ", len(params_optimised) + 1)
+            # No. free parameters, including var. of residuals for least squares fit.
+            print("Number of datapoints: ", len(bin_centres))
+
+            plt.show()
 
         ssrs.append(ssr)
         aics.append(aic)
@@ -204,6 +208,10 @@ for numberoflocalisations in [1,10,15]:
                 trans_model_with_info,
                 plot_95ci=False
                 )
+            
+            print("Number of params: ", len(params_optimised) + 1)
+            # No. free parameters, including var. of residuals for least squares fit.
+            print("Number of datapoints: ", len(calculation_points))
 
             plt.show()
 
@@ -297,6 +305,10 @@ for numberoflocalisations in [1,10,15]:
                 trans_model_with_info,
                 plot_95ci=False
                 )
+            
+            print("Number of params: ", len(params_optimised) + 1)
+            # No. free parameters, including var. of residuals for least squares fit.
+            print("Number of datapoints: ", len(calculation_points))
 
             plt.show()
 

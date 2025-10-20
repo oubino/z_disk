@@ -116,12 +116,16 @@ for param in list(product(numberoflocalisationss, bin_sizes)):
                 n_locs=numberoflocalisations,
             )
 
+            print("Number of params: ", len(params_optimised) + 1)
+            # No. free parameters, including var. of residuals for least squares fit.
+            print("Number of datapoints: ", len(bin_centres))
+
         plt.show()
 
         ssrs.append(ssr)
         aics.append(aic)
         aiccorrs.append(aiccorr)
-        setups.append(f"model:{i}_nlocs_{numberoflocalisations}_binsize_{bin_size}")
+        setups.append(f"model:{i}_nlocs_{numberoflocalisations}_binsize_{bin_size}")    
         
 aiccorrs, aics, ssrs, setups = zip(*sorted(zip(aiccorrs, aics, ssrs, setups)))
 
@@ -192,7 +196,7 @@ for numberoflocalisations in [1,10,15]:
             axial_model_with_info.initial_params,
             axial_model_with_info.param_bounds,
             )
-
+        
         if params_optimised is not None:
             plt.plot(calculation_points,axial_rpd)
             zdisk_plots.plot_fitted_model(
@@ -203,6 +207,10 @@ for numberoflocalisations in [1,10,15]:
                 axial_model_with_info,
                 plot_95ci=False
                 )
+            
+            print("Number of params: ", len(params_optimised) + 1)
+            # No. free parameters, including var. of residuals for least squares fit.
+            print("Number of datapoints: ", len(calculation_points))
 
             plt.show()
 

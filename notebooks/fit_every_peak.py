@@ -122,6 +122,10 @@ for param in list(product(numberoflocalisationss, bin_sizes)):
                 plot_95ci=True,
                 n_locs=numberoflocalisations,
             )
+
+            print("Number of params: ", len(params_optimised) + 1)
+            # No. free parameters, including var. of residuals for least squares fit.
+            print("Number of datapoints: ", len(bin_centres))
     
             plt.show()
 
@@ -216,6 +220,10 @@ for numberoflocalisations in [1,10,15]:
                 axial_model_with_info,
                 plot_95ci=False
                 )
+            
+            print("Number of params: ", len(params_optimised) + 1)
+            # No. free parameters, including var. of residuals for least squares fit.
+            print("Number of datapoints: ", len(calculation_points))
 
             plt.show()
 
