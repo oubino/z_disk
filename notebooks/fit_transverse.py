@@ -283,8 +283,8 @@ for numberoflocalisations in numberoflocalisationss:
          zdisk_modelling.set_up_model_2d_twopeaks_flat_bg_normalised_with_fit_settings(),
          zdisk_modelling.set_up_model_2d_twopeaks_no_bg_normalised_with_fit_settings(),
          zdisk_modelling.set_up_model_2d_threepeaks_squarelattice_noreplocs_no_bg_normalised_with_fit_settings(),
-         zdisk_modelling.set_up_model_2d_twopeaks_plusreps_no_bg_with_fit_settings(),
-         zdisk_modelling.set_up_model_2d_twopeaks_plusreps_flat_bg_with_fit_settings(),
+         zdisk_modelling.set_up_model_2d_twopeaks_plusreps_no_bg_normalised_with_fit_settings(),
+         zdisk_modelling.set_up_model_2d_twopeaks_plusreps_flat_bg_normalised_with_fit_settings(),
     ]
 
     # NOTE HOW WE START A BIT IN TO AVOID THE RISE AT 0
