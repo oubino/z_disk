@@ -82,3 +82,6 @@ experiments/*
 
 # notebooks
 *.ipynb
+
+# sandpit
+sandpit/

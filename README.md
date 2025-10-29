@@ -274,12 +274,45 @@ For PERPL respository see: https://github.com/AlistairCurd/PERPL-Python3/tree/ma
 
 3. Modelling
 
-    Make folder called notebooks/ in experiment/output/ folder.
+    Note:  (i.e. X and Y are flipped compared to work by A.C.)
+    
+    In experiment/ folder (i.e. one directory above output folder) need a folder called
+    perpl_config/ which contains the configuration files
 
-    Copy into this folder the relevant notebooks from notebooks/ e.g. fit_first_peak.py,
+    i.e.
 
-    Run the notebooks using jupyter-notebooks.
+    ```bash
+    ...
+    ├── data
+    ├── output
+    └── perpl_config
+        ├── config.yaml 
+        └── models
+            ├── axial
+            |   ├── model_0.yaml
+            |   └── model_1.yaml
+            └── transverse
+                ├── model_0.yaml
+                └── model_1.yaml
+    ...
+    ```
 
-    Note to edit the parameters (top of the notebook) and the models being run.
+    For an example of a perpl_config folder see ....
 
-    (NOTE X and Y are flipped compared to work by A.C.)
+    FIX THIS
+
+    The config.yaml file specifies generic information applicable to all the models being fit.
+
+    Each model.yaml file specifies a specific model being fit to the data.
+    
+    ```shell
+    python scripts/perpl_modelling.py
+    ```
+
+    The following args are required:
+
+        -e Name of the experiment folder (e.g. dummy)
+
+
+
+    
