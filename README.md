@@ -326,12 +326,10 @@ For PERPL respository see: https://github.com/AlistairCurd/PERPL-Python3/tree/ma
            |   ├── results_histograms.csv
            |   └── results_kdes.csv
            └── transverse
-              ├── axial
-               |   ├── model_0.yaml
-               |   └── model_1.yaml
-              └── transverse
-                    ├── model_0.yaml
-                  └── model_1.yaml
+           |   ├── histograms/
+           |   ├── kdes/
+           |   ├── results_histograms.csv
+           |   └── results_kdes.csv
     ...
     ```
 
