@@ -38,7 +38,7 @@ def model_the_data(direction,
 
     loc_precision = np.loadtxt(loc_prec_path) 
     
-    # load in relative positions and calculate axial and transverse repeat distances
+    # load in relative positions and calculate axial and transverse characteristic distances
     relpos = pd.read_csv(relpos_path)
     
     relpos = pd.DataFrame({
@@ -106,8 +106,8 @@ def model_the_data(direction,
             background=model_config["background"],
             n_peaks=model_config["n_peaks"],
             peak_type=model_config["peak_type"],
-            repeat_distance=model_config["repeat_distance"],
-            repeat_distance_ratio=model_config["repeat_distance_ratio"],
+            characteristic_distance=model_config["characteristic_distance"],
+            characteristic_distance_ratio=model_config["characteristic_distance_ratio"],
             repeats=model_config["repeats"],
             offset=model_config["offset"],
             normalise=model_config["normalise"],
