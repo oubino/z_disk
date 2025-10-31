@@ -1,0 +1,89 @@
+# fitlength
+fitlength: 115
+
+# dimension of the fit
+dimension: 1
+
+# how to model the background
+# null, flat, linear
+background: null
+
+# number of peaks
+# 0, 1, 2, ...
+n_peaks: 1
+
+# type of peak, either variable amplitude or at a fixed ratio 1, 1 - 1/n, 1 - 2/n
+# variable, fixed
+peak_type: variable
+
+# how to model the characteristic distance, either one characteristic distance, 
+# or multiple characteristic distances given by each peak, or multiple peaks 
+# with ratio between them
+# one, multiple_fixed, multiple_ratio
+characteristic_distance: one
+
+# ratio between characteristic distances
+# null or list of ratios e.g. [1.0, 0.7, 0.4] for n_peaks: 3
+characteristic_distance_ratio: null
+
+# model repeated localisations i.e. repeated blinking
+# True, False
+repeats: True
+
+# include an offset turn
+# True, False
+offset: False
+
+# normalise the fit
+normalise: False
+
+# initial guesses at parameters
+params_initial:
+  # amplitude of peak 1
+  amp_peak_1: 91
+  # amplitude of peak 2
+  # amp_peak_2: 5
+  # etc...
+  # first characteristic distance
+  characteristic_distance_1: 20
+  # second characteristic distance
+  # characteristic_distance_2: 5
+  # etc.
+  # sigma for characteristic distance
+  characteristic_distance_broadening: 5
+  # standard deviation of localisation precision
+  loc_prec_sd: 50
+  # amplitude of peak due to repeated localisations
+  loc_prec_amp: 495
+  # background slope
+  bg_slope: -0.2
+  # background offset
+  bg_offset: 0
+
+# lower bounds for parameters
+params_lower:
+  amp_peak_1: 85
+  # amp_peak_2: 0
+  # etc...
+  characteristic_distance_1: 5
+  # characteristic_distance_2: 5
+  # etc.
+  characteristic_distance_broadening: 0
+  loc_prec_sd: 0
+  loc_prec_amp: 0
+  bg_slope: -10
+  bg_offset: 0
+
+# upper bounds for parameters
+params_upper:
+  amp_peak_1: 95
+  # amp_peak_2: 100
+  # etc...
+  characteristic_distance_1: 25
+  # characteristic_distance_2: 5
+  # etc.
+  characteristic_distance_broadening: 15
+  loc_prec_sd: 50
+  loc_prec_amp: 500
+  bg_slope: 20
+  bg_offset: 10

@@ -1,0 +1,21 @@
+# filter used during calculation of relative positions
+relpos_filter: 150.0
+
+# axial & transverse direction
+axial_direction: yy
+transverse_direction: xz
+
+# limit between localisations to be included when modelling other direction
+# i.e. when modelling axial distances, localisations must be within the 
+# transverse limit
+transverse_limit: 200. 
+axial_limit: 200.
+
+# localisation precision to load in
+loc_precision_filter: 5.0
+
+# number of locs per z disk 
+numberoflocalisations: [1,10]
+
+# sizes of bins for histogram analysis
+bin_sizes: [5]

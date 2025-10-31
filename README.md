@@ -297,9 +297,7 @@ For PERPL respository see: https://github.com/AlistairCurd/PERPL-Python3/tree/ma
     ...
     ```
 
-    For an example of a perpl_config folder see ....
-
-    FIX THIS
+    For an example of a perpl_config folder see examples/ 
 
     The config.yaml file specifies generic information applicable to all the models being fit.
 
