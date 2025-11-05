@@ -202,7 +202,7 @@ def main(argv=None):
 
     # parse arugments
     parser = argparse.ArgumentParser(
-        description="Calculate relative positions using PERPL"
+        description="Model the data using PERPL"
     )
 
     parser.add_argument(

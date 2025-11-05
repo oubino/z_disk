@@ -276,59 +276,72 @@ For PERPL respository see: https://github.com/AlistairCurd/PERPL-Python3/tree/ma
 
     Note:  (i.e. X and Y are flipped compared to work by A.C.)
     
-    In experiment/ folder (i.e. one directory above output folder) need a folder called
-    perpl_config/ which contains the configuration files
+   1. In experiment/ folder (i.e. one directory above output folder) need a folder called perpl_config/ which contains the configuration files
 
-    i.e.
+        i.e.
 
-    ```bash
-    ...
-    ├── data
-    ├── output
-    └── perpl_config
-        ├── config.yaml 
-        └── models
-            ├── axial
-            |   ├── model_0.yaml
-            |   └── model_1.yaml
-            └── transverse
-                ├── model_0.yaml
-                └── model_1.yaml
-    ...
-    ```
+        ```bash
+        ...
+        ├── data
+        ├── output
+        └── perpl_config
+           ├── config.yaml 
+           └── models
+              ├── axial
+               |   ├── model_0.yaml
+               |   └── model_1.yaml
+              └── transverse
+                    ├── model_0.yaml
+                    └── model_1.yaml
+        ...
+        ```
 
-    For an example of a perpl_config folder see examples/ 
+        For an example of a perpl_config folder see examples/ 
 
-    The config.yaml file specifies generic information applicable to all the models being fit.
+        The config.yaml file specifies generic information applicable to all the models being fit.
 
-    Each model.yaml file specifies a specific model being fit to the data.
+        Each model.yaml file specifies a specific model being fit to the data.
+
+    2. For an exhaustive sweep of all possible models within a set range. Define the possible values for each parameter in the config.yaml file (see examples/config.yaml) and run 
+
+        ```shell
+        python scripts/gen_sweep_configs.py
+        ```
+
+        with the following required args
+
+            -e Name of the experiment folder (e.g. dummy)
+
+        to generate all the possible model config files.
+
+    3. Then to model the data run
     
-    ```shell
-    python scripts/perpl_modelling.py
-    ```
+        ```shell
+        python scripts/perpl_modelling.py
+        ```
 
-    The following args are required:
+        The following args are required:
 
-        -e Name of the experiment folder (e.g. dummy)
+            -e Name of the experiment folder (e.g. dummy)
 
-    This will generate output in this format
+        This will generate output in this format
 
-    ```bash
-    ...
-    ├── data
-    ├── output
-        └──perpl_modelling
-           ├── axial
-           |   ├── histograms/
-           |   ├── kdes/
-           |   ├── results_histograms.csv
-           |   └── results_kdes.csv
-           └── transverse
-           |   ├── histograms/
-           |   ├── kdes/
-           |   ├── results_histograms.csv
-           |   └── results_kdes.csv
-    ...
-    ```
+        ```bash
+        ...
+        ├── data
+        ├── output
+            └──perpl_modelling
+               ├── axial
+            |   ├── histograms/
+            |   ├── kdes/
+            |   ├── results_histograms.csv
+            |   └── results_kdes.csv
+               └── transverse
+            |   ├── histograms/
+            |   ├── kdes/
+            |   ├── results_histograms.csv
+            |   └── results_kdes.csv
+        ...
+        ```
     
-    You can follow this workflow to model your data ![workflow](/resources/workflow_v0.1.svg).
+    4. You can follow this workflow to model your data ![workflow](/resources/workflow_v0.1.svg).
