@@ -226,6 +226,14 @@ def main(argv=None):
         required=True,
     )
 
+    parser.add_argument(
+        "-fh",
+        "--fit_histograms",
+        action="store_true",
+        help="fit histograms",
+        required=False,
+    )
+
     args = parser.parse_args(argv)
 
     config_folder = os.path.join("experiments", args.experiment, "perpl_config")
@@ -297,40 +305,42 @@ def main(argv=None):
 
     # .... histogram
 
-    ssrs = []
-    aics = []
-    aiccorrs = []
-    setups = []
+    if args.fit_histograms:
 
-    for param in list(product(numberoflocalisations_lst, bin_size_lst)):
-        numberoflocalisations, bin_size = param
+        ssrs = []
+        aics = []
+        aiccorrs = []
+        setups = []
 
-        model_the_data(
-            "axial",
-            "histogram",
-            limits,
-            models,
-            model_configs,
-            args.experiment,
-            loc_precision_filter,
-            bin_size,
-            numberoflocalisations,
-            relpos_filter,
-            axial_direction,
-            transverse_direction,
-            output_folder,
-            ssrs,
-            aics,
-            aiccorrs,
-            setups,
-        )
+        for param in list(product(numberoflocalisations_lst, bin_size_lst)):
+            numberoflocalisations, bin_size = param
 
-    aiccorrs, aics, ssrs, setups = zip(*sorted(zip(aiccorrs, aics, ssrs, setups)))
-    
-    with open(os.path.join(output_folder, "results_histograms.csv"), "w") as f:
-        f.write("Model,AICcorr,AIC,SSR\n")
-        for row in zip(setups, aiccorrs, aics, ssrs):
-            f.write(",".join(map(str, row)) + "\n")
+            model_the_data(
+                "axial",
+                "histogram",
+                limits,
+                models,
+                model_configs,
+                args.experiment,
+                loc_precision_filter,
+                bin_size,
+                numberoflocalisations,
+                relpos_filter,
+                axial_direction,
+                transverse_direction,
+                output_folder,
+                ssrs,
+                aics,
+                aiccorrs,
+                setups,
+            )
+
+        aiccorrs, aics, ssrs, setups = zip(*sorted(zip(aiccorrs, aics, ssrs, setups)))
+        
+        with open(os.path.join(output_folder, "results_histograms.csv"), "w") as f:
+            f.write("Model,AICcorr,AIC,SSR\n")
+            for row in zip(setups, aiccorrs, aics, ssrs):
+                f.write(",".join(map(str, row)) + "\n")
 
     # ... KDE
 
@@ -381,40 +391,42 @@ def main(argv=None):
     
     # .... histogram
 
-    ssrs = []
-    aics = []
-    aiccorrs = []
-    setups = []
+    if args.fit_histograms:
 
-    for param in list(product(numberoflocalisations_lst, bin_size_lst)):
-        numberoflocalisations, bin_size = param
+        ssrs = []
+        aics = []
+        aiccorrs = []
+        setups = []
 
-        model_the_data(
-            "transverse",
-            "histogram",
-            limits,
-            models,
-            model_configs,
-            args.experiment,
-            loc_precision_filter,
-            bin_size,
-            numberoflocalisations,
-            relpos_filter,
-            axial_direction,
-            transverse_direction,
-            output_folder,
-            ssrs,
-            aics,
-            aiccorrs,
-            setups,
-        )
+        for param in list(product(numberoflocalisations_lst, bin_size_lst)):
+            numberoflocalisations, bin_size = param
 
-    aiccorrs, aics, ssrs, setups = zip(*sorted(zip(aiccorrs, aics, ssrs, setups)))
-    
-    with open(os.path.join(output_folder, "results_histograms.csv"), "w") as f:
-        f.write("Model,AICcorr,AIC,SSR\n")
-        for row in zip(setups, aiccorrs, aics, ssrs):
-            f.write(",".join(map(str, row)) + "\n")
+            model_the_data(
+                "transverse",
+                "histogram",
+                limits,
+                models,
+                model_configs,
+                args.experiment,
+                loc_precision_filter,
+                bin_size,
+                numberoflocalisations,
+                relpos_filter,
+                axial_direction,
+                transverse_direction,
+                output_folder,
+                ssrs,
+                aics,
+                aiccorrs,
+                setups,
+            )
+
+        aiccorrs, aics, ssrs, setups = zip(*sorted(zip(aiccorrs, aics, ssrs, setups)))
+        
+        with open(os.path.join(output_folder, "results_histograms.csv"), "w") as f:
+            f.write("Model,AICcorr,AIC,SSR\n")
+            for row in zip(setups, aiccorrs, aics, ssrs):
+                f.write(",".join(map(str, row)) + "\n")
 
     # ... KDE
 

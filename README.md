@@ -320,9 +320,10 @@ For PERPL respository see: https://github.com/AlistairCurd/PERPL-Python3/tree/ma
         python scripts/perpl_modelling.py
         ```
 
-        The following args are required:
+        This takes the following args:
 
-            -e Name of the experiment folder (e.g. dummy)
+            -e Name of the experiment folder (e.g. dummy) [required]
+            -fh [optional: fit the histograms as well]
 
         This will generate output in this format
 
