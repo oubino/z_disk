@@ -60,8 +60,6 @@ def model_the_data(direction,
     
     distances = zdisk_modelling.remove_duplicates(distances)
 
-    print("Direction: ", direction)
-
     # for each model...
     for i, model in enumerate(models):
         
