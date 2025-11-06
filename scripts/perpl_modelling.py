@@ -60,6 +60,8 @@ def model_the_data(direction,
     
     distances = zdisk_modelling.remove_duplicates(distances)
 
+    print("Direction: ", direction)
+
     # for each model...
     for i, model in enumerate(models):
         
@@ -114,6 +116,7 @@ def model_the_data(direction,
             params_initial=model_config["params_initial"],
             params_lower=model_config["params_lower"],
             params_upper=model_config["params_upper"],
+            name=model_name,
         )
 
         perpl_model.fit_to_experiment(
@@ -148,8 +151,9 @@ def model_the_data(direction,
                 (f"{model_name}_nlocs_{numberoflocalisations}_kdeandfit.svg")
             )
 
-        fig.savefig(figname)
-        plt.close(fig)
+        if fig is not None:
+            fig.savefig(figname)
+            plt.close(fig)
 
         # plot model components
         fig2 = perpl_model.plot_model_components(
@@ -167,8 +171,9 @@ def model_the_data(direction,
                 "kdes",
                 (f"{model_name}_nlocs_{numberoflocalisations}_modelcomponents.svg")
             )
-        fig2.savefig(figname)
-        plt.close(fig2)
+        if fig2 is not None:
+            fig2.savefig(figname)
+            plt.close(fig2)
 
         # save model params and err
         if plot_type == "histogram":
@@ -182,8 +187,11 @@ def model_the_data(direction,
         with open(opt_param_path, "w") as f:
             f.write("Optimal params +- Error\n")
             f.write("-----------------------\n")
-            for row in zip(perpl_model.param_names, perpl_model.params_optimised, perpl_model.params_err):
-                f.write(f"{row[0]}: {row[1]} +- {row[2]}\n")
+            if perpl_model.params_optimised is None:
+                f.write("Model failed to fit")
+            else:
+                for row in zip(perpl_model.param_names, perpl_model.params_optimised, perpl_model.params_err):
+                    f.write(f"{row[0]}: {row[1]} +- {row[2]}\n")
 
         # save ssr, aic, aiccorr, setup
         ssrs.append(perpl_model.sum_of_squares_error)
