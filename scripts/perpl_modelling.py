@@ -119,6 +119,12 @@ def model_the_data(direction,
             name=model_name,
         )
 
+        if model_config["background"] is None and model_config["n_peaks"] == 0 and model_config["repeats"] is False:
+            print(f"Skipping {model_name} as has nothing to fit")
+            return None
+        
+        # print("Model name ", model_name) Debug
+
         perpl_model.fit_to_experiment(
             x_expt,
             y_expt, 
