@@ -56,7 +56,13 @@ axial:
     # amp_peak_2: 5
     # etc...
     # first characteristic distance
-
+    #  - if give a list then assumes that 
+    #  each distance corresponses to each charac dist type
+    #  e.g. characteristic_distance_1: [20,10,40]
+    #       charac_dist: [one, multiple_fixed, multiple_ratio]
+    #       --> for one peak, characteristic dist 1 = 20
+    #       --> for mult_fix, characteristic dist 1 = 10
+    #       --> for mult_rat, characteristic dist 1 = 40
     characteristic_distance_1: 20
     # second characteristic distance
     # characteristic_distance_2: 5
@@ -130,7 +136,13 @@ transverse:
     # amp_peak_2: 5
     # etc...
     # first characteristic distance
-
+    #  - if give a list then assumes that 
+    #  each distance corresponses to each charac dist type
+    #  e.g. characteristic_distance_1: [20,10,40]
+    #       charac_dist: [one, multiple_fixed, multiple_ratio]
+    #       --> for one peak, characteristic dist 1 = 20
+    #       --> for mult_fix, characteristic dist 1 = 10
+    #       --> for mult_rat, characteristic dist 1 = 40
     characteristic_distance_1: 20
     # second characteristic distance
     # characteristic_distance_2: 5

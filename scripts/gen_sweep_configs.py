@@ -1,6 +1,8 @@
 import argparse
+import copy
 from itertools import product
 import os
+import warnings
 
 import yaml
 
@@ -20,7 +22,7 @@ def gen_configs(config_folder, direction):
     n_peaks = direction_params["n_peaks"]
     peak_types = direction_params["peak_type"]
     charac_dists = direction_params["charac_dist"]
-    charac_dist_ratios = direction_params["charac_dist_ratio"]
+    charac_dist_ratio = direction_params["charac_dist_ratio"]
     repeats = direction_params["repeats"]
     offsets = direction_params["offset"]
     normalises = direction_params["normalise"]
@@ -28,19 +30,33 @@ def gen_configs(config_folder, direction):
     params_lower = direction_params["params_lower"]
     params_upper = direction_params["params_upper"]
 
+    if type(params_initial["characteristic_distance_1"]) is list:
+        assert len(params_initial["characteristic_distance_1"]) == len(charac_dists)
+        warnings.warn("Multiple characteristic distances for first peak "\
+                      f"for {direction} direction. Therefore, assuming peak distances " \
+                      "are for each type of characteristic distance.")
+        multiple_charac_dists = True
+    else:
+        multiple_charac_dists = False
+
     # generate all possible model configurations
-    for index, params in enumerate(list(product(
+    for index, params in enumerate(product(
         fitlengths, 
         dimension,
         backgrounds,
         n_peaks,
         peak_types,
         charac_dists,
-        charac_dist_ratios,
+        #charac_dist_ratios,
         repeats,
         offsets,
         normalises,
-    ))):
+    )):
+        
+        params_initial_copy = copy.deepcopy(params_initial)
+        params_lower_copy = copy.deepcopy(params_lower)
+        params_upper_copy = copy.deepcopy(params_upper)
+        
         model_config = {
             "fitlength": params[0],
             "dimension": params[1],
@@ -48,14 +64,24 @@ def gen_configs(config_folder, direction):
             "n_peaks": params[3],
             "peak_type": params[4],
             "characteristic_distance": params[5],
-            "characteristic_distance_ratio": params[6],
-            "repeats": params[7],
-            "offset": params[8],
-            "normalise": params[9],
-            "params_initial": params_initial,
-            "params_lower": params_lower,
-            "params_upper": params_upper,
+            "characteristic_distance_ratio": charac_dist_ratio,
+            "repeats": params[6],
+            "offset": params[7],
+            "normalise": params[8],
+            "params_initial": params_initial_copy,
+            "params_lower": params_lower_copy,
+            "params_upper": params_upper_copy,
         }
+        
+        # if something
+        if multiple_charac_dists:
+            # change params_values
+            for name, file in zip(
+                ["params_initial", "params_lower", "params_upper"],
+                [params_initial_copy, params_lower_copy, params_upper_copy]
+            ):
+                idx = charac_dists.index(params[5])
+                model_config[name]["characteristic_distance_1"] = file["characteristic_distance_1"][idx]
 
         # save yaml file
         model_config_save_loc = os.path.join(config_folder, f"{direction}_models/model_{index}.yaml")
