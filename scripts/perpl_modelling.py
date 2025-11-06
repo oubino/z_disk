@@ -119,7 +119,7 @@ def model_the_data(direction,
 
         if model_config["background"] is None and model_config["n_peaks"] == 0 and model_config["repeats"] is False:
             print(f"Skipping {model_name} as has nothing to fit")
-            return None
+            continue
         
         # print("Model name ", model_name) Debug
 
