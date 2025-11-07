@@ -83,6 +83,10 @@ def model_the_data(direction,
 
         elif plot_type == "kde":
 
+            if len(distances) == 0:
+                print(f"Skipping {model_name} as no distances to fit")
+                continue
+
             increment = np.round(model_config["fitlength"]/len(distances))
             if increment == 0:
                 increment = 1
