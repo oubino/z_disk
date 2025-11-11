@@ -31,7 +31,7 @@ bin_sizes: [5]
 axial:
   fitlength: [100] # length of the fit
   dimension: [1] # 1,2,3
-  background: [null, linear] # null, flat, linear
+  background: [null, linear] # null, flat, linear, linear_flat
   n_peaks: [1] # number of peaks
   # variable amplitude or at a fixed ratio 1, 1 - 1/n, 1 - 2/n
   peak_type: [variable]  # variable, fixed
@@ -111,7 +111,7 @@ axial:
 transverse:
   fitlength: [100] # length of the fit
   dimension: [1] # 1,2,3
-  background: [null, linear] # null, flat, linear
+  background: [null, linear] # null, flat, linear, linear_flat
   n_peaks: [1] # number of peaks
   # variable amplitude or at a fixed ratio 1, 1 - 1/n, 1 - 2/n
   peak_type: [variable]  # variable, fixed

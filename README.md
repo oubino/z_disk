@@ -345,4 +345,4 @@ For PERPL respository see: https://github.com/AlistairCurd/PERPL-Python3/tree/ma
         ...
         ```
     
-    4. You can follow this workflow to model your data ![workflow](/resources/workflow_v0.1.svg).
+    4. You can follow this workflow to model your data ![workflow](/resources/workflow_v0.2.svg).
