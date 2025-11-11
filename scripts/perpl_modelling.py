@@ -32,6 +32,7 @@ def model_the_data(direction,
                    fitlengths,
                    nlocs,
                    bgbelowzeros,
+                   nparams,
                    ):
             
     models = models[direction]
@@ -215,6 +216,7 @@ def model_the_data(direction,
         fitlengths.append(model_config["fitlength"])
         nlocs.append(numberoflocalisations)
         bgbelowzeros.append(perpl_model.bgbelowzero)
+        nparams.append(perpl_model.n_params)
 
 def main(argv=None):
     """Main script for the module with variable arguments
@@ -324,6 +326,7 @@ def main(argv=None):
         fitlengths = []
         nlocs = []
         bgbelowzeros = []
+        nparams = []
 
         for param in list(product(numberoflocalisations_lst, bin_size_lst)):
             numberoflocalisations, bin_size = param
@@ -349,13 +352,14 @@ def main(argv=None):
                 fitlengths,
                 nlocs,
                 bgbelowzeros,
+                nparams,
             )
 
-        aiccorrs, aics, ssrs, setups, fitlengths, nlocs, bgbelowzeros, = zip(*sorted(zip(aiccorrs, aics, ssrs, setups, fitlengths, nlocs, bgbelowzeros)))
+        aiccorrs, aics, ssrs, setups, fitlengths, nlocs, bgbelowzeros, nparams = zip(*sorted(zip(aiccorrs, aics, ssrs, setups, fitlengths, nlocs, bgbelowzeros, nparams)))
         
         with open(os.path.join(output_folder, "results_histograms.csv"), "w") as f:
-            f.write("Model,AICcorr,AIC,SSR,Fitlength,Nlocs,BGbelowzero\n")
-            for row in zip(setups, aiccorrs, aics, ssrs, fitlengths, nlocs, bgbelowzeros):
+            f.write("Model,AICcorr,AIC,SSR,Fitlength,Nlocs,BGbelowzero,Nparams\n")
+            for row in zip(setups, aiccorrs, aics, ssrs, fitlengths, nlocs, bgbelowzeros, nparams):
                 f.write(",".join(map(str, row)) + "\n")
 
     # ... KDE
@@ -367,6 +371,7 @@ def main(argv=None):
     fitlengths = []
     nlocs = []
     bgbelowzeros = []
+    nparams = []
 
     for numberoflocalisations in numberoflocalisations_lst:
 
@@ -391,13 +396,14 @@ def main(argv=None):
             fitlengths,
             nlocs,
             bgbelowzeros,
+            nparams,
         )
 
-    aiccorrs, aics, ssrs, setups, fitlengths, nlocs, bgbelowzeros, = zip(*sorted(zip(aiccorrs, aics, ssrs, setups, fitlengths, nlocs, bgbelowzeros)))
+    aiccorrs, aics, ssrs, setups, fitlengths, nlocs, bgbelowzeros, nparams = zip(*sorted(zip(aiccorrs, aics, ssrs, setups, fitlengths, nlocs, bgbelowzeros, nparams)))
     
     with open(os.path.join(output_folder, "results_kdes.csv"), "w") as f:
-        f.write("Model,AICcorr,AIC,SSR,Fitlength,Nlocs,BGbelowzero\n")
-        for row in zip(setups, aiccorrs, aics, ssrs, fitlengths, nlocs, bgbelowzeros):
+        f.write("Model,AICcorr,AIC,SSR,Fitlength,Nlocs,BGbelowzero,Nparams\n")
+        for row in zip(setups, aiccorrs, aics, ssrs, fitlengths, nlocs, bgbelowzeros, nparams):
             f.write(",".join(map(str, row)) + "\n")
 
     # +++ FIT TRANSVERSE +++
@@ -422,6 +428,7 @@ def main(argv=None):
         fitlengths = []
         nlocs = []
         bgbelowzeros = []
+        nparams = []
 
         for param in list(product(numberoflocalisations_lst, bin_size_lst)):
             numberoflocalisations, bin_size = param
@@ -447,13 +454,14 @@ def main(argv=None):
                 fitlengths,
                 nlocs,
                 bgbelowzeros,
+                nparams,
             )
 
-        aiccorrs, aics, ssrs, setups, fitlengths, nlocs, bgbelowzeros, = zip(*sorted(zip(aiccorrs, aics, ssrs, setups, fitlengths, nlocs, bgbelowzeros)))
+        aiccorrs, aics, ssrs, setups, fitlengths, nlocs, bgbelowzeros, nparams = zip(*sorted(zip(aiccorrs, aics, ssrs, setups, fitlengths, nlocs, bgbelowzeros, nparams)))
         
         with open(os.path.join(output_folder, "results_histograms.csv"), "w") as f:
-            f.write("Model,AICcorr,AIC,SSR,Fitlength,Nlocs,BGbelowzero\n")
-            for row in zip(setups, aiccorrs, aics, ssrs, fitlengths, nlocs, bgbelowzeros):
+            f.write("Model,AICcorr,AIC,SSR,Fitlength,Nlocs,BGbelowzero, Nparams\n")
+            for row in zip(setups, aiccorrs, aics, ssrs, fitlengths, nlocs, bgbelowzeros, nparams):
                 f.write(",".join(map(str, row)) + "\n")
 
     # ... KDE
@@ -465,7 +473,7 @@ def main(argv=None):
     fitlengths = []
     nlocs = []
     bgbelowzeros = []
-
+    nparams = []
 
     for numberoflocalisations in numberoflocalisations_lst:
 
@@ -490,13 +498,14 @@ def main(argv=None):
             fitlengths,
             nlocs,
             bgbelowzeros,
+            nparams,
         )
 
-    aiccorrs, aics, ssrs, setups, fitlengths, nlocs, bgbelowzeros, = zip(*sorted(zip(aiccorrs, aics, ssrs, setups, fitlengths, nlocs, bgbelowzeros)))
+    aiccorrs, aics, ssrs, setups, fitlengths, nlocs, bgbelowzeros, nparams = zip(*sorted(zip(aiccorrs, aics, ssrs, setups, fitlengths, nlocs, bgbelowzeros, nparams)))
     
     with open(os.path.join(output_folder, "results_kdes.csv"), "w") as f:
-        f.write("Model,AICcorr,AIC,SSR,Fitlength,Nlocs,BGbelowzero\n")
-        for row in zip(setups, aiccorrs, aics, ssrs, fitlengths, nlocs, bgbelowzeros):
+        f.write("Model,AICcorr,AIC,SSR,Fitlength,Nlocs,BGbelowzero,Nparams\n")
+        for row in zip(setups, aiccorrs, aics, ssrs, fitlengths, nlocs, bgbelowzeros, nparams):
             f.write(",".join(map(str, row)) + "\n")
 
 
