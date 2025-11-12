@@ -33,6 +33,8 @@ def model_the_data(direction,
                    nlocs,
                    bgbelowzeros,
                    nparams,
+                   popt_at_bounds,
+                   large_uncertainties,
                    ):
             
     models = models[direction]
@@ -217,6 +219,8 @@ def model_the_data(direction,
         nlocs.append(numberoflocalisations)
         bgbelowzeros.append(perpl_model.bgbelowzero)
         nparams.append(perpl_model.n_params)
+        popt_at_bounds.append(perpl_model.popt_at_bound)
+        large_uncertainties.append(perpl_model.large_uncertainty)
 
 def main(argv=None):
     """Main script for the module with variable arguments
@@ -327,6 +331,8 @@ def main(argv=None):
         nlocs = []
         bgbelowzeros = []
         nparams = []
+        popt_at_bounds = []
+        large_uncertainties = []
 
         for param in list(product(numberoflocalisations_lst, bin_size_lst)):
             numberoflocalisations, bin_size = param
@@ -353,13 +359,15 @@ def main(argv=None):
                 nlocs,
                 bgbelowzeros,
                 nparams,
+                popt_at_bounds,
+                large_uncertainties,
             )
 
-        aiccorrs, aics, ssrs, setups, fitlengths, nlocs, bgbelowzeros, nparams = zip(*sorted(zip(aiccorrs, aics, ssrs, setups, fitlengths, nlocs, bgbelowzeros, nparams)))
+        aiccorrs, aics, ssrs, setups, fitlengths, nlocs, bgbelowzeros, nparams, popt_at_bounds, large_uncertainties = zip(*sorted(zip(aiccorrs, aics, ssrs, setups, fitlengths, nlocs, bgbelowzeros, nparams, popt_at_bounds, large_uncertainties)))
         
         with open(os.path.join(output_folder, "results_histograms.csv"), "w") as f:
-            f.write("Model,AICcorr,AIC,SSR,Fitlength,Nlocs,BGbelowzero,Nparams\n")
-            for row in zip(setups, aiccorrs, aics, ssrs, fitlengths, nlocs, bgbelowzeros, nparams):
+            f.write("Model,AICcorr,AIC,SSR,Fitlength,Nlocs,BGbelowzero,Nparams,POptAtBounds,LargeUncertainty\n")
+            for row in zip(setups, aiccorrs, aics, ssrs, fitlengths, nlocs, bgbelowzeros, nparams, popt_at_bounds, large_uncertainties):
                 f.write(",".join(map(str, row)) + "\n")
 
     # ... KDE
@@ -372,6 +380,8 @@ def main(argv=None):
     nlocs = []
     bgbelowzeros = []
     nparams = []
+    popt_at_bounds = []
+    large_uncertainties = []
 
     for numberoflocalisations in numberoflocalisations_lst:
 
@@ -397,13 +407,15 @@ def main(argv=None):
             nlocs,
             bgbelowzeros,
             nparams,
+            popt_at_bounds,
+            large_uncertainties,
         )
 
-    aiccorrs, aics, ssrs, setups, fitlengths, nlocs, bgbelowzeros, nparams = zip(*sorted(zip(aiccorrs, aics, ssrs, setups, fitlengths, nlocs, bgbelowzeros, nparams)))
+    aiccorrs, aics, ssrs, setups, fitlengths, nlocs, bgbelowzeros, nparams, popt_at_bounds, large_uncertainties = zip(*sorted(zip(aiccorrs, aics, ssrs, setups, fitlengths, nlocs, bgbelowzeros, nparams, popt_at_bounds, large_uncertainties)))
     
     with open(os.path.join(output_folder, "results_kdes.csv"), "w") as f:
-        f.write("Model,AICcorr,AIC,SSR,Fitlength,Nlocs,BGbelowzero,Nparams\n")
-        for row in zip(setups, aiccorrs, aics, ssrs, fitlengths, nlocs, bgbelowzeros, nparams):
+        f.write("Model,AICcorr,AIC,SSR,Fitlength,Nlocs,BGbelowzero,Nparams, POptAtBounds, LargeUncertainty\n")
+        for row in zip(setups, aiccorrs, aics, ssrs, fitlengths, nlocs, bgbelowzeros, nparams, popt_at_bounds, large_uncertainties):
             f.write(",".join(map(str, row)) + "\n")
 
     # +++ FIT TRANSVERSE +++
@@ -429,6 +441,8 @@ def main(argv=None):
         nlocs = []
         bgbelowzeros = []
         nparams = []
+        popt_at_bounds = []
+        large_uncertainties = []
 
         for param in list(product(numberoflocalisations_lst, bin_size_lst)):
             numberoflocalisations, bin_size = param
@@ -455,13 +469,15 @@ def main(argv=None):
                 nlocs,
                 bgbelowzeros,
                 nparams,
+                popt_at_bounds,
+                large_uncertainties,
             )
 
-        aiccorrs, aics, ssrs, setups, fitlengths, nlocs, bgbelowzeros, nparams = zip(*sorted(zip(aiccorrs, aics, ssrs, setups, fitlengths, nlocs, bgbelowzeros, nparams)))
+        aiccorrs, aics, ssrs, setups, fitlengths, nlocs, bgbelowzeros, nparams, popt_at_bounds, large_uncertainties = zip(*sorted(zip(aiccorrs, aics, ssrs, setups, fitlengths, nlocs, bgbelowzeros, nparams, popt_at_bounds, large_uncertainties)))
         
         with open(os.path.join(output_folder, "results_histograms.csv"), "w") as f:
-            f.write("Model,AICcorr,AIC,SSR,Fitlength,Nlocs,BGbelowzero, Nparams\n")
-            for row in zip(setups, aiccorrs, aics, ssrs, fitlengths, nlocs, bgbelowzeros, nparams):
+            f.write("Model,AICcorr,AIC,SSR,Fitlength,Nlocs,BGbelowzero, Nparams, POptAtBounds, LargeUncertainty\n")
+            for row in zip(setups, aiccorrs, aics, ssrs, fitlengths, nlocs, bgbelowzeros, nparams, popt_at_bounds, large_uncertainties):
                 f.write(",".join(map(str, row)) + "\n")
 
     # ... KDE
@@ -474,6 +490,8 @@ def main(argv=None):
     nlocs = []
     bgbelowzeros = []
     nparams = []
+    popt_at_bounds = []
+    large_uncertainties = []
 
     for numberoflocalisations in numberoflocalisations_lst:
 
@@ -499,13 +517,15 @@ def main(argv=None):
             nlocs,
             bgbelowzeros,
             nparams,
+            popt_at_bounds,
+            large_uncertainties
         )
 
-    aiccorrs, aics, ssrs, setups, fitlengths, nlocs, bgbelowzeros, nparams = zip(*sorted(zip(aiccorrs, aics, ssrs, setups, fitlengths, nlocs, bgbelowzeros, nparams)))
+    aiccorrs, aics, ssrs, setups, fitlengths, nlocs, bgbelowzeros, nparams, popt_at_bounds, large_uncertainties = zip(*sorted(zip(aiccorrs, aics, ssrs, setups, fitlengths, nlocs, bgbelowzeros, nparams, popt_at_bounds, large_uncertainties)))
     
     with open(os.path.join(output_folder, "results_kdes.csv"), "w") as f:
-        f.write("Model,AICcorr,AIC,SSR,Fitlength,Nlocs,BGbelowzero,Nparams\n")
-        for row in zip(setups, aiccorrs, aics, ssrs, fitlengths, nlocs, bgbelowzeros, nparams):
+        f.write("Model,AICcorr,AIC,SSR,Fitlength,Nlocs,BGbelowzero,Nparams, POptAtBounds, LargeUncertainty\n")
+        for row in zip(setups, aiccorrs, aics, ssrs, fitlengths, nlocs, bgbelowzeros, nparams, popt_at_bounds, large_uncertainties):
             f.write(",".join(map(str, row)) + "\n")
 
 
