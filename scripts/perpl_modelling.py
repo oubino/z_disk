@@ -5,70 +5,74 @@ import os
 
 import numpy as np
 import pandas as pd
-#import seaborn as sns
+
+# import seaborn as sns
 import yaml
 
 from perpl.io import plotting
 from perpl.modelling import zdisk_modelling
 from perpl.modelling.modelling_general import PERPLModel
 
-def model_the_data(direction,
-                   plot_type,
-                   limits, 
-                   models,
-                   model_configs,
-                   experiment,
-                   loc_precision_filter,
-                   bin_size,
-                   numberoflocalisations,
-                   relpos_filter,
-                   axial_direction,
-                   transverse_direction,
-                   output_folder,
-                   ssrs,
-                   aics,
-                   aiccorrs,
-                   setups,
-                   fitlengths,
-                   nlocs,
-                   bgbelowzeros,
-                   nparams,
-                   popt_at_bounds,
-                   large_uncertainties,
-                   ):
-            
+
+def model_the_data(
+    direction,
+    plot_type,
+    limits,
+    models,
+    model_configs,
+    experiment,
+    loc_precision_filter,
+    bin_size,
+    numberoflocalisations,
+    relpos_filter,
+    axial_direction,
+    transverse_direction,
+    output_folder,
+    ssrs,
+    aics,
+    aiccorrs,
+    setups,
+    fitlengths,
+    nlocs,
+    bgbelowzeros,
+    nparams,
+    popt_at_bounds,
+    large_uncertainties,
+):
+
     models = models[direction]
 
     loc_prec_path = rf"experiments/{experiment}/output/perpl_relative_posns/all_z_disks_{loc_precision_filter}precisionfilter_{numberoflocalisations}numberoflocalisations_PERPL-locprec_{relpos_filter}filter.txt"
-    relpos_path = rf"experiments/{experiment}/output/perpl_relative_posns/all_z_disks_{loc_precision_filter}precisionfilter_{numberoflocalisations}numberoflocalisations_PERPL-relpos_{relpos_filter}filter.csv" # path to relative posn data
+    relpos_path = rf"experiments/{experiment}/output/perpl_relative_posns/all_z_disks_{loc_precision_filter}precisionfilter_{numberoflocalisations}numberoflocalisations_PERPL-relpos_{relpos_filter}filter.csv"  # path to relative posn data
 
-    loc_precision = np.loadtxt(loc_prec_path) 
-    
+    loc_precision = np.loadtxt(loc_prec_path)
+
     # load in relative positions and calculate axial and transverse characteristic distances
     relpos = pd.read_csv(relpos_path)
-    
-    relpos = pd.DataFrame({
-        "axial": relpos[f"{axial_direction}_separation"],
-        "transverse": relpos[f"{transverse_direction}_separation"]},)
-    
+
+    relpos = pd.DataFrame(
+        {
+            "axial": relpos[f"{axial_direction}_separation"],
+            "transverse": relpos[f"{transverse_direction}_separation"],
+        },
+    )
+
     if direction == "axial":
         distances = zdisk_modelling.getaxialseparations_no_smoothing(
             relpos,
             max_distance=relpos[direction].max(),
-            transverse_limit=limits["transverse"]
-            )
+            transverse_limit=limits["transverse"],
+        )
     elif direction == "transverse":
         distances = zdisk_modelling.get_transverse_separations(
-            relpos,
-            max_distance=relpos[direction].max(),
-            axial_limit=limits["axial"]
-            )
-    
+            relpos, max_distance=relpos[direction].max(), axial_limit=limits["axial"]
+        )
+
     distances = zdisk_modelling.remove_duplicates(distances)
 
     # for each model...
     for i, model in enumerate(models):
-        
+
         model_name = model.rstrip(".yaml")
         model_config = model_configs[direction][i]
 
@@ -76,10 +80,9 @@ def model_the_data(direction,
 
             # Get the histogram data up to distance = fitlength
             hist_values, bin_edges = np.histogram(
-                distances,
-                bins=np.arange(0, model_config["fitlength"] + 1, bin_size)
+                distances, bins=np.arange(0, model_config["fitlength"] + 1, bin_size)
             )
-            bin_centres = (bin_edges[:- 1] + bin_edges[1:]) / 2
+            bin_centres = (bin_edges[:-1] + bin_edges[1:]) / 2
 
             x_expt = bin_centres
             y_expt = hist_values
@@ -90,11 +93,13 @@ def model_the_data(direction,
                 print(f"Skipping {model_name} as no distances to fit")
                 continue
 
-            increment = np.round(model_config["fitlength"]/len(distances))
+            increment = np.round(model_config["fitlength"] / len(distances))
             if increment == 0:
                 increment = 1
-            calculation_points = np.arange(0, model_config["fitlength"] + 1., increment)
-            
+            calculation_points = np.arange(
+                0, model_config["fitlength"] + 1.0, increment
+            )
+
             if model_config["dimension"] == 1:
                 churchman = plotting.estimate_rpd_churchman_1d
             elif model_config["dimension"] == 2:
@@ -105,9 +110,9 @@ def model_the_data(direction,
             rpd = churchman(
                 input_distances=distances,
                 calculation_points=calculation_points,
-                combined_precision=(np.sqrt(2) * loc_precision)
+                combined_precision=(np.sqrt(2) * loc_precision),
             )
-            
+
             y_expt = rpd[calculation_points > 0]
             x_expt = calculation_points[calculation_points > 0]
 
@@ -127,17 +132,21 @@ def model_the_data(direction,
             name=model_name,
         )
 
-        if model_config["background"] is None and model_config["n_peaks"] == 0 and model_config["repeats"] is False:
+        if (
+            model_config["background"] is None
+            and model_config["n_peaks"] == 0
+            and model_config["repeats"] is False
+        ):
             print(f"Skipping {model_name} as has nothing to fit")
             continue
-        
+
         # print("Model name ", model_name) Debug
 
         perpl_model.fit_to_experiment(
             x_expt,
-            y_expt, 
+            y_expt,
         )
-        
+
         if plot_type == "histogram":
             # plot distance hist and fit
             fig = perpl_model.plot_distance_hist_and_fit(
@@ -147,22 +156,22 @@ def model_the_data(direction,
                 model_config["fitlength"],
             )
             figname = os.path.join(
-                output_folder, 
+                output_folder,
                 "histograms",
-                (f"{model_name}_nlocs_{numberoflocalisations}_binsize_{bin_size}_histandfit.svg")
+                (
+                    f"{model_name}_nlocs_{numberoflocalisations}_binsize_{bin_size}_histandfit.svg"
+                ),
             )
 
         elif plot_type == "kde":
             # plot kde and fit
             fig = perpl_model.plot_distance_kde_and_fit(
-                x_expt,
-                y_expt,
-                model_config["fitlength"]
+                x_expt, y_expt, model_config["fitlength"]
             )
             figname = os.path.join(
-                output_folder, 
+                output_folder,
                 "kdes",
-                (f"{model_name}_nlocs_{numberoflocalisations}_kdeandfit.svg")
+                (f"{model_name}_nlocs_{numberoflocalisations}_kdeandfit.svg"),
             )
 
         if fig is not None:
@@ -170,20 +179,20 @@ def model_the_data(direction,
             plt.close(fig)
 
         # plot model components
-        fig2 = perpl_model.plot_model_components(
-            model_config["fitlength"]
-        )
+        fig2 = perpl_model.plot_model_components(model_config["fitlength"])
         if plot_type == "histogram":
             figname = os.path.join(
-                output_folder, 
+                output_folder,
                 "histograms",
-                (f"{model_name}_nlocs_{numberoflocalisations}_binsize_{bin_size}_modelcomponents.svg")
+                (
+                    f"{model_name}_nlocs_{numberoflocalisations}_binsize_{bin_size}_modelcomponents.svg"
+                ),
             )
         elif plot_type == "kde":
             figname = os.path.join(
-                output_folder, 
+                output_folder,
                 "kdes",
-                (f"{model_name}_nlocs_{numberoflocalisations}_modelcomponents.svg")
+                (f"{model_name}_nlocs_{numberoflocalisations}_modelcomponents.svg"),
             )
         if fig2 is not None:
             fig2.savefig(figname)
@@ -191,20 +200,28 @@ def model_the_data(direction,
 
         # save model params and err
         if plot_type == "histogram":
-            opt_param_path = os.path.join(output_folder, 
-                                        "histograms", 
-                                        f"{model_name}_nlocs_{numberoflocalisations}_binsize_{bin_size}_optparams.txt")
+            opt_param_path = os.path.join(
+                output_folder,
+                "histograms",
+                f"{model_name}_nlocs_{numberoflocalisations}_binsize_{bin_size}_optparams.txt",
+            )
         elif plot_type == "kde":
-            opt_param_path = os.path.join(output_folder, 
-                                        "kdes", 
-                                        f"{model_name}_nlocs_{numberoflocalisations}_optparams.txt")
+            opt_param_path = os.path.join(
+                output_folder,
+                "kdes",
+                f"{model_name}_nlocs_{numberoflocalisations}_optparams.txt",
+            )
         with open(opt_param_path, "w") as f:
             f.write("Optimal params +- Error\n")
             f.write("-----------------------\n")
             if perpl_model.params_optimised is None:
                 f.write("Model failed to fit")
             else:
-                for row in zip(perpl_model.param_names, perpl_model.params_optimised, perpl_model.params_err):
+                for row in zip(
+                    perpl_model.param_names,
+                    perpl_model.params_optimised,
+                    perpl_model.params_err,
+                ):
                     f.write(f"{row[0]}: {row[1]} +- {row[2]}\n")
 
         # save ssr, aic, aiccorr, setup
@@ -212,7 +229,9 @@ def model_the_data(direction,
         aics.append(perpl_model.aic)
         aiccorrs.append(perpl_model.aic_corrected)
         if plot_type == "histogram":
-            setups.append(f"{model_name}_nlocs_{numberoflocalisations}_binsize_{bin_size}")
+            setups.append(
+                f"{model_name}_nlocs_{numberoflocalisations}_binsize_{bin_size}"
+            )
         elif plot_type == "kde":
             setups.append(f"{model_name}_nlocs_{numberoflocalisations}")
         fitlengths.append(model_config["fitlength"])
@@ -222,6 +241,7 @@ def model_the_data(direction,
         popt_at_bounds.append(perpl_model.popt_at_bound)
         large_uncertainties.append(perpl_model.large_uncertainty)
 
+
 def main(argv=None):
     """Main script for the module with variable arguments
 
@@ -229,9 +249,7 @@ def main(argv=None):
         argv : Custom arguments to run script with"""
 
     # parse arugments
-    parser = argparse.ArgumentParser(
-        description="Model the data using PERPL"
-    )
+    parser = argparse.ArgumentParser(description="Model the data using PERPL")
 
     parser.add_argument(
         "-e",
@@ -254,7 +272,9 @@ def main(argv=None):
 
     config_folder = os.path.join("experiments", args.experiment, "perpl_config")
 
-    output_modelling_folder = os.path.join("experiments", args.experiment, "output/perpl_modelling")
+    output_modelling_folder = os.path.join(
+        "experiments", args.experiment, "output/perpl_modelling"
+    )
 
     if not os.path.exists(output_modelling_folder):
         os.makedirs(output_modelling_folder)
@@ -268,7 +288,7 @@ def main(argv=None):
     transverse_direction = config["transverse_direction"]
     transverse_limit = config["transverse_limit"]
     axial_limit = config["axial_limit"]
-    limits={
+    limits = {
         "transverse": transverse_limit,
         "axial": axial_limit,
     }
@@ -282,7 +302,9 @@ def main(argv=None):
 
     axial_models_configs = []
     for i, axial_model in enumerate(axial_models):
-        with open(os.path.join(config_folder, "axial_models", axial_model), "r") as ymlfile:
+        with open(
+            os.path.join(config_folder, "axial_models", axial_model), "r"
+        ) as ymlfile:
             config = yaml.safe_load(ymlfile)
             axial_models_configs.append(config)
 
@@ -292,7 +314,9 @@ def main(argv=None):
 
     transverse_models_configs = []
     for i, transverse_model in enumerate(transverse_models):
-        with open(os.path.join(config_folder, "transverse_models", transverse_model), "r") as ymlfile:
+        with open(
+            os.path.join(config_folder, "transverse_models", transverse_model), "r"
+        ) as ymlfile:
             config = yaml.safe_load(ymlfile)
             transverse_models_configs.append(config)
 
@@ -302,12 +326,11 @@ def main(argv=None):
         "transverse": transverse_models,
     }
 
-    model_configs ={
+    model_configs = {
         "axial": axial_models_configs,
         "transverse": transverse_models_configs,
     }
 
-    
     # +++ FIT AXIAL....
 
     output_folder = os.path.join(output_modelling_folder, "axial")
@@ -363,11 +386,50 @@ def main(argv=None):
                 large_uncertainties,
             )
 
-        aiccorrs, aics, ssrs, setups, fitlengths, nlocs, bgbelowzeros, nparams, popt_at_bounds, large_uncertainties = zip(*sorted(zip(aiccorrs, aics, ssrs, setups, fitlengths, nlocs, bgbelowzeros, nparams, popt_at_bounds, large_uncertainties)))
-        
+        (
+            aiccorrs,
+            aics,
+            ssrs,
+            setups,
+            fitlengths,
+            nlocs,
+            bgbelowzeros,
+            nparams,
+            popt_at_bounds,
+            large_uncertainties,
+        ) = zip(
+            *sorted(
+                zip(
+                    aiccorrs,
+                    aics,
+                    ssrs,
+                    setups,
+                    fitlengths,
+                    nlocs,
+                    bgbelowzeros,
+                    nparams,
+                    popt_at_bounds,
+                    large_uncertainties,
+                )
+            )
+        )
+
         with open(os.path.join(output_folder, "results_histograms.csv"), "w") as f:
-            f.write("Model,AICcorr,AIC,SSR,Fitlength,Nlocs,BGbelowzero,Nparams,POptAtBounds,LargeUncertainty\n")
-            for row in zip(setups, aiccorrs, aics, ssrs, fitlengths, nlocs, bgbelowzeros, nparams, popt_at_bounds, large_uncertainties):
+            f.write(
+                "Model,AICcorr,AIC,SSR,Fitlength,Nlocs,BGbelowzero,Nparams,POptAtBounds,LargeUncertainty\n"
+            )
+            for row in zip(
+                setups,
+                aiccorrs,
+                aics,
+                ssrs,
+                fitlengths,
+                nlocs,
+                bgbelowzeros,
+                nparams,
+                popt_at_bounds,
+                large_uncertainties,
+            ):
                 f.write(",".join(map(str, row)) + "\n")
 
     # ... KDE
@@ -411,11 +473,50 @@ def main(argv=None):
             large_uncertainties,
         )
 
-    aiccorrs, aics, ssrs, setups, fitlengths, nlocs, bgbelowzeros, nparams, popt_at_bounds, large_uncertainties = zip(*sorted(zip(aiccorrs, aics, ssrs, setups, fitlengths, nlocs, bgbelowzeros, nparams, popt_at_bounds, large_uncertainties)))
-    
+    (
+        aiccorrs,
+        aics,
+        ssrs,
+        setups,
+        fitlengths,
+        nlocs,
+        bgbelowzeros,
+        nparams,
+        popt_at_bounds,
+        large_uncertainties,
+    ) = zip(
+        *sorted(
+            zip(
+                aiccorrs,
+                aics,
+                ssrs,
+                setups,
+                fitlengths,
+                nlocs,
+                bgbelowzeros,
+                nparams,
+                popt_at_bounds,
+                large_uncertainties,
+            )
+        )
+    )
+
     with open(os.path.join(output_folder, "results_kdes.csv"), "w") as f:
-        f.write("Model,AICcorr,AIC,SSR,Fitlength,Nlocs,BGbelowzero,Nparams, POptAtBounds, LargeUncertainty\n")
-        for row in zip(setups, aiccorrs, aics, ssrs, fitlengths, nlocs, bgbelowzeros, nparams, popt_at_bounds, large_uncertainties):
+        f.write(
+            "Model,AICcorr,AIC,SSR,Fitlength,Nlocs,BGbelowzero,Nparams, POptAtBounds, LargeUncertainty\n"
+        )
+        for row in zip(
+            setups,
+            aiccorrs,
+            aics,
+            ssrs,
+            fitlengths,
+            nlocs,
+            bgbelowzeros,
+            nparams,
+            popt_at_bounds,
+            large_uncertainties,
+        ):
             f.write(",".join(map(str, row)) + "\n")
 
     # +++ FIT TRANSVERSE +++
@@ -428,7 +529,7 @@ def main(argv=None):
         i = os.path.join(output_folder, f)
         if not os.path.exists(i):
             os.makedirs(i)
-    
+
     # .... histogram
 
     if args.fit_histograms:
@@ -473,11 +574,50 @@ def main(argv=None):
                 large_uncertainties,
             )
 
-        aiccorrs, aics, ssrs, setups, fitlengths, nlocs, bgbelowzeros, nparams, popt_at_bounds, large_uncertainties = zip(*sorted(zip(aiccorrs, aics, ssrs, setups, fitlengths, nlocs, bgbelowzeros, nparams, popt_at_bounds, large_uncertainties)))
-        
+        (
+            aiccorrs,
+            aics,
+            ssrs,
+            setups,
+            fitlengths,
+            nlocs,
+            bgbelowzeros,
+            nparams,
+            popt_at_bounds,
+            large_uncertainties,
+        ) = zip(
+            *sorted(
+                zip(
+                    aiccorrs,
+                    aics,
+                    ssrs,
+                    setups,
+                    fitlengths,
+                    nlocs,
+                    bgbelowzeros,
+                    nparams,
+                    popt_at_bounds,
+                    large_uncertainties,
+                )
+            )
+        )
+
         with open(os.path.join(output_folder, "results_histograms.csv"), "w") as f:
-            f.write("Model,AICcorr,AIC,SSR,Fitlength,Nlocs,BGbelowzero, Nparams, POptAtBounds, LargeUncertainty\n")
-            for row in zip(setups, aiccorrs, aics, ssrs, fitlengths, nlocs, bgbelowzeros, nparams, popt_at_bounds, large_uncertainties):
+            f.write(
+                "Model,AICcorr,AIC,SSR,Fitlength,Nlocs,BGbelowzero, Nparams, POptAtBounds, LargeUncertainty\n"
+            )
+            for row in zip(
+                setups,
+                aiccorrs,
+                aics,
+                ssrs,
+                fitlengths,
+                nlocs,
+                bgbelowzeros,
+                nparams,
+                popt_at_bounds,
+                large_uncertainties,
+            ):
                 f.write(",".join(map(str, row)) + "\n")
 
     # ... KDE
@@ -518,14 +658,53 @@ def main(argv=None):
             bgbelowzeros,
             nparams,
             popt_at_bounds,
-            large_uncertainties
+            large_uncertainties,
         )
 
-    aiccorrs, aics, ssrs, setups, fitlengths, nlocs, bgbelowzeros, nparams, popt_at_bounds, large_uncertainties = zip(*sorted(zip(aiccorrs, aics, ssrs, setups, fitlengths, nlocs, bgbelowzeros, nparams, popt_at_bounds, large_uncertainties)))
-    
+    (
+        aiccorrs,
+        aics,
+        ssrs,
+        setups,
+        fitlengths,
+        nlocs,
+        bgbelowzeros,
+        nparams,
+        popt_at_bounds,
+        large_uncertainties,
+    ) = zip(
+        *sorted(
+            zip(
+                aiccorrs,
+                aics,
+                ssrs,
+                setups,
+                fitlengths,
+                nlocs,
+                bgbelowzeros,
+                nparams,
+                popt_at_bounds,
+                large_uncertainties,
+            )
+        )
+    )
+
     with open(os.path.join(output_folder, "results_kdes.csv"), "w") as f:
-        f.write("Model,AICcorr,AIC,SSR,Fitlength,Nlocs,BGbelowzero,Nparams, POptAtBounds, LargeUncertainty\n")
-        for row in zip(setups, aiccorrs, aics, ssrs, fitlengths, nlocs, bgbelowzeros, nparams, popt_at_bounds, large_uncertainties):
+        f.write(
+            "Model,AICcorr,AIC,SSR,Fitlength,Nlocs,BGbelowzero,Nparams, POptAtBounds, LargeUncertainty\n"
+        )
+        for row in zip(
+            setups,
+            aiccorrs,
+            aics,
+            ssrs,
+            fitlengths,
+            nlocs,
+            bgbelowzeros,
+            nparams,
+            popt_at_bounds,
+            large_uncertainties,
+        ):
             f.write(",".join(map(str, row)) + "\n")
 
 

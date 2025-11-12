@@ -6,6 +6,7 @@ import warnings
 
 import yaml
 
+
 def gen_configs(config_folder, direction):
 
     # load in configuration
@@ -32,31 +33,35 @@ def gen_configs(config_folder, direction):
 
     if type(params_initial["characteristic_distance_1"]) is list:
         assert len(params_initial["characteristic_distance_1"]) == len(charac_dists)
-        warnings.warn("Multiple characteristic distances for first peak "\
-                      f"for {direction} direction. Therefore, assuming peak distances " \
-                      "are for each type of characteristic distance.")
+        warnings.warn(
+            "Multiple characteristic distances for first peak "
+            f"for {direction} direction. Therefore, assuming peak distances "
+            "are for each type of characteristic distance."
+        )
         multiple_charac_dists = True
     else:
         multiple_charac_dists = False
 
     # generate all possible model configurations
-    for index, params in enumerate(product(
-        fitlengths, 
-        dimension,
-        backgrounds,
-        n_peaks,
-        peak_types,
-        charac_dists,
-        #charac_dist_ratios,
-        repeats,
-        offsets,
-        normalises,
-    )):
-        
+    for index, params in enumerate(
+        product(
+            fitlengths,
+            dimension,
+            backgrounds,
+            n_peaks,
+            peak_types,
+            charac_dists,
+            # charac_dist_ratios,
+            repeats,
+            offsets,
+            normalises,
+        )
+    ):
+
         params_initial_copy = copy.deepcopy(params_initial)
         params_lower_copy = copy.deepcopy(params_lower)
         params_upper_copy = copy.deepcopy(params_upper)
-        
+
         model_config = {
             "fitlength": params[0],
             "dimension": params[1],
@@ -72,21 +77,26 @@ def gen_configs(config_folder, direction):
             "params_lower": params_lower_copy,
             "params_upper": params_upper_copy,
         }
-        
+
         # if something
         if multiple_charac_dists:
             # change params_values
             for name, file in zip(
                 ["params_initial", "params_lower", "params_upper"],
-                [params_initial_copy, params_lower_copy, params_upper_copy]
+                [params_initial_copy, params_lower_copy, params_upper_copy],
             ):
                 idx = charac_dists.index(params[5])
-                model_config[name]["characteristic_distance_1"] = file["characteristic_distance_1"][idx]
+                model_config[name]["characteristic_distance_1"] = file[
+                    "characteristic_distance_1"
+                ][idx]
 
         # save yaml file
-        model_config_save_loc = os.path.join(config_folder, f"{direction}_models/model_{index}.yaml")
+        model_config_save_loc = os.path.join(
+            config_folder, f"{direction}_models/model_{index}.yaml"
+        )
         with open(model_config_save_loc, "w") as outfile:
             yaml.dump(model_config, outfile)
+
 
 def main(argv=None):
     """Main script for the module with variable arguments
@@ -116,7 +126,7 @@ def main(argv=None):
         folder = os.path.join(config_folder, f)
         if os.path.exists(folder):
             raise ValueError(f"Cannot proceed as {folder} folder already exists")
-    
+
     for f in ["axial_models", "transverse_models"]:
         folder = os.path.join(config_folder, f)
         os.makedirs(folder)
@@ -124,6 +134,7 @@ def main(argv=None):
     # generate axial and transverse config files
     gen_configs(config_folder, "axial")
     gen_configs(config_folder, "transverse")
+
 
 if __name__ == "__main__":
     main()
