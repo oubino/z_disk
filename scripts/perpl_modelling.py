@@ -114,8 +114,12 @@ def model_the_data(
                 combined_precision=(np.sqrt(2) * loc_precision),
             )
 
-            y_expt = rpd[calculation_points > 0]
-            x_expt = calculation_points[calculation_points > 0]
+            if model_config["normalise"]:
+                y_expt = rpd[calculation_points > 0]
+                x_expt = calculation_points[calculation_points > 0]
+            else:
+                y_expt = rpd
+                x_expt = calculation_points
 
         perpl_model = PERPLModel(
             dimension=model_config["dimension"],
