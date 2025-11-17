@@ -36,6 +36,7 @@ def model_the_data(
     nlocs,
     bgbelowzeros,
     nparams,
+    ndatapoints,
     popt_at_bounds,
     large_uncertainties,
 ):
@@ -238,6 +239,7 @@ def model_the_data(
         nlocs.append(numberoflocalisations)
         bgbelowzeros.append(perpl_model.bgbelowzero)
         nparams.append(perpl_model.n_params)
+        ndatapoints.append(len(x_expt))
         popt_at_bounds.append(perpl_model.popt_at_bound)
         large_uncertainties.append(perpl_model.large_uncertainty)
 
@@ -354,6 +356,7 @@ def main(argv=None):
         nlocs = []
         bgbelowzeros = []
         nparams = []
+        ndatapoints = []
         popt_at_bounds = []
         large_uncertainties = []
 
@@ -382,6 +385,7 @@ def main(argv=None):
                 nlocs,
                 bgbelowzeros,
                 nparams,
+                ndatapoints,
                 popt_at_bounds,
                 large_uncertainties,
             )
@@ -395,6 +399,7 @@ def main(argv=None):
             nlocs,
             bgbelowzeros,
             nparams,
+            ndatapoints,
             popt_at_bounds,
             large_uncertainties,
         ) = zip(
@@ -408,6 +413,7 @@ def main(argv=None):
                     nlocs,
                     bgbelowzeros,
                     nparams,
+                    ndatapoints,
                     popt_at_bounds,
                     large_uncertainties,
                 )
@@ -416,7 +422,7 @@ def main(argv=None):
 
         with open(os.path.join(output_folder, "results_histograms.csv"), "w") as f:
             f.write(
-                "Model,AICcorr,AIC,SSR,Fitlength,Nlocs,BGbelowzero,Nparams,POptAtBounds,LargeUncertainty\n"
+                "Model,AICcorr,AIC,SSR,Fitlength,Nlocs,BGbelowzero,Nparams,Ndatapoints,POptAtBounds,LargeUncertainty\n"
             )
             for row in zip(
                 setups,
@@ -427,6 +433,7 @@ def main(argv=None):
                 nlocs,
                 bgbelowzeros,
                 nparams,
+                ndatapoints,
                 popt_at_bounds,
                 large_uncertainties,
             ):
@@ -442,6 +449,7 @@ def main(argv=None):
     nlocs = []
     bgbelowzeros = []
     nparams = []
+    ndatapoints = []
     popt_at_bounds = []
     large_uncertainties = []
 
@@ -469,6 +477,7 @@ def main(argv=None):
             nlocs,
             bgbelowzeros,
             nparams,
+            ndatapoints,
             popt_at_bounds,
             large_uncertainties,
         )
@@ -482,6 +491,7 @@ def main(argv=None):
         nlocs,
         bgbelowzeros,
         nparams,
+        ndatapoints,
         popt_at_bounds,
         large_uncertainties,
     ) = zip(
@@ -495,6 +505,7 @@ def main(argv=None):
                 nlocs,
                 bgbelowzeros,
                 nparams,
+                ndatapoints,
                 popt_at_bounds,
                 large_uncertainties,
             )
@@ -503,7 +514,7 @@ def main(argv=None):
 
     with open(os.path.join(output_folder, "results_kdes.csv"), "w") as f:
         f.write(
-            "Model,AICcorr,AIC,SSR,Fitlength,Nlocs,BGbelowzero,Nparams, POptAtBounds, LargeUncertainty\n"
+            "Model,AICcorr,AIC,SSR,Fitlength,Nlocs,BGbelowzero,Nparams,Ndatapoints,POptAtBounds,LargeUncertainty\n"
         )
         for row in zip(
             setups,
@@ -514,6 +525,7 @@ def main(argv=None):
             nlocs,
             bgbelowzeros,
             nparams,
+            ndatapoints,
             popt_at_bounds,
             large_uncertainties,
         ):
@@ -542,6 +554,7 @@ def main(argv=None):
         nlocs = []
         bgbelowzeros = []
         nparams = []
+        ndatapoints = []
         popt_at_bounds = []
         large_uncertainties = []
 
@@ -570,6 +583,7 @@ def main(argv=None):
                 nlocs,
                 bgbelowzeros,
                 nparams,
+                ndatapoints,
                 popt_at_bounds,
                 large_uncertainties,
             )
@@ -583,6 +597,7 @@ def main(argv=None):
             nlocs,
             bgbelowzeros,
             nparams,
+            ndatapoints,
             popt_at_bounds,
             large_uncertainties,
         ) = zip(
@@ -596,6 +611,7 @@ def main(argv=None):
                     nlocs,
                     bgbelowzeros,
                     nparams,
+                    ndatapoints,
                     popt_at_bounds,
                     large_uncertainties,
                 )
@@ -604,7 +620,7 @@ def main(argv=None):
 
         with open(os.path.join(output_folder, "results_histograms.csv"), "w") as f:
             f.write(
-                "Model,AICcorr,AIC,SSR,Fitlength,Nlocs,BGbelowzero, Nparams, POptAtBounds, LargeUncertainty\n"
+                "Model,AICcorr,AIC,SSR,Fitlength,Nlocs,BGbelowzero, Nparams,Ndatapoints,POptAtBounds, LargeUncertainty\n"
             )
             for row in zip(
                 setups,
@@ -615,6 +631,7 @@ def main(argv=None):
                 nlocs,
                 bgbelowzeros,
                 nparams,
+                ndatapoints,
                 popt_at_bounds,
                 large_uncertainties,
             ):
@@ -630,6 +647,7 @@ def main(argv=None):
     nlocs = []
     bgbelowzeros = []
     nparams = []
+    ndatapoints = []
     popt_at_bounds = []
     large_uncertainties = []
 
@@ -657,6 +675,7 @@ def main(argv=None):
             nlocs,
             bgbelowzeros,
             nparams,
+            ndatapoints,
             popt_at_bounds,
             large_uncertainties,
         )
@@ -670,6 +689,7 @@ def main(argv=None):
         nlocs,
         bgbelowzeros,
         nparams,
+        ndatapoints,
         popt_at_bounds,
         large_uncertainties,
     ) = zip(
@@ -683,6 +703,7 @@ def main(argv=None):
                 nlocs,
                 bgbelowzeros,
                 nparams,
+                ndatapoints,
                 popt_at_bounds,
                 large_uncertainties,
             )
@@ -691,7 +712,7 @@ def main(argv=None):
 
     with open(os.path.join(output_folder, "results_kdes.csv"), "w") as f:
         f.write(
-            "Model,AICcorr,AIC,SSR,Fitlength,Nlocs,BGbelowzero,Nparams, POptAtBounds, LargeUncertainty\n"
+            "Model,AICcorr,AIC,SSR,Fitlength,Nlocs,BGbelowzero,Nparams,Ndatapoints, POptAtBounds, LargeUncertainty\n"
         )
         for row in zip(
             setups,
@@ -702,6 +723,7 @@ def main(argv=None):
             nlocs,
             bgbelowzeros,
             nparams,
+            ndatapoints,
             popt_at_bounds,
             large_uncertainties,
         ):
