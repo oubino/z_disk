@@ -4,6 +4,28 @@ from perpl.relative_positions import getdistances
 from perpl.io import plotting
 import matplotlib.pyplot as plt
 
+def churchman_term1d(d, mu, sigma):
+    if ((mu * d / sigma**2) < 500).all():
+        p = (
+            np.sqrt(2 / np.pi)
+            * 1.0
+            / sigma
+            * (
+                np.exp(-(mu**2 + d**2) / (2 * sigma**2))
+                * np.cosh(mu * d / sigma**2)
+            )
+        )
+    else:
+        p = (
+            (1.0 / 2.0)
+            * np.sqrt(2 / np.pi)
+            * 1.0
+            / sigma
+            * (np.exp(-((d - mu) ** 2) / (2 * sigma**2)))
+        )
+    return p
+
+
 # generate random localisations in 1d 
 x = random.rand(500)
 
@@ -14,7 +36,7 @@ x = np.expand_dims(x, axis=1)
 
 # params for generating kde
 loc_precision = 3.
-fitlength = 10.
+fitlength = 30.
 normalise = False
 
 # calculate the distances in 1d 
@@ -54,22 +76,18 @@ else:
 # calculate the bg
 
 # generate locations based on distribution of distances
-_, a2 = np.histogram(d, bins=2000)
-bin_centres = (a2[:-1] + a2[1:]) / 2
-bin_width = a2[1] - a2[0]
+#_, a2 = np.histogram(d, bins=2000)
+#bin_centres = (a2[:-1] + a2[1:]) / 2
+#bin_width = a2[1] - a2[0]
 
 # generate the bg
 bg = 0 * x_expt
 sigma = (np.sqrt(2) * loc_precision)
-for i, mu in enumerate(bin_centres):
+bg_x = np.linspace(0, length, 500)
+bin_width = bg_x[1] - bg_x[0]
+for i, mu in enumerate(bg_x):
 
-    churchman_term = (
-                np.sqrt(2 / np.pi)
-                * 1.0
-                / sigma
-                * np.exp(-(mu**2 + x_expt**2) / (2 * sigma**2))
-                * np.cosh(mu * x_expt / sigma**2)
-            )
+    churchman_term = churchman_term1d(x_expt, mu, sigma)
     frequency_term = 2 * (1/length) * (1 - mu/length)
     frequency_term =  frequency_term * bin_width * len(d)
 
@@ -82,7 +100,7 @@ if normalise:
 
 # plot the data
 plt.scatter(x_expt, y_expt, label="distances")
-plt.plot(x_expt, bg, label="bg")
+plt.plot(x_expt, bg, label="bg", c="r")
 plt.legend()
 plt.savefig("sandpit/1d_test_kde.svg")
 plt.close()

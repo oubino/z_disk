@@ -8,7 +8,7 @@ x = random.rand(1000)
 y = random.rand(1000)
 
 # scale up data to a square of size
-square_size = 100.
+square_size = 200.
 x *= square_size
 y *= square_size
 xy = np.stack([x,y], axis=1)
@@ -24,11 +24,21 @@ a1, a2 = np.histogram(d, bins=100)
 bin_centres = (a2[:-1] + a2[1:]) / 2
 
 # calculate the expected distribution of distances
-pdf = (4 * bin_centres/(square_size ** 4)) * ((np.pi / 2) * square_size ** 2 - 2 * square_size * bin_centres + 0.5 * bin_centres ** 2)
-bin_width = a2[1] - a2[0]
-y =  pdf * bin_width * len(d)
+bg_x = np.linspace(0,square_size*np.sqrt(2),100)
+bin_width = bg_x[1] - bg_x[0]
+pdf = (4 * bg_x/(square_size ** 4)) * ((np.pi / 2) * square_size ** 2 - 2 * square_size * bg_x + 0.5 * bg_x ** 2)
+bg =  pdf * bin_width * len(d)
+
+# model the linear bit
+pdf_2 = (2 * np.pi * bg_x/(square_size ** 2) - 8 * bg_x ** 2 * square_size ** -3) * bin_width * len(d)
+pdf_1 = (2 * np.pi * bg_x/(square_size ** 2)) * bin_width * len(d)
 
 # plot
-plt.stairs(a1, a2)
-plt.plot(bin_centres,y)
+plt.stairs(a1, a2, label="bg")
+plt.plot(bg_x,bg, label ="model_bg")
+plt.plot(bg_x, pdf_1,c = 'r', label="model_bg_linear_term")
+plt.plot(bg_x, pdf_2,c = 'y', label="model_bg_linear_and_quad_term")
+plt.xlim(0,square_size)
+plt.ylim(0,10000)
+plt.legend()
 plt.savefig("sandpit/hist2d.svg")

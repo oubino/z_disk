@@ -26,11 +26,12 @@ a1, a2 = np.histogram(d, bins=100)
 bin_centres = (a2[:-1] + a2[1:]) / 2
 
 # calculate the expected distribution of distances
-pdf = 2 * (1/length) * (1 - bin_centres/length)
-bin_width = a2[1] - a2[0]
-y =  pdf * bin_width * len(d)
+bg_x = np.linspace(0,length,100)
+bin_width = bg_x[1] - bg_x[0]
+pdf = 2 * (1/length) * (1 - bg_x/length)
+bg =  pdf * bin_width * len(d)
 
 # plot
 plt.stairs(a1, a2)
-plt.plot(bin_centres,y)
+plt.plot(bg_x,bg)
 plt.savefig("sandpit/hist1d.svg")
