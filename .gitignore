@@ -79,6 +79,18 @@ data/
 experiments/*
 !experiments/dummy/
 !experiments/dummy/**
+!experiments/Z1Z2/
+experiments/Z1Z2/perpl_config/axial_models/*
+experiments/Z1Z2/perpl_config/transverse_models/*
+!experiments/Z1Z2/perpl_config/config.yaml
+!experiments/ACTN2/
+experiments/ACTN2/perpl_config/axial_models/*
+experiments/ACTN2/perpl_config/transverse_models/*
+!experiments/ACTN2/perpl_config/config.yaml
+!experiments/ZASP6/
+experiments/ZASP6/perpl_config/axial_models/*
+experiments/ZASP6/perpl_config/transverse_models/*
+!experiments/ZASP6/perpl_config/config.yaml
 
 # notebooks
 notebooks/

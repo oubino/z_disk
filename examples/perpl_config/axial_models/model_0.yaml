@@ -5,7 +5,7 @@ fitlength: 115
 dimension: 1
 
 # how to model the background
-# null, flat, linear, linear_flat
+# null, flat, linear, linear_flat, trans_bg_0, trans_bg_1, trans_bg_2
 background: null
 
 # number of peaks
