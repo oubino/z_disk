@@ -624,7 +624,7 @@ def main(argv=None):
 
         with open(os.path.join(output_folder, "results_histograms.csv"), "w") as f:
             f.write(
-                "Model,AICcorr,AIC,SSR,Fitlength,Nlocs,BGbelowzero, Nparams,Ndatapoints,POptAtBounds, LargeUncertainty\n"
+                "Model,AICcorr,AIC,SSR,Fitlength,Nlocs,BGbelowzero, Nparams,Ndatapoints,POptAtBounds,LargeUncertainty\n"
             )
             for row in zip(
                 setups,
@@ -716,7 +716,7 @@ def main(argv=None):
 
     with open(os.path.join(output_folder, "results_kdes.csv"), "w") as f:
         f.write(
-            "Model,AICcorr,AIC,SSR,Fitlength,Nlocs,BGbelowzero,Nparams,Ndatapoints, POptAtBounds, LargeUncertainty\n"
+            "Model,AICcorr,AIC,SSR,Fitlength,Nlocs,BGbelowzero,Nparams,Ndatapoints,POptAtBounds,LargeUncertainty\n"
         )
         for row in zip(
             setups,
