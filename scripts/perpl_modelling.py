@@ -33,6 +33,7 @@ def model_the_data(
     aiccorrs,
     setups,
     fitlengths,
+    locprecisions,
     nlocs,
     bgbelowzeros,
     nparams,
@@ -164,7 +165,7 @@ def model_the_data(
                 output_folder,
                 "histograms",
                 (
-                    f"{model_name}_nlocs_{numberoflocalisations}_binsize_{bin_size}_histandfit.svg"
+                    f"{model_name}_locprec_{loc_precision_filter}_nlocs_{numberoflocalisations}_binsize_{bin_size}_histandfit.svg"
                 ),
             )
 
@@ -176,7 +177,7 @@ def model_the_data(
             figname = os.path.join(
                 output_folder,
                 "kdes",
-                (f"{model_name}_nlocs_{numberoflocalisations}_kdeandfit.svg"),
+                (f"{model_name}_locprec_{loc_precision_filter}_nlocs_{numberoflocalisations}_kdeandfit.svg"),
             )
 
         if fig is not None:
@@ -190,14 +191,14 @@ def model_the_data(
                 output_folder,
                 "histograms",
                 (
-                    f"{model_name}_nlocs_{numberoflocalisations}_binsize_{bin_size}_modelcomponents.svg"
+                    f"{model_name}_locprec_{loc_precision_filter}_nlocs_{numberoflocalisations}_binsize_{bin_size}_modelcomponents.svg"
                 ),
             )
         elif plot_type == "kde":
             figname = os.path.join(
                 output_folder,
                 "kdes",
-                (f"{model_name}_nlocs_{numberoflocalisations}_modelcomponents.svg"),
+                (f"{model_name}_locprec_{loc_precision_filter}_nlocs_{numberoflocalisations}_modelcomponents.svg"),
             )
         if fig2 is not None:
             fig2.savefig(figname)
@@ -208,13 +209,13 @@ def model_the_data(
             opt_param_path = os.path.join(
                 output_folder,
                 "histograms",
-                f"{model_name}_nlocs_{numberoflocalisations}_binsize_{bin_size}_optparams.txt",
+                f"{model_name}_locprec_{loc_precision_filter}_nlocs_{numberoflocalisations}_binsize_{bin_size}_optparams.txt",
             )
         elif plot_type == "kde":
             opt_param_path = os.path.join(
                 output_folder,
                 "kdes",
-                f"{model_name}_nlocs_{numberoflocalisations}_optparams.txt",
+                f"{model_name}_locprec_{loc_precision_filter}_nlocs_{numberoflocalisations}_optparams.txt",
             )
         with open(opt_param_path, "w") as f:
             f.write("Optimal params +- Error\n")
@@ -235,11 +236,12 @@ def model_the_data(
         aiccorrs.append(perpl_model.aic_corrected)
         if plot_type == "histogram":
             setups.append(
-                f"{model_name}_nlocs_{numberoflocalisations}_binsize_{bin_size}"
+                f"{model_name}_locprec_{loc_precision_filter}_nlocs_{numberoflocalisations}_binsize_{bin_size}"
             )
         elif plot_type == "kde":
-            setups.append(f"{model_name}_nlocs_{numberoflocalisations}")
+            setups.append(f"{model_name}_locprec_{loc_precision_filter}_nlocs_{numberoflocalisations}")
         fitlengths.append(model_config["fitlength"])
+        locprecisions.append(loc_precision_filter)
         nlocs.append(numberoflocalisations)
         bgbelowzeros.append(perpl_model.bgbelowzero)
         nparams.append(perpl_model.n_params)
@@ -298,7 +300,7 @@ def main(argv=None):
         "transverse": transverse_limit,
         "axial": axial_limit,
     }
-    loc_precision_filter = config["loc_precision_filter"]
+    loc_precision_filter_lst = config["loc_precision_filter"]
     numberoflocalisations_lst = config["numberoflocalisations"]
     bin_size_lst = config["bin_sizes"]
 
@@ -357,6 +359,7 @@ def main(argv=None):
         aiccorrs = []
         setups = []
         fitlengths = []
+        locprecisions = []
         nlocs = []
         bgbelowzeros = []
         nparams = []
@@ -364,8 +367,8 @@ def main(argv=None):
         popt_at_bounds = []
         large_uncertainties = []
 
-        for param in list(product(numberoflocalisations_lst, bin_size_lst)):
-            numberoflocalisations, bin_size = param
+        for param in list(product(loc_precision_filter_lst, numberoflocalisations_lst, bin_size_lst)):
+            loc_precision_filter, numberoflocalisations, bin_size = param
 
             model_the_data(
                 "axial",
@@ -386,6 +389,7 @@ def main(argv=None):
                 aiccorrs,
                 setups,
                 fitlengths,
+                locprecisions,
                 nlocs,
                 bgbelowzeros,
                 nparams,
@@ -400,6 +404,7 @@ def main(argv=None):
             ssrs,
             setups,
             fitlengths,
+            locprecisions,
             nlocs,
             bgbelowzeros,
             nparams,
@@ -414,6 +419,7 @@ def main(argv=None):
                     ssrs,
                     setups,
                     fitlengths,
+                    locprecisions,
                     nlocs,
                     bgbelowzeros,
                     nparams,
@@ -426,7 +432,7 @@ def main(argv=None):
 
         with open(os.path.join(output_folder, "results_histograms.csv"), "w") as f:
             f.write(
-                "Model,AICcorr,AIC,SSR,Fitlength,Nlocs,BGbelowzero,Nparams,Ndatapoints,POptAtBounds,LargeUncertainty\n"
+                "Model,AICcorr,AIC,SSR,Fitlength,Locprecision,Nlocs,BGbelowzero,Nparams,Ndatapoints,POptAtBounds,LargeUncertainty\n"
             )
             for row in zip(
                 setups,
@@ -434,6 +440,7 @@ def main(argv=None):
                 aics,
                 ssrs,
                 fitlengths,
+                locprecisions,
                 nlocs,
                 bgbelowzeros,
                 nparams,
@@ -450,6 +457,7 @@ def main(argv=None):
     aiccorrs = []
     setups = []
     fitlengths = []
+    locprecisions = []
     nlocs = []
     bgbelowzeros = []
     nparams = []
@@ -457,8 +465,9 @@ def main(argv=None):
     popt_at_bounds = []
     large_uncertainties = []
 
-    for numberoflocalisations in numberoflocalisations_lst:
-
+    for param in list(product(loc_precision_filter_lst, numberoflocalisations_lst)):
+        loc_precision_filter, numberoflocalisations = param
+    
         model_the_data(
             "axial",
             "kde",
@@ -478,6 +487,7 @@ def main(argv=None):
             aiccorrs,
             setups,
             fitlengths,
+            locprecisions,
             nlocs,
             bgbelowzeros,
             nparams,
@@ -492,6 +502,7 @@ def main(argv=None):
         ssrs,
         setups,
         fitlengths,
+        locprecisions,
         nlocs,
         bgbelowzeros,
         nparams,
@@ -506,6 +517,7 @@ def main(argv=None):
                 ssrs,
                 setups,
                 fitlengths,
+                locprecisions,
                 nlocs,
                 bgbelowzeros,
                 nparams,
@@ -518,7 +530,7 @@ def main(argv=None):
 
     with open(os.path.join(output_folder, "results_kdes.csv"), "w") as f:
         f.write(
-            "Model,AICcorr,AIC,SSR,Fitlength,Nlocs,BGbelowzero,Nparams,Ndatapoints,POptAtBounds,LargeUncertainty\n"
+            "Model,AICcorr,AIC,SSR,Fitlength,Locprecision,Nlocs,BGbelowzero,Nparams,Ndatapoints,POptAtBounds,LargeUncertainty\n"
         )
         for row in zip(
             setups,
@@ -526,6 +538,7 @@ def main(argv=None):
             aics,
             ssrs,
             fitlengths,
+            locprecisions,
             nlocs,
             bgbelowzeros,
             nparams,
@@ -555,6 +568,7 @@ def main(argv=None):
         aiccorrs = []
         setups = []
         fitlengths = []
+        locprecisions = []
         nlocs = []
         bgbelowzeros = []
         nparams = []
@@ -562,8 +576,8 @@ def main(argv=None):
         popt_at_bounds = []
         large_uncertainties = []
 
-        for param in list(product(numberoflocalisations_lst, bin_size_lst)):
-            numberoflocalisations, bin_size = param
+        for param in list(product(loc_precision_filter_lst, numberoflocalisations_lst, bin_size_lst)):
+            loc_precision_filter, numberoflocalisations, bin_size = param
 
             model_the_data(
                 "transverse",
@@ -584,6 +598,7 @@ def main(argv=None):
                 aiccorrs,
                 setups,
                 fitlengths,
+                locprecisions,
                 nlocs,
                 bgbelowzeros,
                 nparams,
@@ -598,6 +613,7 @@ def main(argv=None):
             ssrs,
             setups,
             fitlengths,
+            locprecisions,
             nlocs,
             bgbelowzeros,
             nparams,
@@ -612,6 +628,7 @@ def main(argv=None):
                     ssrs,
                     setups,
                     fitlengths,
+                    locprecisions,
                     nlocs,
                     bgbelowzeros,
                     nparams,
@@ -624,7 +641,7 @@ def main(argv=None):
 
         with open(os.path.join(output_folder, "results_histograms.csv"), "w") as f:
             f.write(
-                "Model,AICcorr,AIC,SSR,Fitlength,Nlocs,BGbelowzero, Nparams,Ndatapoints,POptAtBounds,LargeUncertainty\n"
+                "Model,AICcorr,AIC,SSR,Fitlength,Locprecision,Nlocs,BGbelowzero, Nparams,Ndatapoints,POptAtBounds,LargeUncertainty\n"
             )
             for row in zip(
                 setups,
@@ -632,6 +649,7 @@ def main(argv=None):
                 aics,
                 ssrs,
                 fitlengths,
+                locprecisions,
                 nlocs,
                 bgbelowzeros,
                 nparams,
@@ -648,6 +666,7 @@ def main(argv=None):
     aiccorrs = []
     setups = []
     fitlengths = []
+    locprecisions = []
     nlocs = []
     bgbelowzeros = []
     nparams = []
@@ -655,7 +674,8 @@ def main(argv=None):
     popt_at_bounds = []
     large_uncertainties = []
 
-    for numberoflocalisations in numberoflocalisations_lst:
+    for param in list(product(loc_precision_filter_lst, numberoflocalisations_lst)):
+        loc_precision_filter, numberoflocalisations = param
 
         model_the_data(
             "transverse",
@@ -676,6 +696,7 @@ def main(argv=None):
             aiccorrs,
             setups,
             fitlengths,
+            locprecisions,
             nlocs,
             bgbelowzeros,
             nparams,
@@ -690,6 +711,7 @@ def main(argv=None):
         ssrs,
         setups,
         fitlengths,
+        locprecisions,
         nlocs,
         bgbelowzeros,
         nparams,
@@ -704,6 +726,7 @@ def main(argv=None):
                 ssrs,
                 setups,
                 fitlengths,
+                locprecisions,
                 nlocs,
                 bgbelowzeros,
                 nparams,
@@ -716,7 +739,7 @@ def main(argv=None):
 
     with open(os.path.join(output_folder, "results_kdes.csv"), "w") as f:
         f.write(
-            "Model,AICcorr,AIC,SSR,Fitlength,Nlocs,BGbelowzero,Nparams,Ndatapoints,POptAtBounds,LargeUncertainty\n"
+            "Model,AICcorr,AIC,SSR,Fitlength,Locprecision,Nlocs,BGbelowzero,Nparams,Ndatapoints,POptAtBounds,LargeUncertainty\n"
         )
         for row in zip(
             setups,
@@ -724,6 +747,7 @@ def main(argv=None):
             aics,
             ssrs,
             fitlengths,
+            locprecisions,
             nlocs,
             bgbelowzeros,
             nparams,

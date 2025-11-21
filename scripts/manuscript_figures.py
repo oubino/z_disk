@@ -2,20 +2,17 @@
 import os
 import polars as pl
 
-raise ValueError("I am going to change so fit length varies more subtly around the optimal one... so need to consider all fit lengths AND "\
-                 "I am going to include fitting at multiple localisation precisions")
-
 ## Best models for each protein
 best_models = []
 
-fitlengths = {
-    "ACTN2_axial": 115,
-    "ACTN2_transverse": 57,
-    "Z1Z2_axial": 110,
-    "Z1Z2_transverse": 55,
-    "ZASP6_axial": 115,
-    "ZASP6_transverse": 47,
-}
+#fitlengths = {
+#    "ACTN2_axial": 115,
+#    "ACTN2_transverse": 57,
+#    "Z1Z2_axial": 110,
+#    "Z1Z2_transverse": 55,
+#    "ZASP6_axial": 115,
+#    "ZASP6_transverse": 47,
+#}
 
 for protein in ["ACTN2", "Z1Z2", "ZASP6"]:
 
@@ -47,20 +44,20 @@ for protein in ["ACTN2", "Z1Z2", "ZASP6"]:
             pl.col("BGbelowzero"),
         )
 
-        x = results_file_top["Fitlength", "Nlocs"].unique()
+        x = results_file_top["Locprecision", "Fitlength", "Nlocs"].unique()
 
         x = results_file_top.group_by(
-            "Fitlength", "Nlocs"
+            "Locprecision", "Fitlength", "Nlocs"
         ).agg(pl.col("AICcorr").min())
 
-        x = x.join(results_file_top, on=["Fitlength", "Nlocs", "AICcorr"], how="left").sort(
-            pl.col("Fitlength", "Nlocs")
+        x = x.join(results_file_top, on=["Locprecision", "Fitlength", "Nlocs", "AICcorr"], how="left").sort(
+            pl.col("Locprecision", "Fitlength", "Nlocs")
         )
 
         x = x.insert_column(0, pl.Series("Direction", [direction]*len(x)))
         x = x.insert_column(0, pl.Series("Protein", [protein]*len(x)))
 
-        x = x.filter(pl.col("Fitlength") == fitlengths[f"{protein}_{direction}"])
+        #x = x.filter(pl.col("Fitlength") == fitlengths[f"{protein}_{direction}"])
 
         best_models.append(x)
 

@@ -12,7 +12,7 @@ transverse_limit: 200.
 axial_limit: 200.
 
 # localisation precision to load in
-loc_precision_filter: 9.0
+loc_precision_filter: [9.0, 10.0]
 
 # number of locs per z disk 
 numberoflocalisations: [1]
@@ -23,7 +23,7 @@ bin_sizes: [3,4,5]
 # --- axial model params -----
 # define all the possible values each parameter can take in a list
 axial:
-  fitlength: [30, 115] # length of the fit
+  fitlength: [110, 115, 120] # length of the fit
   dimension: [1] # 1,2,3
   background: [null, flat, linear, linear_flat] # null, flat, linear, linear_flat, trans_bg_0, trans_bg_1, trans_bg_2
   n_peaks: [0, 1, 4, 5, 6] # number of peaks
@@ -112,7 +112,7 @@ axial:
 # --- transverse model params -----
 # define all the possible values each parameter can take in a list
 transverse:
-  fitlength: [47]
+  fitlength: [42, 47, 52]
   dimension: [2]
   background: [null, flat, linear, trans_bg_0, trans_bg_1, trans_bg_2]
   n_peaks: [0, 2, 3]
