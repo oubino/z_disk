@@ -64,9 +64,11 @@ for protein in ["ACTN2", "Z1Z2", "ZASP6"]:
 best_models = pl.concat(best_models)
 with pl.Config() as cfg:
 
-    cfg.set_tbl_cols(10)
-    cfg.set_tbl_rows(14)
-    print(best_models)
+    cfg.set_tbl_cols(11)
+    cfg.set_tbl_rows(18)
+    print(best_models.filter(pl.col("Protein") == "ZASP6",
+                             pl.col("Direction") == "transverse",
+                             pl.col("Locprecision") == 9.0))
 
 ## Simpler models for each protein
 
