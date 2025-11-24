@@ -95,9 +95,8 @@ for protein in ["ACTN2", "Z1Z2", "ZASP6"]:
     plt.xlabel("Localisation precision")
     plt.ylabel("Localisation count")
     plt.title(f"Localisation precision for {protein} (pre-filtering)")
-    hist_loc = os.path.join(output_folder, "loc_prec_histogram.svg")
     output_loc = os.path.join(
-        output_folder, f"figure_k1/{protein}"
+        output_folder, f"figure_k1/{protein}.svg"
     )
     plt.savefig(output_loc, bbox_inches="tight", transparent=True)
 
