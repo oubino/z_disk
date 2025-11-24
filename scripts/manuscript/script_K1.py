@@ -21,7 +21,7 @@ table_zdisksize_z_med = []
 
 for protein in ["ACTN2", "Z1Z2", "ZASP6"]:
 
-    print(f"----- Protein: {protein} ------ ")
+    #print(f"----- Protein: {protein} ------ ")
 
     input_folder = os.path.join(f"experiments/{protein}/output/segmented_z_disks_denoised")
 
@@ -112,11 +112,11 @@ for protein in ["ACTN2", "Z1Z2", "ZASP6"]:
     table_zdisksize_y_med.append(np.median(zdisksize_y).round(1))
     table_zdisksize_z_med.append(np.median(zdisksize_z).round(1))
 
-    print("Mean precision (pre-filtering)")
-    print(pd_df.mean())
+    #print("Mean precision (pre-filtering)")
+    #print(pd_df.mean())
 
-    print("Median precision (pre-filtering)")
-    print(pd_df.median())
+    #print("Median precision (pre-filtering)")
+    #print(pd_df.median())
 
 df = pd.DataFrame(
     {"Protein": table_protein,
@@ -135,4 +135,3 @@ output_loc = os.path.join(
         output_folder, f"table_k1.csv"
     )
 df.to_csv(output_loc, index=False)
-print(df)
