@@ -24,6 +24,7 @@ def model_the_data(
     loc_precision_filter,
     bin_size,
     numberoflocalisations,
+    fitlength,
     relpos_filter,
     axial_direction,
     transverse_direction,
@@ -165,7 +166,7 @@ def model_the_data(
                 output_folder,
                 "histograms",
                 (
-                    f"{model_name}_locprec_{loc_precision_filter}_nlocs_{numberoflocalisations}_binsize_{bin_size}_histandfit.svg"
+                    f"{model_name}_locprec_{loc_precision_filter}_nlocs_{numberoflocalisations}_fitlength_{fitlength}_binsize_{bin_size}_histandfit.svg"
                 ),
             )
 
@@ -177,7 +178,7 @@ def model_the_data(
             figname = os.path.join(
                 output_folder,
                 "kdes",
-                (f"{model_name}_locprec_{loc_precision_filter}_nlocs_{numberoflocalisations}_kdeandfit.svg"),
+                (f"{model_name}_locprec_{loc_precision_filter}_nlocs_{numberoflocalisations}_fitlength_{fitlength}_kdeandfit.svg"),
             )
 
         if fig is not None:
@@ -191,14 +192,14 @@ def model_the_data(
                 output_folder,
                 "histograms",
                 (
-                    f"{model_name}_locprec_{loc_precision_filter}_nlocs_{numberoflocalisations}_binsize_{bin_size}_modelcomponents.svg"
+                    f"{model_name}_locprec_{loc_precision_filter}_nlocs_{numberoflocalisations}_fitlength_{fitlength}_binsize_{bin_size}_modelcomponents.svg"
                 ),
             )
         elif plot_type == "kde":
             figname = os.path.join(
                 output_folder,
                 "kdes",
-                (f"{model_name}_locprec_{loc_precision_filter}_nlocs_{numberoflocalisations}_modelcomponents.svg"),
+                (f"{model_name}_locprec_{loc_precision_filter}_nlocs_{numberoflocalisations}_fitlength_{fitlength}_modelcomponents.svg"),
             )
         if fig2 is not None:
             fig2.savefig(figname)
@@ -209,13 +210,13 @@ def model_the_data(
             opt_param_path = os.path.join(
                 output_folder,
                 "histograms",
-                f"{model_name}_locprec_{loc_precision_filter}_nlocs_{numberoflocalisations}_binsize_{bin_size}_optparams.txt",
+                f"{model_name}_locprec_{loc_precision_filter}_nlocs_{numberoflocalisations}_fitlength_{fitlength}_binsize_{bin_size}_optparams.txt",
             )
         elif plot_type == "kde":
             opt_param_path = os.path.join(
                 output_folder,
                 "kdes",
-                f"{model_name}_locprec_{loc_precision_filter}_nlocs_{numberoflocalisations}_optparams.txt",
+                f"{model_name}_locprec_{loc_precision_filter}_nlocs_{numberoflocalisations}_fitlength_{fitlength}_optparams.txt",
             )
         with open(opt_param_path, "w") as f:
             f.write("Optimal params +- Error\n")
@@ -236,11 +237,11 @@ def model_the_data(
         aiccorrs.append(perpl_model.aic_corrected)
         if plot_type == "histogram":
             setups.append(
-                f"{model_name}_locprec_{loc_precision_filter}_nlocs_{numberoflocalisations}_binsize_{bin_size}"
+                f"{model_name}_locprec_{loc_precision_filter}_nlocs_{numberoflocalisations}_fitlength_{fitlength}_binsize_{bin_size}"
             )
         elif plot_type == "kde":
-            setups.append(f"{model_name}_locprec_{loc_precision_filter}_nlocs_{numberoflocalisations}")
-        fitlengths.append(model_config["fitlength"])
+            setups.append(f"{model_name}_locprec_{loc_precision_filter}_nlocs_{numberoflocalisations}_fitlength_{fitlength}")
+        fitlengths.append(fitlength)
         locprecisions.append(loc_precision_filter)
         nlocs.append(numberoflocalisations)
         bgbelowzeros.append(perpl_model.bgbelowzero)
@@ -303,6 +304,7 @@ def main(argv=None):
     loc_precision_filter_lst = config["loc_precision_filter"]
     numberoflocalisations_lst = config["numberoflocalisations"]
     bin_size_lst = config["bin_sizes"]
+    fitlength_lst = config["fitlength"]
 
     # load in axial models
     axial_models = os.listdir(os.path.join(config_folder, "axial_models"))
@@ -367,8 +369,8 @@ def main(argv=None):
         popt_at_bounds = []
         large_uncertainties = []
 
-        for param in list(product(loc_precision_filter_lst, numberoflocalisations_lst, bin_size_lst)):
-            loc_precision_filter, numberoflocalisations, bin_size = param
+        for param in list(product(loc_precision_filter_lst, numberoflocalisations_lst, bin_size_lst, fitlength_lst)):
+            loc_precision_filter, numberoflocalisations, bin_size, fitlength = param
 
             model_the_data(
                 "axial",
@@ -380,6 +382,7 @@ def main(argv=None):
                 loc_precision_filter,
                 bin_size,
                 numberoflocalisations,
+                fitlength,
                 relpos_filter,
                 axial_direction,
                 transverse_direction,
@@ -465,8 +468,8 @@ def main(argv=None):
     popt_at_bounds = []
     large_uncertainties = []
 
-    for param in list(product(loc_precision_filter_lst, numberoflocalisations_lst)):
-        loc_precision_filter, numberoflocalisations = param
+    for param in list(product(loc_precision_filter_lst, numberoflocalisations_lst, fitlength_lst)):
+        loc_precision_filter, numberoflocalisations, fitlength = param
     
         model_the_data(
             "axial",
@@ -478,6 +481,7 @@ def main(argv=None):
             loc_precision_filter,
             None,
             numberoflocalisations,
+            fitlength,
             relpos_filter,
             axial_direction,
             transverse_direction,
@@ -576,8 +580,8 @@ def main(argv=None):
         popt_at_bounds = []
         large_uncertainties = []
 
-        for param in list(product(loc_precision_filter_lst, numberoflocalisations_lst, bin_size_lst)):
-            loc_precision_filter, numberoflocalisations, bin_size = param
+        for param in list(product(loc_precision_filter_lst, numberoflocalisations_lst, bin_size_lst, fitlength_lst)):
+            loc_precision_filter, numberoflocalisations, bin_size, fitlength = param
 
             model_the_data(
                 "transverse",
@@ -589,6 +593,7 @@ def main(argv=None):
                 loc_precision_filter,
                 bin_size,
                 numberoflocalisations,
+                fitlength,
                 relpos_filter,
                 axial_direction,
                 transverse_direction,
@@ -674,8 +679,8 @@ def main(argv=None):
     popt_at_bounds = []
     large_uncertainties = []
 
-    for param in list(product(loc_precision_filter_lst, numberoflocalisations_lst)):
-        loc_precision_filter, numberoflocalisations = param
+    for param in list(product(loc_precision_filter_lst, numberoflocalisations_lst, fitlength_lst)):
+        loc_precision_filter, numberoflocalisations, fitlength = param
 
         model_the_data(
             "transverse",
@@ -687,6 +692,7 @@ def main(argv=None):
             loc_precision_filter,
             None,
             numberoflocalisations,
+            fitlength,
             relpos_filter,
             axial_direction,
             transverse_direction,

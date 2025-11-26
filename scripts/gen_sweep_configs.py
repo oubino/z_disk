@@ -17,7 +17,6 @@ def gen_configs(config_folder, direction):
     direction_params = config[direction]
 
     # load in params list
-    fitlengths = direction_params["fitlength"]
     dimension = direction_params["dimension"]
     backgrounds = direction_params["background"]
     n_peaks = direction_params["n_peaks"]
@@ -45,7 +44,6 @@ def gen_configs(config_folder, direction):
     # generate all possible model configurations
     for index, params in enumerate(
         product(
-            fitlengths,
             dimension,
             backgrounds,
             n_peaks,
@@ -63,16 +61,15 @@ def gen_configs(config_folder, direction):
         params_upper_copy = copy.deepcopy(params_upper)
 
         model_config = {
-            "fitlength": params[0],
-            "dimension": params[1],
-            "background": params[2],
-            "n_peaks": params[3],
-            "peak_type": params[4],
-            "characteristic_distance": params[5],
+            "dimension": params[0],
+            "background": params[1],
+            "n_peaks": params[2],
+            "peak_type": params[3],
+            "characteristic_distance": params[4],
             "characteristic_distance_ratio": charac_dist_ratio,
-            "repeats": params[6],
-            "offset": params[7],
-            "normalise": params[8],
+            "repeats": params[5],
+            "offset": params[6],
+            "normalise": params[7],
             "params_initial": params_initial_copy,
             "params_lower": params_lower_copy,
             "params_upper": params_upper_copy,
@@ -85,7 +82,7 @@ def gen_configs(config_folder, direction):
                 ["params_initial", "params_lower", "params_upper"],
                 [params_initial_copy, params_lower_copy, params_upper_copy],
             ):
-                idx = charac_dists.index(params[5])
+                idx = charac_dists.index(params[4])
                 model_config[name]["characteristic_distance_1"] = file[
                     "characteristic_distance_1"
                 ][idx]
