@@ -83,7 +83,7 @@ def model_the_data(
 
             # Get the histogram data up to distance = fitlength
             hist_values, bin_edges = np.histogram(
-                distances, bins=np.arange(0, model_config["fitlength"] + 1, bin_size)
+                distances, bins=np.arange(0, fitlength + 1, bin_size)
             )
             bin_centres = (bin_edges[:-1] + bin_edges[1:]) / 2
 
@@ -96,11 +96,11 @@ def model_the_data(
                 print(f"Skipping {model_name} as no distances to fit")
                 continue
 
-            increment = np.round(model_config["fitlength"] / len(distances))
+            increment = np.round(fitlength / len(distances))
             if increment == 0:
                 increment = 1
             calculation_points = np.arange(
-                0, model_config["fitlength"] + 1.0, increment
+                0, fitlength + 1.0, increment
             )
 
             if model_config["dimension"] == 1:
@@ -160,7 +160,7 @@ def model_the_data(
                 distances,
                 bin_edges,
                 bin_centres,
-                model_config["fitlength"],
+                fitlength,
             )
             figname = os.path.join(
                 output_folder,
@@ -173,7 +173,7 @@ def model_the_data(
         elif plot_type == "kde":
             # plot kde and fit
             fig = perpl_model.plot_distance_kde_and_fit(
-                x_expt, y_expt, model_config["fitlength"]
+                x_expt, y_expt, fitlength
             )
             figname = os.path.join(
                 output_folder,
@@ -186,7 +186,7 @@ def model_the_data(
             plt.close(fig)
 
         # plot model components
-        fig2 = perpl_model.plot_model_components(model_config["fitlength"])
+        fig2 = perpl_model.plot_model_components(fitlength)
         if plot_type == "histogram":
             figname = os.path.join(
                 output_folder,
