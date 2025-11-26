@@ -15,7 +15,7 @@ In a new terminal with conda installed create new environment with required pack
 ```shell
 conda create -n z_disk python=3.11 pyarrow scikit-learn matplotlib
 conda activate z_disk
-pip install open3d polars
+pip install open3d polars seaborn xlsxwriter cairosvg
 ```
 
 Clone this directory to your files and move into the directory
