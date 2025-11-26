@@ -304,7 +304,8 @@ def main(argv=None):
     loc_precision_filter_lst = config["loc_precision_filter"]
     numberoflocalisations_lst = config["numberoflocalisations"]
     bin_size_lst = config["bin_sizes"]
-    fitlength_lst = config["fitlength"]
+    fitlength_lst_axial = config["axial"]["fitlength"]
+    fitlength_lst_trans = config["transverse"]["fitlength"]
 
     # load in axial models
     axial_models = os.listdir(os.path.join(config_folder, "axial_models"))
@@ -369,7 +370,7 @@ def main(argv=None):
         popt_at_bounds = []
         large_uncertainties = []
 
-        for param in list(product(loc_precision_filter_lst, numberoflocalisations_lst, bin_size_lst, fitlength_lst)):
+        for param in list(product(loc_precision_filter_lst, numberoflocalisations_lst, bin_size_lst, fitlength_lst_axial)):
             loc_precision_filter, numberoflocalisations, bin_size, fitlength = param
 
             model_the_data(
@@ -468,7 +469,7 @@ def main(argv=None):
     popt_at_bounds = []
     large_uncertainties = []
 
-    for param in list(product(loc_precision_filter_lst, numberoflocalisations_lst, fitlength_lst)):
+    for param in list(product(loc_precision_filter_lst, numberoflocalisations_lst, fitlength_lst_axial)):
         loc_precision_filter, numberoflocalisations, fitlength = param
     
         model_the_data(
@@ -580,7 +581,7 @@ def main(argv=None):
         popt_at_bounds = []
         large_uncertainties = []
 
-        for param in list(product(loc_precision_filter_lst, numberoflocalisations_lst, bin_size_lst, fitlength_lst)):
+        for param in list(product(loc_precision_filter_lst, numberoflocalisations_lst, bin_size_lst, fitlength_lst_trans)):
             loc_precision_filter, numberoflocalisations, bin_size, fitlength = param
 
             model_the_data(
@@ -679,7 +680,7 @@ def main(argv=None):
     popt_at_bounds = []
     large_uncertainties = []
 
-    for param in list(product(loc_precision_filter_lst, numberoflocalisations_lst, fitlength_lst)):
+    for param in list(product(loc_precision_filter_lst, numberoflocalisations_lst, fitlength_lst_trans)):
         loc_precision_filter, numberoflocalisations, fitlength = param
 
         model_the_data(
