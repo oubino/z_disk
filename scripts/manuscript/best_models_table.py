@@ -5,15 +5,6 @@ import polars as pl
 ## Best models for each protein
 best_models = []
 
-#fitlengths = {
-#    "ACTN2_axial": 115,
-#    "ACTN2_transverse": 57,
-#    "Z1Z2_axial": 110,
-#    "Z1Z2_transverse": 55,
-#    "ZASP6_axial": 115,
-#    "ZASP6_transverse": 47,
-#}
-
 for protein in ["ACTN2", "Z1Z2", "ZASP6"]:
 
     protein_folder = f"experiments/{protein}/output/perpl_modelling"
@@ -56,8 +47,6 @@ for protein in ["ACTN2", "Z1Z2", "ZASP6"]:
 
         x = x.insert_column(0, pl.Series("Direction", [direction]*len(x)))
         x = x.insert_column(0, pl.Series("Protein", [protein]*len(x)))
-
-        #x = x.filter(pl.col("Fitlength") == fitlengths[f"{protein}_{direction}"])
 
         best_models.append(x)
 
