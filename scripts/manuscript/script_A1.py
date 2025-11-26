@@ -5,6 +5,7 @@ import os
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.colors as mpc
+import matplotlib.patches as patches
 import polars as pl
 import pyarrow.parquet as pq
 import matplotlib.animation as animation
@@ -51,20 +52,20 @@ plt.figure(figsize=(20, 16))
 plt.text(21, 390, "2 μm", c='w', size= 30)
 plt.axis('off')
 plt.imshow(f, cmap="gray", norm=norm, origin="upper")
-plt.savefig(os.path.join(output_folder, "actn_overview.png"))
+plt.savefig(os.path.join(output_folder, "actn_overview.png"), bbox_inches="tight", transparent=True)
 plt.close()
 
 # ------- PLOT Z DISK ------
 
-folder = f"experiments/{protein}/output/segmented_z_disks/"
 file = file + "_zdisk_1_aligned.csv"
-
-f = pl.read_csv(os.path.join(folder, file))
-
 plot_3d = False
 plot_2d = True
-plane = "xy" # xy, yz
+planes = ["xy","yz"] # xy, yz
 filter = False
+generate_anim = False
+
+folder = f"experiments/{protein}/output/segmented_z_disks/"
+f = pl.read_csv(os.path.join(folder, file))
 
 if filter is not False:
     f = f.filter(
@@ -78,25 +79,50 @@ x = np.array(x)
 y = np.array(y)
 z = np.array(z)
 
+# ---- plot Z disk in 2D -----
 if plot_2d:
-    fig = plt.figure()
-    ax = fig.add_subplot()
-    ax.set_aspect("equal")
-    ax.set_facecolor((0.0, 0.0, 0.0))
-    
-    # Hide grid lines
-    ax.grid(False)
+    for plane in planes:
+        if plane == "xy":
+            figsize = (6,1)
+        elif plane == "yz":
+            figsize = (2.4, 4.8)
 
-    # Hide axes ticks
-    ax.set_xticks([])
-    ax.set_yticks([])
+        fig = plt.figure(figsize=figsize)
+        ax = fig.add_subplot()
+        ax.set_aspect("equal")
+        ax.set_facecolor((0.0, 0.0, 0.0))
+        
+        # Hide grid lines
+        ax.grid(False)
 
-    if plane == "xy":
-        ax.scatter(x, y, s =5, c="w")
-    elif plane == "yz":
-        ax.scatter(y, z, s =5, c="w") 
-    plt.show()
+        # Hide axes ticks
+        ax.set_xticks([])
+        ax.set_yticks([])
 
+        if plane == "xy":
+            ax.scatter(x, y, s = 0.1, c="w")
+        elif plane == "yz":
+            ax.scatter(y, z, s =0.1, c="w")
+
+        # Create a Rectangle patch
+        if plane == "xy":
+            rect = patches.Rectangle((-180, 18130), width=100, height=20, facecolor='w')
+            plt.text(-190, 18100, "100 nm", c='w', size= 7)
+            plt.xlim(-220, 1500)
+        elif plane == "yz":
+            rect = patches.Rectangle((18110, 0), width=50, height=10, facecolor='w')
+            plt.text(18108, -15, "50 nm", c='w', size= 10)
+
+        # Add the patch to the Axes
+        ax.add_patch(rect)
+
+        print("X range: ", np.max(x) - np.min(x))
+        print("Y range: ", np.max(y) - np.min(y))
+        print("Z range: ", np.max(z) - np.min(z))
+        
+        plt.savefig(os.path.join(output_folder, file.rstrip(".csv") + plane + ".svg"), bbox_inches="tight")
+
+# ---- plot Z disk in 3D -----
 if plot_3d:
     fig = plt.figure()
     ax = fig.add_subplot(projection='3d')
@@ -124,31 +150,25 @@ if plot_3d:
 
     #plt.show()
 
-    ## Set initial view
-    ax.view_init(elev=20, azim=140)
+    if generate_anim:
 
-    # --- Animation function ---
-    def update(frame):
-        ax.view_init(elev=frame, azim=frame, roll=frame)
-        return scatter,
+        ## Set initial view
+        ax.view_init(elev=20, azim=140)
 
-    # --- Create animation ---
-    anim = animation.FuncAnimation(
-        fig,
-        update,
-        frames=360,       # rotate 360 degrees
-        interval=20,      # milliseconds between frames
-        blit=True
-    )
+        # --- Animation function ---
+        def update(frame):
+            ax.view_init(elev=frame, azim=frame, roll=frame)
+            return scatter,
 
-    ### 
+        # --- Create animation ---
+        anim = animation.FuncAnimation(
+            fig,
+            update,
+            frames=360,       # rotate 360 degrees
+            interval=20,      # milliseconds between frames
+            blit=True
+        )
 
-    # --- Save movie (requires ffmpeg installed) ---
-    output_movie = os.path.join(output_folder, "actn_z_disk.gif")
-    anim.save(output_movie, fps=30, dpi=150)
-
-    print(np.max(x) - np.min(x))
-    print(np.max(y) - np.min(y))
-    print(np.max(z) - np.min(z))
-
-    #plt.show()
+        # --- Save movie (requires ffmpeg installed) ---
+        output_movie = os.path.join(output_folder, "actn_z_disk.gif")
+        anim.save(output_movie, fps=30, dpi=150)
