@@ -1,13 +1,14 @@
 # Prepare figures for manuscript
 import cairosvg
 import os
+import numpy as np
 import polars as pl
 import yaml
 import xlsxwriter
 from string import ascii_uppercase
 
 ## Best models for each protein
-best_models = []
+best_models = {}
 
 for protein in ["ACTN2", "Z1Z2", "ZASP6"]:
 
@@ -52,7 +53,7 @@ for protein in ["ACTN2", "Z1Z2", "ZASP6"]:
         x = x.insert_column(0, pl.Series("Direction", [direction]*len(x)))
         x = x.insert_column(0, pl.Series("Protein", [protein]*len(x)))
 
-        # --- load in the parameters for the model ---
+        # --- load in the configuration for the model ---
         perpl_model_config_folder = f"experiments/{protein}/perpl_config/{direction}_models"
         bg = []
         n_peaks = []
@@ -77,9 +78,40 @@ for protein in ["ACTN2", "Z1Z2", "ZASP6"]:
         x = x.insert_column(len(x.columns), pl.Series("Charac. dist", charac_dist))
         x = x.insert_column(len(x.columns), pl.Series("Repeats", repeats))
 
-        best_models.append(x)
+        # --- load in the optimal parameters for the model ----
+        opt_param_dicts = []
+        global_keys = []
+        for model in x["Model"]:
+            opt_param_loc = f"experiments/{protein}/output/perpl_modelling/{direction}/kdes/{model}_optparams.txt"
+            with open(opt_param_loc, 'r') as txt_file:
+                txt_file = txt_file.read().split("\n")[2:-1]
 
-best_models = pl.concat(best_models)
+                keys = []
+                values = []
+                for param in txt_file:
+                    param = param.split(":")
+                    keys.append(param[0])
+                    val = param[1].lstrip(" ").split("+-")
+                    values.append("+-".join([str(np.round(float(val[0]), 2)), str(np.round(float(val[1]), 2))]))
+
+                opt_param_dicts.append(dict(zip(keys, values)))
+                global_keys.extend(keys)
+
+        global_keys = sorted(set(global_keys))
+        global_dict = {k:[] for k in global_keys}
+
+        for opt_param_dict in opt_param_dicts:
+            for key in global_keys:
+                if key in opt_param_dict.keys():
+                    global_dict[key].append(opt_param_dict[key])
+                else:
+                    global_dict[key].append(None)
+
+        # add optimal parameters into dataframe        
+        for key, value in global_dict.items():
+            x = x.insert_column(len(x.columns), pl.Series(key, value))
+
+        best_models[f"{protein}_{direction}"] = x
 
 # save each protein + direction to a new sheet in .xlsx workbook
 output_excel = "manuscript_figures/table_g1.xlsx"
@@ -88,10 +120,7 @@ with xlsxwriter.Workbook(output_excel) as workbook:
     for protein in ["ACTN2", "Z1Z2", "ZASP6"]:
         for direction in ["axial", "transverse"]:
 
-            df = best_models.filter(
-                pl.col("Protein") == protein,
-                pl.col("Direction") == direction,
-            )
+            df = best_models[f"{protein}_{direction}"]
 
             df.write_excel(workbook=workbook, worksheet=f"{protein}_{direction}")
 
