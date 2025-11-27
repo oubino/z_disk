@@ -149,6 +149,11 @@ if plot_3d:
     scatter = ax.scatter(x, y, z, s =5, c="w")
 
     #plt.show()
+    option_1 = True
+    option_2 = False
+    option_3 = False
+    option_4 = False
+    option_5 = False
 
     if generate_anim:
 
@@ -157,7 +162,38 @@ if plot_3d:
 
         # --- Animation function ---
         def update(frame):
-            ax.view_init(elev=frame, azim=frame, roll=frame)
+
+            if option_1:
+                elev = azim = roll = frame
+
+            if option_2:
+                rad = np.deg2rad(frame)
+                azim = frame                  
+                elev = 30 * np.sin(rad) + 30  
+                roll = 15 * np.cos(2 * rad)  
+
+            if option_3:
+                rad = np.deg2rad(frame)
+                azim = frame
+                elev = 45 * np.cos(rad)   
+                roll = (frame * 0.5) % 360    
+
+            if option_4:
+                rad = np.deg2rad(frame)
+                azim = frame
+                elev = 25 * np.sin(rad) + 12 * np.sin(3*rad) + 30
+                roll = 20 * np.sin(1.5*rad) + 5 * np.cos(4*rad)
+
+            if option_5:
+                rad = np.deg2rad(frame)
+                # unit circle motion
+                u = np.array([np.cos(rad), np.sin(rad), 0.2*np.sin(2*rad)])  # add z wobble
+                # derive angles (approx): azimuth = atan2(y,x), elevation = atan2(z, sqrt(x^2+y^2))
+                azim = np.rad2deg(np.arctan2(u[1], u[0])) % 360
+                elev = np.rad2deg(np.arctan2(u[2], np.hypot(u[0], u[1])))
+                roll = (frame * 0.3) % 360
+
+            ax.view_init(elev=elev, azim=azim, roll=roll)
             return scatter,
 
         # --- Create animation ---
