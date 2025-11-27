@@ -12,6 +12,7 @@ import numpy as np
 import polars as pl
 import pyarrow.parquet as pq
 
+
 class item:
     """smlm datastructure.
 
@@ -130,9 +131,7 @@ class item:
 
         # 3D histogram for every channel, assigned to self.histo (dict)
         for chan in self.channels:
-            df = self.df.filter(
-                pl.col("channel") == chan
-            )
+            df = self.df.filter(pl.col("channel") == chan)
             # This is dimensions D x N
             sample = np.array((df["x"], df["y"], df["z"]))
             # We need in dimensions N x D
@@ -143,7 +142,6 @@ class item:
 
         # work out pixel for each localisations
         self._coord_2_pixel()
-
 
     def _coord_2_pixel(self):
         """Calculate the pixels corresponding to each localisation"""
@@ -164,16 +162,21 @@ class item:
         self.df = self.df.select(
             [
                 pl.all(),
-                pl.col("x").map_batches(lambda q: (q - x_min) / x_pixel_width).alias("x_pixel"),
-                pl.col("y").map_batches(lambda q: (q - y_min) / y_pixel_width).alias("y_pixel"),
-                pl.col("z").map_batches(lambda q: (q - z_min) / z_pixel_width).alias("z_pixel"),
+                pl.col("x")
+                .map_batches(lambda q: (q - x_min) / x_pixel_width)
+                .alias("x_pixel"),
+                pl.col("y")
+                .map_batches(lambda q: (q - y_min) / y_pixel_width)
+                .alias("y_pixel"),
+                pl.col("z")
+                .map_batches(lambda q: (q - z_min) / z_pixel_width)
+                .alias("z_pixel"),
             ]
         )
         # floor the pixel locations
         self.df = self.df.with_columns(pl.col("x_pixel").cast(int, strict=True))
         self.df = self.df.with_columns(pl.col("y_pixel").cast(int, strict=True))
         self.df = self.df.with_columns(pl.col("z_pixel").cast(int, strict=True))
-
 
     def mask_pixel_2_coord(self, img_mask: np.ndarray) -> pl.DataFrame:
         """For a given mask over the image (value at each pixel
@@ -204,32 +207,41 @@ class item:
         # create dataframe
         flatten_mask = np.ravel(histo_mask)
         mesh_grid = np.meshgrid(
-            range(histo_mask.shape[0]), range(histo_mask.shape[1]), range(histo_mask.shape[2]),
-            indexing='ij',
+            range(histo_mask.shape[0]),
+            range(histo_mask.shape[1]),
+            range(histo_mask.shape[2]),
+            indexing="ij",
         )
         x_pixel = np.ravel(mesh_grid[0])
         y_pixel = np.ravel(mesh_grid[1])
         z_pixel = np.ravel(mesh_grid[2])
         label = flatten_mask
-        data = {"x_pixel": x_pixel, "y_pixel": y_pixel, "z_pixel":z_pixel, "gt_label": label}
+        data = {
+            "x_pixel": x_pixel,
+            "y_pixel": y_pixel,
+            "z_pixel": z_pixel,
+            "gt_label": label,
+        }
         mask_df = pl.DataFrame(
             data,
         ).sort(["x_pixel", "y_pixel", "z_pixel"])
 
-
         # join mask dataframe
-        # if just try and join, crashes as mask_df is too big 
+        # if just try and join, crashes as mask_df is too big
         # mask_df is mostly zeros therefore only join non zeros
         # then in joined df fill in all non joined with 0
         mask_df_non_zero = mask_df.filter(pl.col("gt_label") != 0)
-        df = self.df.join(mask_df_non_zero, how="left", on=["x_pixel", "y_pixel", "z_pixel"])
+        df = self.df.join(
+            mask_df_non_zero, how="left", on=["x_pixel", "y_pixel", "z_pixel"]
+        )
         df = df.with_columns(pl.col("gt_label").fill_null(strategy="zero"))
 
         return df
 
-
     def save_df_to_csv(
-        self, csv_loc, drop_zero_label=False,
+        self,
+        csv_loc,
+        drop_zero_label=False,
     ):
         """Save the dataframe to a .csv with option to:
                 drop positions which are background
@@ -269,7 +281,7 @@ class item:
         overwrite=False,
     ):
         """Save the dataframe to a parquet with option to drop positions which
-           are background 
+           are background
 
         Args:
             save_folder (String): Save the df to this folder
@@ -338,7 +350,7 @@ class item:
         name = arrow_table.schema.metadata[b"name"].decode("utf-8")
 
         # convert string keys to int keys for the mapping
-    
+
         channels = arrow_table.schema.metadata[b"channels"]
         channels = ast.literal_eval(channels.decode("utf-8"))
         bin_sizes = arrow_table.schema.metadata[b"bin_sizes"]
@@ -385,4 +397,3 @@ class item:
         histo = np.stack(histos)
 
         return histo
-

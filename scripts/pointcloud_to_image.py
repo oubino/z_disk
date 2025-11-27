@@ -9,6 +9,7 @@ import polars as pl
 from base import item as item_class
 import numpy as np
 
+
 def main(argv=None):
     """Main script for the module with variable arguments
 
@@ -19,8 +20,15 @@ def main(argv=None):
         ValueError: If try to convert but already files there"""
 
     # parse arugments
-    parser = argparse.ArgumentParser(
-        description="Convert pointclouds to images"
+    parser = argparse.ArgumentParser(description="Convert pointclouds to images")
+
+    parser.add_argument(
+        "-e",
+        "--experiment",
+        action="store",
+        type=str,
+        help="name of the experiment",
+        required=True,
     )
 
     parser.add_argument(
@@ -67,7 +75,7 @@ def main(argv=None):
         type=str,
         help="how to interpret the histo size given as size of bins or number of bins (bins or size)",
         required=True,
-        choices=["bins","size"]
+        choices=["bins", "size"],
     )
 
     parser.add_argument(
@@ -103,15 +111,14 @@ def main(argv=None):
         action="store",
         type=str,
         help="delimeter that separates the data items in input file (tab or comma)",
-        choices = ["tab", "comma"],
+        choices=["tab", "comma"],
         required=True,
     )
-    
 
     args = parser.parse_args(argv)
 
-    input_folder = "data"
-    output_folder = "output"
+    input_folder = os.path.join("experiments", args.experiment, "data")
+    output_folder = os.path.join("experiments", args.experiment, "output")
 
     output_image_folder = os.path.join(output_folder, "images")
     output_datastructure_folder = os.path.join(output_folder, "datastructures")
@@ -121,7 +128,7 @@ def main(argv=None):
     # create preprocessed directory
     if not os.path.exists(output_image_folder):
         os.makedirs(output_image_folder)
-    
+
     # create preprocessed directory
     if not os.path.exists(output_datastructure_folder):
         os.makedirs(output_datastructure_folder)
@@ -130,13 +137,13 @@ def main(argv=None):
     print("List of files which will be converted")
     input_files = os.listdir(input_folder)
     input_files = [os.path.join(input_folder, file) for file in input_files]
-    while ('.DS_Store' in input_files):
-        input_files.remove('.DS_Store')
+    while ".DS_Store" in input_files:
+        input_files.remove(".DS_Store")
     # check file not already present
     for file in input_files:
         file_name = os.path.basename(file)
         file_extension = os.path.splitext(file_name)[1]
-        if not (file_extension == '.csv' or file_extension == '.txt'):
+        if not (file_extension == ".csv" or file_extension == ".txt"):
             raise ValueError(f"{file_extension} is not a valid file extension")
         file_name = file_name.rstrip(file_extension)
         output_path = os.path.join(output_datastructure_folder, f"{file_name}.parquet")
@@ -146,54 +153,49 @@ def main(argv=None):
 
     # go through files -> convert to datastructure -> save
     for index, file in enumerate(input_files):
-        if args.separator == 'comma':
+        if args.separator == "comma":
             df = pl.read_csv(file, separator=",")
-        elif args.separator == 'tab':
+        elif args.separator == "tab":
             df = pl.read_csv(file, separator="\t")
 
         # Get name of file - assumes last part of input file name
         file_extension = os.path.splitext(os.path.basename(file))[1]
         name = os.path.basename(os.path.normpath(file)).removesuffix(file_extension)
-        print('name', name)
+        print("name", name)
 
         # rename x,y,z,channel columns
         df = df.rename(
-            {args.x_col_name: "x",
-             args.y_col_name: "y",
-             args.z_col_name: "z"}
+            {args.x_col_name: "x", args.y_col_name: "y", args.z_col_name: "z"}
         )
 
-        if df.schema['x'].is_(pl.String):
+        if df.schema["x"].is_(pl.String):
             df = df.with_columns(pl.col("x").str.strip_chars_start().cast(pl.Float64))
 
-        if df.schema['y'].is_(pl.String):
+        if df.schema["y"].is_(pl.String):
             df = df.with_columns(pl.col("y").str.strip_chars_start().cast(pl.Float64))
 
-        if df.schema['z'].is_(pl.String):
+        if df.schema["z"].is_(pl.String):
             df = df.with_columns(pl.col("z").str.strip_chars_start().cast(pl.Float64))
 
         # if channel column given
         if args.channel_col_name is not None:
-            df = df.rename(
-                {args.channel_col_name: "channel"}
-            )
-            if df.schema['channel'].is_(pl.String):
-                df = df.with_columns(pl.col("channel").str.strip_chars_start().cast(pl.Int32))
+            df = df.rename({args.channel_col_name: "channel"})
+            if df.schema["channel"].is_(pl.String):
+                df = df.with_columns(
+                    pl.col("channel").str.strip_chars_start().cast(pl.Int32)
+                )
             # Get list of channels - currently takes in all channels
             channel_choice = sorted(list(set(df["channel"])))
         else:
             # add on fake channel column
-            df = df.with_columns(
-                pl.lit(0).alias("channel")
-            )
+            df = df.with_columns(pl.lit(0).alias("channel"))
             channel_choice = [0]
 
-        item =  item_class(
+        item = item_class(
             name,
             df,
             channel_choice,
         )
-
 
         item.coord_2_histo(
             histo_size,
@@ -219,6 +221,7 @@ def main(argv=None):
             output_datastructure_folder,
             drop_zero_label=False,
         )
+
 
 if __name__ == "__main__":
     main()

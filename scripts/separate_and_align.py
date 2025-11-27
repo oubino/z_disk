@@ -11,6 +11,7 @@ from sklearn.decomposition import PCA
 from scipy.spatial.transform import Rotation as Rot
 import warnings
 
+
 def main(argv=None):
     """Main script for the module with variable arguments
 
@@ -21,8 +22,15 @@ def main(argv=None):
         ValueError: If try to convert but already files there"""
 
     # parse arugments
-    parser = argparse.ArgumentParser(
-        description="Separate and align z disks"
+    parser = argparse.ArgumentParser(description="Separate and align z disks")
+
+    parser.add_argument(
+        "-e",
+        "--experiment",
+        action="store",
+        type=str,
+        help="name of the experiment",
+        required=True,
     )
 
     parser.add_argument(
@@ -34,17 +42,21 @@ def main(argv=None):
 
     args = parser.parse_args(argv)
 
-    input_folder = "output/segmented_pointclouds"
-    output_folder = "output/segmented_z_disks"
+    input_folder = os.path.join(
+        "experiments", args.experiment, "output/segmented_pointclouds"
+    )
+    output_folder = os.path.join(
+        "experiments", args.experiment, "output/segmented_z_disks"
+    )
 
     if not os.path.exists(output_folder):
         os.makedirs(output_folder)
 
     files = os.listdir(input_folder)
-    files = [f for f in files if f.endswith('.csv')]
+    files = [f for f in files if f.endswith(".csv")]
 
     for file in files:
-        
+
         file_path = os.path.join(input_folder, file)
 
         df = pl.read_csv(file_path)
@@ -52,7 +64,9 @@ def main(argv=None):
         z_disks = df.partition_by("gt_label")
 
         if args.align:
-            warnings.warn("Note that distances between localisations will be changed on order of 10^-11 units i.e. very small error")
+            warnings.warn(
+                "Note that distances between localisations will be changed on order of 10^-11 units i.e. very small error"
+            )
 
         for index, z_disk in enumerate(z_disks):
 
@@ -68,42 +82,59 @@ def main(argv=None):
                 array_full = np.swapaxes(array_full, 0, 1)
 
                 # check
-                a = array_full[:,2]
+                a = array_full[:, 2]
 
                 # if less than 2 samples
                 if len(array) < 2:
-                    print('Not enough samples therefore skipping this z disk')
-                
+                    print("Not enough samples therefore skipping this z disk")
+
                 else:
                     pca = PCA(n_components=2)
                     # N x D
                     pca = pca.fit(array)
                     # calculate rotation matrix between maximal PCA compoment and x axis
                     pca_vector = np.append(pca.components_[0], 0.0)
-                    rot, _ = Rot.align_vectors(np.array([1,0,0]), pca_vector)
+                    rot, _ = Rot.align_vectors(np.array([1, 0, 0]), pca_vector)
                     # rotate points
                     array_full = rot.apply(array_full)
                     # D x N
                     array_full = np.swapaxes(array_full, 0, 1)
 
-                    z_disk = z_disk.with_columns(pl.Series(name='x', values=array_full[0,:]))
-                    z_disk = z_disk.with_columns(pl.Series(name='y', values=array_full[1,:]))
-                    z_disk = z_disk.with_columns(pl.Series(name='z', values=array_full[2,:]))
+                    z_disk = z_disk.with_columns(
+                        pl.Series(name="x", values=array_full[0, :])
+                    )
+                    z_disk = z_disk.with_columns(
+                        pl.Series(name="y", values=array_full[1, :])
+                    )
+                    z_disk = z_disk.with_columns(
+                        pl.Series(name="z", values=array_full[2, :])
+                    )
 
                     aligned = True
 
                     # check
-                    b = array_full[2,:]
+                    b = array_full[2, :]
                     a = np.round(a, 6)
                     b = np.round(b, 6)
-                    assert np.array_equal(a,b)
+                    assert np.array_equal(a, b)
 
-            # save 
+            # rearrange columns to be compatbile with PERPL
+            cols = ["x", "y", "z"] + [
+                col for col in z_disk.columns if col not in ["x", "y", "z"]
+            ]
+            z_disk = z_disk.select(cols)
+
+            # save
             if not aligned:
-                save_path = os.path.join(output_folder, f"{file.rstrip('.csv')}_zdisk_{index+1}.csv")
+                save_path = os.path.join(
+                    output_folder, f"{file.rstrip('.csv')}_zdisk_{index+1}.csv"
+                )
             else:
-                save_path = os.path.join(output_folder, f"{file.rstrip('.csv')}_zdisk_{index+1}_aligned.csv")   
+                save_path = os.path.join(
+                    output_folder, f"{file.rstrip('.csv')}_zdisk_{index+1}_aligned.csv"
+                )
             z_disk.write_csv(save_path)
+
 
 if __name__ == "__main__":
     main()

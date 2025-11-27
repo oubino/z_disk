@@ -3,11 +3,13 @@
 Module takes in the .npy segmentation and returns datastructure with segmentation
 """
 
+import argparse
 import os
 from base import item as item_class
 import numpy as np
 import warnings
-#import time
+
+# import time
 
 
 def main(argv=None):
@@ -19,43 +21,60 @@ def main(argv=None):
     Raises:
         ValueError: If try to convert but already files there"""
 
-    folder = "output"
-    
+    # parse arugments
+    parser = argparse.ArgumentParser(
+        description="Apply segmentations back to pointclouds"
+    )
+
+    parser.add_argument(
+        "-e",
+        "--experiment",
+        action="store",
+        type=str,
+        help="name of the experiment",
+        required=True,
+    )
+
+    args = parser.parse_args(argv)
+
+    folder = os.path.join("experiments", args.experiment, "output")
+
     input_datastructure_folder = os.path.join(folder, "datastructures")
     input_segmentation_folder = os.path.join(folder, "segmentations")
     output_folder = os.path.join(folder, "segmented_pointclouds")
 
     if not os.path.exists(output_folder):
-          os.makedirs(output_folder)
+        os.makedirs(output_folder)
 
     files = os.listdir(input_datastructure_folder)
-    files = [f for f in files if f.endswith('.parquet')]
+    files = [f for f in files if f.endswith(".parquet")]
 
     for file in files:
-            
-            item = item_class(None, None, None)
-            item.load_from_parquet(os.path.join(input_datastructure_folder, file))
 
-            seg_loc = os.path.join(input_segmentation_folder, item.name + ".npy")
-            if not os.path.exists(seg_loc):
-                  warnings.warn(f"No segmentation for {file}")
-                  continue
-            seg = np.load(seg_loc)
+        item = item_class(None, None, None)
+        item.load_from_parquet(os.path.join(input_datastructure_folder, file))
 
-            # ilastik_seg is [z,y,x,c] where channel 0 is segmentation
-            # where each integer represents different instance of a cell
-            # i.e. 1 = one cell; 2 = different cell; etc.
-            seg = seg[:, :, :, 0]
+        seg_loc = os.path.join(input_segmentation_folder, item.name + ".npy")
+        if not os.path.exists(seg_loc):
+            warnings.warn(f"No segmentation for {file}")
+            continue
+        seg = np.load(seg_loc)
 
-            output_loc = os.path.join(output_folder, item.name + ".csv")
+        # ilastik_seg is [z,y,x,c] where channel 0 is segmentation
+        # where each integer represents different instance of a cell
+        # i.e. 1 = one cell; 2 = different cell; etc.
+        seg = seg[:, :, :, 0]
 
-            # save instance mask to dataframe
-            df = item.mask_pixel_2_coord(seg)
-            item.df = df
-            item.save_df_to_csv(
-                output_loc,
-                drop_zero_label=True,
-            )
+        output_loc = os.path.join(output_folder, item.name + ".csv")
+
+        # save instance mask to dataframe
+        df = item.mask_pixel_2_coord(seg)
+        item.df = df
+        item.save_df_to_csv(
+            output_loc,
+            drop_zero_label=True,
+        )
+
 
 if __name__ == "__main__":
     main()
