@@ -77,8 +77,6 @@ for protein in ["ACTN2", "Z1Z2", "ZASP6"]:
         x = x.insert_column(len(x.columns), pl.Series("Charac. dist", charac_dist))
         x = x.insert_column(len(x.columns), pl.Series("Repeats", repeats))
 
-        raise ValueError("Final check: Check it outputs the correct parameters")
-
         best_models.append(x)
 
 best_models = pl.concat(best_models)
@@ -89,8 +87,6 @@ with xlsxwriter.Workbook(output_excel) as workbook:
 
     for protein in ["ACTN2", "Z1Z2", "ZASP6"]:
         for direction in ["axial", "transverse"]:
-
-            raise ValueError("need to check this")
 
             df = best_models.filter(
                 pl.col("Protein") == protein,
