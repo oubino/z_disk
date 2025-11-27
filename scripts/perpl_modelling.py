@@ -99,9 +99,7 @@ def model_the_data(
             increment = np.round(fitlength / len(distances))
             if increment == 0:
                 increment = 1
-            calculation_points = np.arange(
-                0, fitlength + 1.0, increment
-            )
+            calculation_points = np.arange(0, fitlength + 1.0, increment)
 
             if model_config["dimension"] == 1:
                 churchman = plotting.estimate_rpd_churchman_1d
@@ -172,13 +170,13 @@ def model_the_data(
 
         elif plot_type == "kde":
             # plot kde and fit
-            fig = perpl_model.plot_distance_kde_and_fit(
-                x_expt, y_expt, fitlength
-            )
+            fig = perpl_model.plot_distance_kde_and_fit(x_expt, y_expt, fitlength)
             figname = os.path.join(
                 output_folder,
                 "kdes",
-                (f"{model_name}_locprec_{loc_precision_filter}_nlocs_{numberoflocalisations}_fitlength_{fitlength}_kdeandfit.svg"),
+                (
+                    f"{model_name}_locprec_{loc_precision_filter}_nlocs_{numberoflocalisations}_fitlength_{fitlength}_kdeandfit.svg"
+                ),
             )
 
         if fig is not None:
@@ -199,7 +197,9 @@ def model_the_data(
             figname = os.path.join(
                 output_folder,
                 "kdes",
-                (f"{model_name}_locprec_{loc_precision_filter}_nlocs_{numberoflocalisations}_fitlength_{fitlength}_modelcomponents.svg"),
+                (
+                    f"{model_name}_locprec_{loc_precision_filter}_nlocs_{numberoflocalisations}_fitlength_{fitlength}_modelcomponents.svg"
+                ),
             )
         if fig2 is not None:
             fig2.savefig(figname)
@@ -240,7 +240,9 @@ def model_the_data(
                 f"{model_name}_locprec_{loc_precision_filter}_nlocs_{numberoflocalisations}_fitlength_{fitlength}_binsize_{bin_size}"
             )
         elif plot_type == "kde":
-            setups.append(f"{model_name}_locprec_{loc_precision_filter}_nlocs_{numberoflocalisations}_fitlength_{fitlength}")
+            setups.append(
+                f"{model_name}_locprec_{loc_precision_filter}_nlocs_{numberoflocalisations}_fitlength_{fitlength}"
+            )
         fitlengths.append(fitlength)
         locprecisions.append(loc_precision_filter)
         nlocs.append(numberoflocalisations)
@@ -370,7 +372,14 @@ def main(argv=None):
         popt_at_bounds = []
         large_uncertainties = []
 
-        for param in list(product(loc_precision_filter_lst, numberoflocalisations_lst, bin_size_lst, fitlength_lst_axial)):
+        for param in list(
+            product(
+                loc_precision_filter_lst,
+                numberoflocalisations_lst,
+                bin_size_lst,
+                fitlength_lst_axial,
+            )
+        ):
             loc_precision_filter, numberoflocalisations, bin_size, fitlength = param
 
             model_the_data(
@@ -469,9 +478,13 @@ def main(argv=None):
     popt_at_bounds = []
     large_uncertainties = []
 
-    for param in list(product(loc_precision_filter_lst, numberoflocalisations_lst, fitlength_lst_axial)):
+    for param in list(
+        product(
+            loc_precision_filter_lst, numberoflocalisations_lst, fitlength_lst_axial
+        )
+    ):
         loc_precision_filter, numberoflocalisations, fitlength = param
-    
+
         model_the_data(
             "axial",
             "kde",
@@ -581,7 +594,14 @@ def main(argv=None):
         popt_at_bounds = []
         large_uncertainties = []
 
-        for param in list(product(loc_precision_filter_lst, numberoflocalisations_lst, bin_size_lst, fitlength_lst_trans)):
+        for param in list(
+            product(
+                loc_precision_filter_lst,
+                numberoflocalisations_lst,
+                bin_size_lst,
+                fitlength_lst_trans,
+            )
+        ):
             loc_precision_filter, numberoflocalisations, bin_size, fitlength = param
 
             model_the_data(
@@ -680,7 +700,11 @@ def main(argv=None):
     popt_at_bounds = []
     large_uncertainties = []
 
-    for param in list(product(loc_precision_filter_lst, numberoflocalisations_lst, fitlength_lst_trans)):
+    for param in list(
+        product(
+            loc_precision_filter_lst, numberoflocalisations_lst, fitlength_lst_trans
+        )
+    ):
         loc_precision_filter, numberoflocalisations, fitlength = param
 
         model_the_data(

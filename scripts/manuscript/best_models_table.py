@@ -24,7 +24,7 @@ for protein in ["ACTN2", "Z1Z2", "ZASP6"]:
             poptatbounds_col_name = "POptAtBounds"
         elif " POptAtBounds" in results_file.columns:
             poptatbounds_col_name = " POptAtBounds"
-        
+
         if "LargeUncertainty" in results_file.columns:
             largeuncertainty_col_name = "LargeUncertainty"
         elif " LargeUncertainty" in results_file.columns:
@@ -42,19 +42,23 @@ for protein in ["ACTN2", "Z1Z2", "ZASP6"]:
 
         x = results_file_top["Locprecision", "Fitlength", "Nlocs"].unique()
 
-        x = results_file_top.group_by(
-            "Locprecision", "Fitlength", "Nlocs"
-        ).agg(pl.col("AICcorr").min())
-
-        x = x.join(results_file_top, on=["Locprecision", "Fitlength", "Nlocs", "AICcorr"], how="left").sort(
-            pl.col("Locprecision", "Fitlength", "Nlocs")
+        x = results_file_top.group_by("Locprecision", "Fitlength", "Nlocs").agg(
+            pl.col("AICcorr").min()
         )
 
-        x = x.insert_column(0, pl.Series("Direction", [direction]*len(x)))
-        x = x.insert_column(0, pl.Series("Protein", [protein]*len(x)))
+        x = x.join(
+            results_file_top,
+            on=["Locprecision", "Fitlength", "Nlocs", "AICcorr"],
+            how="left",
+        ).sort(pl.col("Locprecision", "Fitlength", "Nlocs"))
+
+        x = x.insert_column(0, pl.Series("Direction", [direction] * len(x)))
+        x = x.insert_column(0, pl.Series("Protein", [protein] * len(x)))
 
         # --- load in the configuration for the model ---
-        perpl_model_config_folder = f"experiments/{protein}/perpl_config/{direction}_models"
+        perpl_model_config_folder = (
+            f"experiments/{protein}/perpl_config/{direction}_models"
+        )
         bg = []
         n_peaks = []
         peak_type = []
@@ -62,7 +66,9 @@ for protein in ["ACTN2", "Z1Z2", "ZASP6"]:
         repeats = []
 
         for model in x["Model"]:
-            model = os.path.join(perpl_model_config_folder, "_".join(model.split("_")[:2]) + ".yaml")
+            model = os.path.join(
+                perpl_model_config_folder, "_".join(model.split("_")[:2]) + ".yaml"
+            )
             # load in configuration
             with open(model, "r") as ymlfile:
                 model = yaml.safe_load(ymlfile)
@@ -83,7 +89,7 @@ for protein in ["ACTN2", "Z1Z2", "ZASP6"]:
         global_keys = []
         for model in x["Model"]:
             opt_param_loc = f"experiments/{protein}/output/perpl_modelling/{direction}/kdes/{model}_optparams.txt"
-            with open(opt_param_loc, 'r') as txt_file:
+            with open(opt_param_loc, "r") as txt_file:
                 txt_file = txt_file.read().split("\n")[2:-1]
 
                 keys = []
@@ -92,13 +98,20 @@ for protein in ["ACTN2", "Z1Z2", "ZASP6"]:
                     param = param.split(":")
                     keys.append(param[0])
                     val = param[1].lstrip(" ").split("+-")
-                    values.append("+-".join([str(np.round(float(val[0]), 2)), str(np.round(float(val[1]), 2))]))
+                    values.append(
+                        "+-".join(
+                            [
+                                str(np.round(float(val[0]), 2)),
+                                str(np.round(float(val[1]), 2)),
+                            ]
+                        )
+                    )
 
                 opt_param_dicts.append(dict(zip(keys, values)))
                 global_keys.extend(keys)
 
         global_keys = sorted(set(global_keys))
-        global_dict = {k:[] for k in global_keys}
+        global_dict = {k: [] for k in global_keys}
 
         for opt_param_dict in opt_param_dicts:
             for key in global_keys:
@@ -107,7 +120,7 @@ for protein in ["ACTN2", "Z1Z2", "ZASP6"]:
                 else:
                     global_dict[key].append(None)
 
-        # add optimal parameters into dataframe        
+        # add optimal parameters into dataframe
         for key, value in global_dict.items():
             x = x.insert_column(len(x.columns), pl.Series(key, value))
 
@@ -131,20 +144,21 @@ with xlsxwriter.Workbook(output_excel) as workbook:
             worksheet.set_column(len(df.columns), len(df.columns), 200)
 
             for i, model in enumerate(models):
-                
+
                 model_loc = f"experiments/{protein}/output/perpl_modelling/{direction}/kdes/{model}_kdeandfit.svg"
 
-                # convert svg to png 
+                # convert svg to png
                 png_loc = f"manuscript_figures/table_g1/{protein}_{direction}_{model}_kdeandfit.png"
                 cairosvg.svg2png(url=model_loc, write_to=png_loc)
 
                 # embed the image in the worksheet
                 try:
-                    worksheet.set_row(i+1, 100)  # Set the row height       
-                    worksheet.embed_image(i+1, len(df.columns), png_loc)
+                    worksheet.set_row(i + 1, 100)  # Set the row height
+                    worksheet.embed_image(i + 1, len(df.columns), png_loc)
                 except:
                     column = ascii_uppercase[len(df.columns)]
-                    worksheet.insert_image(f"{column}{i+1}", png_loc, {"x_scale": 0.1, "y_scale": 0.1})
+                    worksheet.insert_image(
+                        f"{column}{i+1}", png_loc, {"x_scale": 0.1, "y_scale": 0.1}
+                    )
 
 ## Simpler models for each protein
-

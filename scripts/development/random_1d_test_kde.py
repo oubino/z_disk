@@ -4,16 +4,14 @@ from perpl.relative_positions import getdistances
 from perpl.io import plotting
 import matplotlib.pyplot as plt
 
+
 def churchman_term1d(d, mu, sigma):
     if ((mu * d / sigma**2) < 500).all():
         p = (
             np.sqrt(2 / np.pi)
             * 1.0
             / sigma
-            * (
-                np.exp(-(mu**2 + d**2) / (2 * sigma**2))
-                * np.cosh(mu * d / sigma**2)
-            )
+            * (np.exp(-(mu**2 + d**2) / (2 * sigma**2)) * np.cosh(mu * d / sigma**2))
         )
     else:
         p = (
@@ -26,25 +24,23 @@ def churchman_term1d(d, mu, sigma):
     return p
 
 
-# generate random localisations in 1d 
+# generate random localisations in 1d
 x = random.rand(500)
 
 # scale up data to a line of length...
-length = 50.
+length = 50.0
 x = x * length
 x = np.expand_dims(x, axis=1)
 
 # params for generating kde
-loc_precision = 3.
-fitlength = 30.
+loc_precision = 3.0
+fitlength = 30.0
 normalise = False
 
-# calculate the distances in 1d 
-d = getdistances(
-    x, 500.0, verbose=False
-)[1]
+# calculate the distances in 1d
+d = getdistances(x, 500.0, verbose=False)[1]
 
- # Make all axial separations positive.
+# Make all axial separations positive.
 d = abs(d)
 d = np.sort(d)
 d = d[::2]
@@ -53,9 +49,7 @@ d = d[::2]
 increment = np.round(fitlength / len(d))
 if increment == 0:
     increment = 1
-calculation_points = np.arange(
-    0, fitlength + 1.0, increment
-)
+calculation_points = np.arange(0, fitlength + 1.0, increment)
 
 churchman = plotting.estimate_rpd_churchman_1d
 
@@ -65,7 +59,7 @@ rpd = churchman(
     combined_precision=(np.sqrt(2) * loc_precision),
 )
 
-# normalise 
+# normalise
 if normalise:
     y_expt = rpd[calculation_points > 0]
     x_expt = calculation_points[calculation_points > 0]
@@ -76,20 +70,20 @@ else:
 # calculate the bg
 
 # generate locations based on distribution of distances
-#_, a2 = np.histogram(d, bins=2000)
-#bin_centres = (a2[:-1] + a2[1:]) / 2
-#bin_width = a2[1] - a2[0]
+# _, a2 = np.histogram(d, bins=2000)
+# bin_centres = (a2[:-1] + a2[1:]) / 2
+# bin_width = a2[1] - a2[0]
 
 # generate the bg
 bg = 0 * x_expt
-sigma = (np.sqrt(2) * loc_precision)
+sigma = np.sqrt(2) * loc_precision
 bg_x = np.linspace(0, length, 500)
 bin_width = bg_x[1] - bg_x[0]
 for i, mu in enumerate(bg_x):
 
     churchman_term = churchman_term1d(x_expt, mu, sigma)
-    frequency_term = 2 * (1/length) * (1 - mu/length)
-    frequency_term =  frequency_term * bin_width * len(d)
+    frequency_term = 2 * (1 / length) * (1 - mu / length)
+    frequency_term = frequency_term * bin_width * len(d)
 
     bg += churchman_term * frequency_term
 
@@ -106,9 +100,9 @@ plt.savefig("sandpit/1d_test_kde.svg")
 plt.close()
 
 # ----- foo
-#pdf = 2 * (1/length) * (1 - bin_centres/length)
-#bin_width = a2[1] - a2[0]
-#y =  pdf * bin_width * len(d)
-#plt.hist(d.flatten(), histtype="step", bins=100)
-#plt.hist(np.repeat(bin_centres, y.astype(int)), histtype="step", bins=100)
-#plt.show()
+# pdf = 2 * (1/length) * (1 - bin_centres/length)
+# bin_width = a2[1] - a2[0]
+# y =  pdf * bin_width * len(d)
+# plt.hist(d.flatten(), histtype="step", bins=100)
+# plt.hist(np.repeat(bin_centres, y.astype(int)), histtype="step", bins=100)
+# plt.show()
