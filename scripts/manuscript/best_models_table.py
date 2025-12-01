@@ -44,6 +44,8 @@ for protein in ["ACTN2", "Z1Z2", "ZASP6"]:
         x = results_file_top.group_by("Locprecision", "Fitlength", "Nlocs").agg(
             pl.col("AICcorr").min().alias("MinAICcorr")
         )
+        # pick out best models within 0.01 relative likelihood pp77-78 Burnham
+        # Model selection and multimodel inference
         x = x.join(
            results_file_top,
             on=["Locprecision", "Fitlength", "Nlocs"],
