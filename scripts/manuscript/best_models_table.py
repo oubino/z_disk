@@ -40,17 +40,23 @@ for protein in ["ACTN2", "Z1Z2", "ZASP6"]:
             pl.col("BGbelowzero"),
         )
 
-        x = results_file_top["Locprecision", "Fitlength", "Nlocs"].unique()
 
         x = results_file_top.group_by("Locprecision", "Fitlength", "Nlocs").agg(
-            pl.col("AICcorr").min()
+            pl.col("AICcorr").min().alias("MinAICcorr")
         )
-
         x = x.join(
-            results_file_top,
-            on=["Locprecision", "Fitlength", "Nlocs", "AICcorr"],
-            how="left",
-        ).sort(pl.col("Locprecision", "Fitlength", "Nlocs"))
+           results_file_top,
+            on=["Locprecision", "Fitlength", "Nlocs"],
+            how="right",
+            ).filter(
+                pl.col("AICcorr") <= pl.col("MinAICcorr") + 9.210340372
+                ).sort(
+                    pl.col("Locprecision", "Fitlength", "Nlocs")
+                    )
+        reordered_cols = ["Locprecision", "Fitlength", "Nlocs", "AICcorr"]
+        remaining_cols = [c for c in x.columns if c not in reordered_cols]
+        reordered_cols.extend(remaining_cols)
+        x = x.select(reordered_cols)
 
         x = x.insert_column(0, pl.Series("Direction", [direction] * len(x)))
         x = x.insert_column(0, pl.Series("Protein", [protein] * len(x)))
@@ -123,6 +129,14 @@ for protein in ["ACTN2", "Z1Z2", "ZASP6"]:
         # add optimal parameters into dataframe
         for key, value in global_dict.items():
             x = x.insert_column(len(x.columns), pl.Series(key, value))
+
+        # calculate S.D. of the residuals
+        ## pp81 of INTRODUCTION TO LINEAR REGRESSION ANALYSIS, Montgomery, Peck, Vining 
+        x = x.with_columns(
+            (pl.col("SSR")/(pl.col("Ndatapoints") - pl.col("Nparams")))
+            .sqrt()
+            .alias("SD of residuals")
+        )
 
         best_models[f"{protein}_{direction}"] = x
 
