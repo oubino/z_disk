@@ -137,6 +137,12 @@ for protein in ["ACTN2", "Z1Z2", "ZASP6"]:
         x = x.with_columns(
             (pl.col("SSR")/(pl.col("Ndatapoints") - pl.col("Nparams")))
             .sqrt()
+            .alias("SD of residuals (corrected by no. of params)")
+        )
+
+        x = x.with_columns(
+            (pl.col("SSR")/(pl.col("Ndatapoints")))
+            .sqrt()
             .alias("SD of residuals")
         )
 
