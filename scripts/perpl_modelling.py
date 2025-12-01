@@ -39,6 +39,8 @@ def model_the_data(
     bgbelowzeros,
     nparams,
     ndatapoints,
+    ndistances,
+    expt_locprecision,
     popt_at_bounds,
     large_uncertainties,
 ):
@@ -249,6 +251,8 @@ def model_the_data(
         bgbelowzeros.append(perpl_model.bgbelowzero)
         nparams.append(perpl_model.n_params)
         ndatapoints.append(len(x_expt))
+        ndistances.append(len(distances))
+        expt_locprecision.append(loc_precision)
         popt_at_bounds.append(perpl_model.popt_at_bound)
         large_uncertainties.append(perpl_model.large_uncertainty)
 
@@ -369,6 +373,8 @@ def main(argv=None):
         bgbelowzeros = []
         nparams = []
         ndatapoints = []
+        ndistances = []
+        expt_locprecision = []
         popt_at_bounds = []
         large_uncertainties = []
 
@@ -407,6 +413,8 @@ def main(argv=None):
                 bgbelowzeros,
                 nparams,
                 ndatapoints,
+                ndistances,
+                expt_locprecision,
                 popt_at_bounds,
                 large_uncertainties,
             )
@@ -422,6 +430,8 @@ def main(argv=None):
             bgbelowzeros,
             nparams,
             ndatapoints,
+            ndistances,
+            expt_locprecision,
             popt_at_bounds,
             large_uncertainties,
         ) = zip(
@@ -437,6 +447,8 @@ def main(argv=None):
                     bgbelowzeros,
                     nparams,
                     ndatapoints,
+                    ndistances,
+                    expt_locprecision,
                     popt_at_bounds,
                     large_uncertainties,
                 )
@@ -445,7 +457,7 @@ def main(argv=None):
 
         with open(os.path.join(output_folder, "results_histograms.csv"), "w") as f:
             f.write(
-                "Model,AICcorr,AIC,SSR,Fitlength,Locprecision,Nlocs,BGbelowzero,Nparams,Ndatapoints,POptAtBounds,LargeUncertainty\n"
+                "Model,AICcorr,AIC,SSR,Fitlength,Locprecision,Nlocs,BGbelowzero,Nparams,Ndatapoints,Ndistances,ExptLocprecision,POptAtBounds,LargeUncertainty\n"
             )
             for row in zip(
                 setups,
@@ -458,6 +470,8 @@ def main(argv=None):
                 bgbelowzeros,
                 nparams,
                 ndatapoints,
+                ndistances,
+                expt_locprecision,
                 popt_at_bounds,
                 large_uncertainties,
             ):
@@ -475,6 +489,8 @@ def main(argv=None):
     bgbelowzeros = []
     nparams = []
     ndatapoints = []
+    ndistances = []
+    expt_locprecision = []
     popt_at_bounds = []
     large_uncertainties = []
 
@@ -510,6 +526,8 @@ def main(argv=None):
             bgbelowzeros,
             nparams,
             ndatapoints,
+            ndistances,
+            expt_locprecision,
             popt_at_bounds,
             large_uncertainties,
         )
@@ -525,6 +543,8 @@ def main(argv=None):
         bgbelowzeros,
         nparams,
         ndatapoints,
+        ndistances,
+        expt_locprecision,
         popt_at_bounds,
         large_uncertainties,
     ) = zip(
@@ -540,6 +560,8 @@ def main(argv=None):
                 bgbelowzeros,
                 nparams,
                 ndatapoints,
+                ndistances,
+                expt_locprecision,
                 popt_at_bounds,
                 large_uncertainties,
             )
@@ -548,7 +570,7 @@ def main(argv=None):
 
     with open(os.path.join(output_folder, "results_kdes.csv"), "w") as f:
         f.write(
-            "Model,AICcorr,AIC,SSR,Fitlength,Locprecision,Nlocs,BGbelowzero,Nparams,Ndatapoints,POptAtBounds,LargeUncertainty\n"
+            "Model,AICcorr,AIC,SSR,Fitlength,Locprecision,Nlocs,BGbelowzero,Nparams,Ndatapoints,Ndistances,ExptLocprecision,POptAtBounds,LargeUncertainty\n"
         )
         for row in zip(
             setups,
@@ -561,6 +583,8 @@ def main(argv=None):
             bgbelowzeros,
             nparams,
             ndatapoints,
+            ndistances,
+            expt_locprecision,
             popt_at_bounds,
             large_uncertainties,
         ):
@@ -591,6 +615,8 @@ def main(argv=None):
         bgbelowzeros = []
         nparams = []
         ndatapoints = []
+        ndistances = []
+        expt_locprecision = []
         popt_at_bounds = []
         large_uncertainties = []
 
@@ -629,6 +655,8 @@ def main(argv=None):
                 bgbelowzeros,
                 nparams,
                 ndatapoints,
+                ndistances,
+                expt_locprecision,
                 popt_at_bounds,
                 large_uncertainties,
             )
@@ -644,6 +672,8 @@ def main(argv=None):
             bgbelowzeros,
             nparams,
             ndatapoints,
+            ndistances,
+            expt_locprecision,
             popt_at_bounds,
             large_uncertainties,
         ) = zip(
@@ -659,6 +689,8 @@ def main(argv=None):
                     bgbelowzeros,
                     nparams,
                     ndatapoints,
+                    ndistances,
+                    expt_locprecision,
                     popt_at_bounds,
                     large_uncertainties,
                 )
@@ -667,7 +699,7 @@ def main(argv=None):
 
         with open(os.path.join(output_folder, "results_histograms.csv"), "w") as f:
             f.write(
-                "Model,AICcorr,AIC,SSR,Fitlength,Locprecision,Nlocs,BGbelowzero, Nparams,Ndatapoints,POptAtBounds,LargeUncertainty\n"
+                "Model,AICcorr,AIC,SSR,Fitlength,Locprecision,Nlocs,BGbelowzero, Nparams,Ndatapoints,NDistances,ExptLocprecision,POptAtBounds,LargeUncertainty\n"
             )
             for row in zip(
                 setups,
@@ -680,6 +712,8 @@ def main(argv=None):
                 bgbelowzeros,
                 nparams,
                 ndatapoints,
+                ndistances,
+                expt_locprecision,
                 popt_at_bounds,
                 large_uncertainties,
             ):
@@ -697,6 +731,8 @@ def main(argv=None):
     bgbelowzeros = []
     nparams = []
     ndatapoints = []
+    ndistances = []
+    expt_locprecision = []
     popt_at_bounds = []
     large_uncertainties = []
 
@@ -732,6 +768,8 @@ def main(argv=None):
             bgbelowzeros,
             nparams,
             ndatapoints,
+            ndistances,
+            expt_locprecision,
             popt_at_bounds,
             large_uncertainties,
         )
@@ -747,6 +785,8 @@ def main(argv=None):
         bgbelowzeros,
         nparams,
         ndatapoints,
+        ndistances,
+        expt_locprecision,
         popt_at_bounds,
         large_uncertainties,
     ) = zip(
@@ -762,6 +802,8 @@ def main(argv=None):
                 bgbelowzeros,
                 nparams,
                 ndatapoints,
+                ndistances,
+                expt_locprecision,
                 popt_at_bounds,
                 large_uncertainties,
             )
@@ -770,7 +812,7 @@ def main(argv=None):
 
     with open(os.path.join(output_folder, "results_kdes.csv"), "w") as f:
         f.write(
-            "Model,AICcorr,AIC,SSR,Fitlength,Locprecision,Nlocs,BGbelowzero,Nparams,Ndatapoints,POptAtBounds,LargeUncertainty\n"
+            "Model,AICcorr,AIC,SSR,Fitlength,Locprecision,Nlocs,BGbelowzero,Nparams,Ndatapoints,NDistances,ExptLocprecision,POptAtBounds,LargeUncertainty\n"
         )
         for row in zip(
             setups,
@@ -783,6 +825,8 @@ def main(argv=None):
             bgbelowzeros,
             nparams,
             ndatapoints,
+            ndistances,
+            expt_locprecision,
             popt_at_bounds,
             large_uncertainties,
         ):
