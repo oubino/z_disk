@@ -6,7 +6,7 @@ sheets = [0,1,2,3,4,5]
 
 # Load in excel table
 df = pd.read_excel(
-    "manuscript_figures/table_g1_2_12_25.xlsx",
+    "manuscript_figures/table_g1_3_12_25.xlsx",
     sheet_name=sheets
 )
 
