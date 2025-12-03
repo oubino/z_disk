@@ -4,9 +4,11 @@ import matplotlib.pyplot as plt
 
 sheets = [0,1,2,3,4,5]
 
+file_name = "table_g1_3_12_25"
+
 # Load in excel table
 df = pd.read_excel(
-    "manuscript_figures/table_g1_3_12_25.xlsx",
+    f"manuscript_figures/{file_name}.xlsx",
     sheet_name=sheets
 )
 
@@ -82,4 +84,4 @@ sns.pointplot(
 
 plt.xticks(rotation=90)
 
-plt.savefig("manuscript_figures/figure_H1/charac_dists.svg",bbox_inches="tight", transparent=True)
+plt.savefig(f"manuscript_figures/figure_H1/charac_dists_{file_name}.svg",bbox_inches="tight", transparent=True)
