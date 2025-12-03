@@ -117,7 +117,7 @@ transverse:
   background: [null, flat, linear, trans_bg_0, trans_bg_1, trans_bg_2]
   n_peaks: [0, 2, 3]
   peak_type: [variable] 
-  charac_dist: [multiple_fixed, multiple_ratio] 
+  charac_dist: [one, multiple_fixed, multiple_ratio] 
   charac_dist_ratio: [1, 1.4142, 2]
   repeats: [True, False]
   offset: [False] 
@@ -133,7 +133,7 @@ transverse:
     # amp_peak_2: 5
     # etc...
     # first characteristic distance
-    characteristic_distance_1: [10, 24] # each distance corresponses to each charac dist type
+    characteristic_distance_1: [20, 10, 24] # each distance corresponses to each charac dist type
     characteristic_distance_2: 25
     characteristic_distance_3: 45
     # second characteristic distance
@@ -160,7 +160,7 @@ transverse:
     amp_peak_3: 0
     # amp_peak_2: 0
     # etc...
-    characteristic_distance_1: [5, 10] 
+    characteristic_distance_1: [5, 5, 10] 
     characteristic_distance_2: 20
     characteristic_distance_3: 40
     # etc.
@@ -179,7 +179,7 @@ transverse:
     amp_peak_3: 100
     # amp_peak_2: 100
     # etc...
-    characteristic_distance_1: [20, 33] 
+    characteristic_distance_1: [40, 20, 33] 
     characteristic_distance_2: 40
     characteristic_distance_3: 47
     # etc.
