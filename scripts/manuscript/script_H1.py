@@ -45,7 +45,7 @@ print(vals)
 
 # visualise spread
 df = pd.concat(dfs, axis=0, ignore_index=True)
-df["Protein_Direction"] = df["Protein"].astype(str) + "_" + df["Direction"].astype(str)
+df["Protein_Direction"] = df["Protein"].astype(str) + " " + df["Direction"].astype(str)
 
 df = df.drop(columns=["Protein", "Direction"])
 
@@ -53,7 +53,7 @@ df = df.melt(
     id_vars=["Protein_Direction"], 
     value_vars=["characteristic_distance_1_value", "characteristic_distance_2_value", "characteristic_distance_3_value"],
     var_name="measurement",
-    value_name="value"
+    value_name="Distance / nm"
 )
 
 plt.figure(figsize=(6, 4))
@@ -61,7 +61,7 @@ plt.figure(figsize=(6, 4))
 sns.stripplot(
     data=df,
     x="Protein_Direction",
-    y="value",
+    y="Distance / nm",
     hue="measurement",
     alpha=.5,
     s=4,
@@ -72,7 +72,7 @@ sns.stripplot(
 sns.pointplot(
     data=df, 
     x="Protein_Direction", 
-    y="value", 
+    y="Distance / nm", 
     hue="measurement",
     estimator="median",
     linestyle="none", 
