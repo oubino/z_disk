@@ -45,12 +45,12 @@ print(vals)
 
 # visualise spread
 df = pd.concat(dfs, axis=0, ignore_index=True)
-df["Protein_Direction"] = df["Protein"].astype(str) + " " + df["Direction"].astype(str)
+df["Protein & direction"] = df["Protein"].astype(str) + " " + df["Direction"].astype(str)
 
 df = df.drop(columns=["Protein", "Direction"])
 
 df = df.melt(
-    id_vars=["Protein_Direction"], 
+    id_vars=["Protein & direction"], 
     value_vars=["characteristic_distance_1_value", "characteristic_distance_2_value", "characteristic_distance_3_value"],
     var_name="measurement",
     value_name="Distance / nm"
@@ -58,30 +58,50 @@ df = df.melt(
 
 plt.figure(figsize=(6, 4))
 
+df["measurement"] = df["measurement"].replace({
+    "characteristic_distance_1_value": "Characteristic Distance 1",
+    "characteristic_distance_2_value": "Characteristic Distance 2",
+    "characteristic_distance_3_value": "Characteristic Distance 3",
+})
+
+
 sns.stripplot(
     data=df,
-    x="Protein_Direction",
+    x="Protein & direction",
     y="Distance / nm",
     hue="measurement",
-    alpha=.5,
+    alpha=1,
     s=4,
-    legend=False,
+    legend=True,
     dodge=False,
+    order=["ACTN2 axial", "Z1Z2 axial", "ZASP6 axial", "ACTN2 transverse", "Z1Z2 transverse", "ZASP6 transverse"]
 )
 
-sns.pointplot(
-    data=df, 
-    x="Protein_Direction", 
-    y="Distance / nm", 
-    hue="measurement",
-    estimator="median",
-    linestyle="none", 
-    errorbar=None,
-    marker="_", 
-    markersize=20, 
-    markeredgewidth=2,
-)
+# horizontal lines
+plt.axhline(y=16.25, color="black", linestyle="--", linewidth=1)
+plt.axhline(y=16.88, color="black", linestyle="--", linewidth=1)
+plt.axhline(y=18.22, color="black", linestyle="--", linewidth=1)
+plt.axhline(y=10.32, color="black", linestyle="--", linewidth=1)
+plt.axhline(y=30.00, color="black", linestyle="--", linewidth=1)
+plt.axhline(y=51.41, color="black", linestyle="--", linewidth=1)
+plt.axhline(y=19.14, color="black", linestyle="--", linewidth=1)
+plt.axhline(y=27.07, color="black", linestyle="--", linewidth=1)
+plt.axhline(y=38.28, color="black", linestyle="--", linewidth=1)
+plt.axhline(y=28.17, color="black", linestyle="--", linewidth=1)
 
-plt.xticks(rotation=90)
+#sns.pointplot(
+#    data=df, 
+#    x="Protein_Direction", 
+#    y="Distance / nm", 
+#    hue="measurement",
+#    estimator="median",
+#    linestyle="none", 
+#    errorbar=None,
+#    marker="_", 
+#    markersize=20, 
+#    markeredgewidth=2,
+#)
+
+plt.xticks(rotation=45, ha="right")
 
 plt.savefig(f"manuscript_figures/figure_H1/charac_dists_{file_name}.svg",bbox_inches="tight", transparent=True)
