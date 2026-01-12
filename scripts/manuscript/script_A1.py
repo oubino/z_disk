@@ -12,7 +12,7 @@ import matplotlib.animation as animation
 
 plot_3d = False
 plot_2d = True
-planes = ["xy", "yz"]  # xy, yz
+planes = ["xy", "yz", "xz"]  # xy, yz
 filter = False
 generate_anim = False
 output_folder = "manuscript_figures/figure_A1/"
@@ -96,7 +96,7 @@ for protein, file, file_zdisk in zip(["ACTN2", "Z1Z2", "ZASP6"], ["25_1", "23_3"
     # ---- plot Z disk in 2D -----
     if plot_2d:
         for plane in planes:
-            if plane == "xy":
+            if plane == "xy" or "xz":
                 figsize = (6, 1)
             elif plane == "yz":
                 figsize = (2.4, 4.8)
@@ -118,7 +118,9 @@ for protein, file, file_zdisk in zip(["ACTN2", "Z1Z2", "ZASP6"], ["25_1", "23_3"
                 ax.scatter(x, y, s=size, linewidths=size, c="w")
             elif plane == "yz":
                 ax.scatter(y, z, s=size, linewidths=size,  c="w")
-
+            elif plane == "xz":
+                ax.scatter(x, z, s=size, linewidths=size,  c="w")
+            
             # Create a Rectangle patch
             #if plane == "xy":
             #    rect = patches.Rectangle((-180, 18130), width=100, height=20, facecolor="w")
