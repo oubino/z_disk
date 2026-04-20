@@ -115,10 +115,10 @@ transverse:
   fitlength: [50, 55, 60]
   dimension: [2]
   background: [null, flat, linear, trans_bg_0, trans_bg_1, trans_bg_2]
-  n_peaks: [0, 2]
+  n_peaks: [0, 2, 3]
   peak_type: [variable] 
-  charac_dist: [one, multiple_fixed] 
-  charac_dist_ratio: [1, 1.4142]
+  charac_dist: [one, multiple_fixed, multiple_ratio] 
+  charac_dist_ratio: [1, 1.4142, 2]
   repeats: [True, False]
   offset: [False] 
   normalise: [True] 
@@ -128,14 +128,14 @@ transverse:
     # amplitude of peak 1
     amp_peak_1: 10
     amp_peak_2: 10
-    #amp_peak_3: 10
+    amp_peak_3: 10
     # amplitude of peak 2
     # amp_peak_2: 5
     # etc...
     # first characteristic distance
-    characteristic_distance_1: [20, 15] # each distance corresponses to each charac dist type
+    characteristic_distance_1: [20, 15, 20] # each distance corresponses to each charac dist type
     characteristic_distance_2: 40
-    #characteristic_distance_3: 45
+    characteristic_distance_3: 55
     # second characteristic distance
     # characteristic_distance_2: 5
     # etc.
@@ -157,12 +157,12 @@ transverse:
   params_lower:
     amp_peak_1: 0
     amp_peak_2: 0
-    #amp_peak_3: 0
+    amp_peak_3: 0
     # amp_peak_2: 0
     # etc...
-    characteristic_distance_1: [5, 5] 
+    characteristic_distance_1: [5, 5, 5] 
     characteristic_distance_2: 20
-    #characteristic_distance_3: 40
+    characteristic_distance_3: 50
     # etc.
     characteristic_distance_broadening: 0
     loc_prec_sd: 0
@@ -176,12 +176,12 @@ transverse:
   params_upper:
     amp_peak_1: 100
     amp_peak_2: 100
-    #amp_peak_3: 100
+    amp_peak_3: 100
     # amp_peak_2: 100
     # etc...
-    characteristic_distance_1: [40, 20] 
-    characteristic_distance_2: 55
-    #characteristic_distance_3: 57
+    characteristic_distance_1: [40, 20, 40] 
+    characteristic_distance_2: 50
+    characteristic_distance_3: 60
     # etc.
     characteristic_distance_broadening: 15
     loc_prec_sd: 10

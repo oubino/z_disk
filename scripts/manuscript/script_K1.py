@@ -6,6 +6,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
+from scipy.spatial import ConvexHull
 
 output_folder = "manuscript_figures"
 
@@ -18,6 +19,8 @@ table_locsperzdisk_mean = []
 table_zdisksize_x_mean = []
 table_zdisksize_y_mean = []
 table_zdisksize_z_mean = []
+table_zdisk_volume = []
+table_zdisk_density = []
 
 for protein in ["ACTN2", "Z1Z2", "ZASP6"]:
 
@@ -38,6 +41,8 @@ for protein in ["ACTN2", "Z1Z2", "ZASP6"]:
     zdisksize_x = []
     zdisksize_y = []
     zdisksize_z = []
+    zdisk_volume =  []
+    zdisk_density = []
 
     for file in files:
 
@@ -54,6 +59,19 @@ for protein in ["ACTN2", "Z1Z2", "ZASP6"]:
         zdisksize_x.append(df["x"].max() - df["x"].min())
         zdisksize_y.append(df["y"].max() - df["y"].min())
         zdisksize_z.append(df["z"].max() - df["z"].min())
+
+        array = np.array([df["x"], df["y"] , df["z"]])
+        array = np.transpose(array, (1,0))
+        hull = ConvexHull(array)
+        volume = hull.volume
+        volume = volume/(1000**3) # volume now in micrometre3
+
+        vol_corr = volume/(10**-2)
+        zdisk_volume.append(vol_corr)
+
+        density = len(df)/volume
+        density_corr = density/(10**3)
+        zdisk_density.append(density_corr)
 
     x_prec = np.concatenate(x_prec)
     y_prec = np.concatenate(y_prec)
@@ -141,6 +159,18 @@ for protein in ["ACTN2", "Z1Z2", "ZASP6"]:
         + f" {np.std(zdisksize_z, ddof=0).round(1)}"
     )
 
+    table_zdisk_volume.append(
+        f"{np.mean(zdisk_volume).round(1)} "
+        + "\u00b1"
+        + f" {np.std(zdisk_volume, ddof=0).round(1)}"
+    )
+
+    table_zdisk_density.append(
+        f"{np.mean(zdisk_density).round(1)} "
+        + "\u00b1"
+        + f" {np.std(zdisk_density, ddof=0).round(1)}"
+    )
+
     # print("Mean precision (pre-filtering)")
     # print(pd_df.mean())
 
@@ -158,6 +188,8 @@ df = pd.DataFrame(
         "mean x precision": table_xprec_mean,
         "mean y precision": table_yprec_mean,
         "mean z precision": table_zprec_mean,
+        "mean z disk volume / 10^-2 micrometre^3": table_zdisk_volume,
+        "mean z disk density / 10^3 micrometre^-3 ": table_zdisk_density,
     }
 )
 

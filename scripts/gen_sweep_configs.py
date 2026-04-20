@@ -115,22 +115,48 @@ def main(argv=None):
         required=True,
     )
 
+    parser.add_argument(
+        "-a",
+        "--only_axial",
+        action="store_true",
+        help="Fit only the axial direction",
+        required=False,
+    )
+
+    parser.add_argument(
+        "-t",
+        "--only_transverse",
+        action="store_true",
+        help="Fit only the transverse plane",
+        required=False,
+    )
+
     args = parser.parse_args(argv)
 
     config_folder = os.path.join("experiments", args.experiment, "perpl_config")
 
-    for f in ["axial_models", "transverse_models"]:
+    folders = ["axial_models", "transverse_models"]
+
+    if args.only_axial:
+        folders.remove("transverse_models")
+    
+    if args.only_transverse:
+        folders.remove("axial_models")
+
+    for f in folders:
         folder = os.path.join(config_folder, f)
         if os.path.exists(folder):
             raise ValueError(f"Cannot proceed as {folder} folder already exists")
 
-    for f in ["axial_models", "transverse_models"]:
+    for f in folders:
         folder = os.path.join(config_folder, f)
         os.makedirs(folder)
 
     # generate axial and transverse config files
-    gen_configs(config_folder, "axial")
-    gen_configs(config_folder, "transverse")
+    if not args.only_transverse:
+        gen_configs(config_folder, "axial")
+    if not args.only_axial:
+        gen_configs(config_folder, "transverse")
 
 
 if __name__ == "__main__":
