@@ -250,7 +250,7 @@ For PERPL respository see: https://github.com/AlistairCurd/PERPL-Python3/tree/ma
 1. Install perpl into z_disk environment
 
     ```shell
-    pip install perpl
+    pip install perpl==1.2.0
     ```
 
 2. Extract relative positions
@@ -274,7 +274,7 @@ For PERPL respository see: https://github.com/AlistairCurd/PERPL-Python3/tree/ma
 
 3. Modelling
 
-    Note:  (i.e. X and Y are flipped compared to work by A.C.)
+    Note: Aligned Z-disks extend across the XZ plane, not the YZ plane as used in previous work by A.C.
     
    1. In experiment/ folder (i.e. one directory above output folder) need a folder called perpl_config/ which contains the configuration files
 
@@ -302,7 +302,7 @@ For PERPL respository see: https://github.com/AlistairCurd/PERPL-Python3/tree/ma
 
         Each model.yaml file specifies a specific model being fit to the data.
 
-    2. For an exhaustive sweep of all possible models within a set range. Define the possible values for each parameter in the config.yaml file (see examples/config.yaml) and run 
+    2. For an exhaustive sweep of all possible models within a set range, define the possible values for each parameter in the config.yaml file (see examples/config.yaml) and run 
 
         ```shell
         python scripts/gen_sweep_configs.py
